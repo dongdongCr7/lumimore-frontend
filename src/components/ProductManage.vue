@@ -324,6 +324,9 @@
               </tr>
             </thead>
             <tbody>
+              <tr>
+                <td colspan="6" style="background:#ff0">DEBUG: 数据行数 = {{ photometricData.length }}</td>
+              </tr>
               <tr v-for="(row, idx) in photometricData" :key="idx">
                 <td>{{ row.model }}</td>
                 <td>{{ row.power }}</td>
