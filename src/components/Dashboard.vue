@@ -5,7 +5,7 @@
         <div class="chart-card">
           <h3>各分类产品数量统计</h3>
           <div class="chart-container">
-            <v-chart :option="chartOption" autoresize style="height: 400px" />
+            <v-chart :option="chartOption" autoresize style="height: 400px" @click="handleChartClick" />
           </div>
         </div>
       </el-col>
@@ -56,6 +56,7 @@ const goToProduct = (categoryId: number) => {
   emit('go-to-product', categoryId)
 }
 
+// 饼图点击事件
 const chartOption = computed(() => ({
   tooltip: {
     trigger: 'item',
@@ -80,11 +81,22 @@ const chartOption = computed(() => ({
       },
       label: {
         formatter: '{b}: {c}'
+      },
+      itemStyle: {
+        cursor: 'pointer'
       }
     }
   ],
   color: ['#ff6b00', '#ff8c00', '#ffa500', '#ffb84d', '#e65c00', '#cc5200', '#ff9933', '#804000']
 }))
+
+// 饼图点击处理
+const handleChartClick = (params: any) => {
+  const categoryId = productStore.categories.find(c => c.name === params.name)?.id
+  if (categoryId) {
+    goToProduct(categoryId)
+  }
+}
 
 const getSeriesCount = (categoryId: number) => {
   return productStore.seriesList.filter(s => s.categoryId === categoryId).length
