@@ -36,7 +36,8 @@ export const useProductStore = defineStore('product', () => {
     { id: 1, name: '筒灯', description: '嵌入式筒灯系列产品' },
     { id: 2, name: '射灯', description: '轨道射灯/嵌入式射灯' },
     { id: 3, name: '灯带', description: '柔性灯带/硬灯条' },
-    { id: 4, name: '面板灯', description: '办公照明面板灯' }
+    { id: 4, name: '面板灯', description: '办公照明面板灯' },
+    { id: 5, name: 'LUMISTRIP', description: '高显指LED灯带系列' }
   ])
 
   // LED灯系列
@@ -48,7 +49,8 @@ export const useProductStore = defineStore('product', () => {
     { id: 5, categoryId: 3, name: 'RGB灯带', description: 'RGB全彩灯带', keywords: ['RGB', '全彩', '变化'] },
     { id: 6, categoryId: 3, name: 'COB灯带', description: 'COB无光斑灯带', keywords: ['COB', '均匀', '无光斑'] },
     { id: 7, categoryId: 4, name: '常规面板灯', description: '标准办公室面板灯', keywords: ['面板', '办公', '节能'] },
-    { id: 8, categoryId: 4, name: '智能面板灯', description: '可调色温面板灯', keywords: ['调色温', '智能', '健康'] }
+    { id: 8, categoryId: 4, name: '智能面板灯', description: '可调色温面板灯', keywords: ['调色温', '智能', '健康'] },
+    { id: 9, categoryId: 5, name: '2835', description: '2835 SMD 高显指灯带', keywords: ['2835', '高显指', 'Ra98', '灯带'] }
   ])
 
   // LED灯产品示例数据
@@ -67,7 +69,29 @@ export const useProductStore = defineStore('product', () => {
     { id: 9, seriesId: 6, categoryId: 3, name: 'COB 320灯/m 灯带(5m)', specs: { '电压': 'DC24V', '灯珠型号': 'COB 320灯', '灯珠数量': '320灯/m', '功率': '10W/m', '发光角度': '180°', '显色指数': 'Ra≥90' } },
     // 面板灯系列
     { id: 10, seriesId: 7, categoryId: 4, name: '40W 600x600 面板灯', specs: { '功率': '40W', '色温': '4000K/6500K', '光通量': '4000lm', '尺寸': '600x600mm', '显色指数': 'Ra≥80', '使用寿命': '50000H' } },
-    { id: 11, seriesId: 8, categoryId: 4, name: '50W 智能调色温面板灯', specs: { '功率': '50W', '色温': '2700K-6500K', '光通量': '4500lm', '控制方式': 'APP/墙壁开关', '显色指数': 'Ra≥95', '调光范围': '0-100%' } }
+    { id: 11, seriesId: 8, categoryId: 4, name: '50W 智能调色温面板灯', specs: { '功率': '50W', '色温': '2700K-6500K', '光通量': '4500lm', '控制方式': 'APP/墙壁开关', '显色指数': 'Ra≥95', '调光范围': '0-100%' } },
+    // LUMISTRIP 2835系列
+    { id: 12, seriesId: 9, categoryId: 5, name: 'White 14.4W 2835 120LED 10MM', specs: { 
+      'LED密度': '120LED/M',
+      '功率': '14.4W/m',
+      'LED类型': '2835 SMD',
+      '显色指数': 'Ra98+',
+      'R9值': '>98',
+      'R12值': '>98',
+      '色温': '2700K-5700K',
+      '光通量': '1200lm/m',
+      '能效': '80lm/W',
+      '输入电压': '24V DC',
+      '裁剪单元': '50mm',
+      '总宽度': '10mm',
+      '基板宽度': '12mm',
+      'IP等级': 'IP20',
+      '发光角度': '120°',
+      '工作温度': '-20°C ~ +45°C',
+      '储存温度': '-30°C ~ +70°C',
+      '寿命': '>50,000小时',
+      '认证': 'CE, RoHS'
+    }}
   ])
 
   const specTemplates = ref<SpecTemplate[]>([

@@ -212,6 +212,11 @@
     <!-- 规格书对话框 -->
     <el-dialog v-model="specDialogVisible" title="产品规格书" width="900px">
       <div class="spec-document" ref="specDocumentRef">
+        <!-- Logo行 -->
+        <div class="spec-logo-row">
+          <img :src="customSettings?.logoUrl || '/logo.jpg'" alt="LUMIMORE Logo" class="spec-logo-img" />
+        </div>
+        
         <!-- 顶部区域：产品图片 + 产品信息 + 认证图标 -->
         <div class="spec-header-new">
           <!-- 左侧产品图片 -->
@@ -837,6 +842,35 @@ const downloadSpec = () => {
   
   let y = 20
   
+  // === Logo行 ===
+  const logoUrl = customSettings.value?.logoUrl || '/logo.jpg'
+  try {
+    const logoImg = new Image()
+    logoImg.crossOrigin = 'anonymous'
+    logoImg.src = logoUrl
+    // 绘制Logo在中间位置
+    ctx.drawImage(logoImg, 350, y, 150, 50)
+  } catch (e) {
+    // Logo加载失败，显示文字
+    ctx.fillStyle = '#ff6b00'
+    ctx.font = 'bold 24px Arial'
+    ctx.textAlign = 'center'
+    ctx.fillText('LUMIMORE', 425, y + 35)
+  }
+  
+  y += 65
+  
+  // === Logo下方分隔线 ===
+  ctx.strokeStyle = '#ff6b00'
+  ctx.lineWidth = 2
+  ctx.beginPath()
+  ctx.moveTo(20, y)
+  ctx.lineTo(830, y)
+  ctx.stroke()
+  ctx.lineWidth = 1
+  
+  y += 25
+  
   // === 顶部区域 ===
   
   // 左侧产品图片区域
@@ -1404,6 +1438,19 @@ defineExpose({
   padding: 15px;
   font-family: Arial, sans-serif;
   border: 1px solid #e4e7ed;
+}
+
+/* Logo行 */
+.spec-logo-row {
+  text-align: center;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #ff6b00;
+  margin-bottom: 15px;
+}
+
+.spec-logo-img {
+  height: 60px;
+  width: auto;
 }
 
 /* 顶部区域：产品图片 + 产品信息 + 认证图标 */
