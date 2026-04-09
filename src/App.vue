@@ -1,7 +1,31 @@
+<template>
+  <router-view />
+</template>
+
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
+import { onMounted } from 'vue'
+import { useUserStore } from './stores/user'
+
+const userStore = useUserStore()
+
+onMounted(() => {
+  userStore.loadFromStorage()
+})
 </script>
 
-<template>
-  <HelloWorld />
-</template>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #app {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Arial, sans-serif;
+}
+</style>
