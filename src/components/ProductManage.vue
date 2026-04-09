@@ -521,52 +521,36 @@ const filteredProducts = computed(() => {
   return products
 })
 
-// Photometric表格数据 - 按照原图30行数据
+// Photometric表格数据 - 按照原图24行数据
 const photometricData = computed(() => {
-  const ccts = ['2700K', '3000K', '3500K', '4000K', '5000K', '5700K']
-  const data: Array<{model: string, power: string, cct: string, cri: string, lumen: string, efficacy: string}> = []
-  
-  // 9.6W/m 12行（6种色温 x 2组重复）
-  for (let group = 0; group < 2; group++) {
-    for (let i = 0; i < 6; i++) {
-      data.push({
-        model: 'LS-SW28N120-2790-2408-100',
-        power: '9.6W/m',
-        cct: ccts[i],
-        cri: 'Ra90+',
-        lumen: '1200lm/m',
-        efficacy: '80lm/W'
-      })
-    }
-  }
-  
-  // 15W/m (Ra90+) 12行（6种色温 x 2组重复）
-  for (let group = 0; group < 2; group++) {
-    for (let i = 0; i < 6; i++) {
-      data.push({
-        model: 'LS-SW28N120-2790-2408-100',
-        power: '15W/m',
-        cct: ccts[i],
-        cri: 'Ra90+',
-        lumen: '1200lm/m',
-        efficacy: '80lm/W'
-      })
-    }
-  }
-  
-  // 15W/m (Ra90) 6行（6种色温）
-  for (let i = 0; i < 6; i++) {
-    data.push({
-      model: 'LS-SW28N120-2790-2408-100',
-      power: '15W/m',
-      cct: ccts[i],
-      cri: 'Ra90',
-      lumen: '1200lm/m',
-      efficacy: '80lm/W'
-    })
-  }
-  
-  return data
+  // 原图24行数据
+  return [
+    { model: 'LS-SW28N120-2790-2408-100', power: '9.6W/m', cct: '2700K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { model: 'LS-SW28N120-2790-2408-100', power: '9.6W/m', cct: '3000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { model: 'LS-SW28N120-2790-2408-100', power: '9.6W/m', cct: '3500K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { model: 'LS-SW28N120-2790-2408-100', power: '9.6W/m', cct: '4000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { model: 'LS-SW28N120-2790-2408-100', power: '9.6W/m', cct: '5000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { model: 'LS-SW28N120-2790-2408-100', power: '9.6W/m', cct: '5700K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { model: 'LS-SW28N120-2790-2408-100', power: '9.6W/m', cct: '2700K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { model: 'LS-SW28N120-2790-2408-100', power: '15W/m', cct: '2700K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { model: 'LS-SW28N120-2790-2408-100', power: '15W/m', cct: '3000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { model: 'LS-SW28N120-2790-2408-100', power: '15W/m', cct: '3500K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { model: 'LS-SW28N120-2790-2408-100', power: '15W/m', cct: '4000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { model: 'LS-SW28N120-2790-2408-100', power: '15W/m', cct: '5000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { model: 'LS-SW28N120-2790-2408-100', power: '15W/m', cct: '5700K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { model: 'LS-SW28N120-2790-2408-100', power: '15W/m', cct: '2700K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { model: 'LS-SW28N120-2790-2408-100', power: '15W/m', cct: '3000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { model: 'LS-SW28N120-2790-2408-100', power: '15W/m', cct: '3500K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { model: 'LS-SW28N120-2790-2408-100', power: '15W/m', cct: '4000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { model: 'LS-SW28N120-2790-2408-100', power: '15W/m', cct: '5000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { model: 'LS-SW28N120-2790-2408-100', power: '15W/m', cct: '5700K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { model: 'LS-SW28N120-2790-2408-100', power: '15W/m', cct: '2700K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { model: 'LS-SW28N120-2790-2408-100', power: '15W/m', cct: '3000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { model: 'LS-SW28N120-2790-2408-100', power: '15W/m', cct: '3500K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { model: 'LS-SW28N120-2790-2408-100', power: '15W/m', cct: '4000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { model: 'LS-SW28N120-2790-2408-100', power: '15W/m', cct: '5000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { model: 'LS-SW28N120-2790-2408-100', power: '15W/m', cct: '5700K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' }
+  ]
 })
 
 // 方法
@@ -858,79 +842,33 @@ const downloadSpec = () => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
   
-  // 画布尺寸 - 800px宽度，高度根据30行数据计算
-  canvas.width = 800
-  canvas.height = 750 + (18 * 30) // 基础高度 + 30行数据
+  // A4尺寸比例 210:297 ≈ 1:1.414
+  const pageWidth = 800
+  const pageHeight = 1130 // A4比例
+  
+  canvas.width = pageWidth
+  canvas.height = pageHeight
   
   // 白色背景
   ctx.fillStyle = '#ffffff'
-  ctx.fillRect(0, 0, canvas.width, canvas.height)
+  ctx.fillRect(0, 0, pageWidth, pageHeight)
   
   // 边框
   ctx.strokeStyle = '#333'
   ctx.lineWidth = 1
-  ctx.strokeRect(0, 0, canvas.width, canvas.height)
+  ctx.strokeRect(0, 0, pageWidth, pageHeight)
   
   let y = 0
   
   // ========== 顶部标题区 ==========
   
-  // Logo
-  const logoUrl = customSettings.value?.logoUrl || '/logo.jpg'
-  try {
-    const logoImg = new Image()
-    logoImg.crossOrigin = 'anonymous'
-    logoImg.src = logoUrl
-    logoImg.onload = () => {
-      ctx.drawImage(logoImg, 10, 5, 100, 35)
-    }
-  } catch (e) {
-    ctx.fillStyle = '#ff6b00'
-    ctx.font = 'bold 16px Arial'
-    ctx.fillText('LUMIMORE', 15, 28)
-  }
-  
-  // 标题
-  ctx.fillStyle = '#000'
-  ctx.font = 'bold 18px Arial'
-  ctx.textAlign = 'left'
-  ctx.fillText('White 14.4W 2835 120LED 10MM', 120, 30)
-  
-  ctx.font = '12px Arial'
-  ctx.fillText('LS-SW28N120-10', 120, 48)
-  
-  // 5个认证图标框
-  for (let i = 0; i < 5; i++) {
-    const certX = 720 + i * 0
-    ctx.strokeStyle = '#999'
-    ctx.strokeRect(700, 10, 25, 25)
-    ctx.strokeRect(730, 10, 25, 25)
-    ctx.strokeRect(760, 10, 25, 25)
-    ctx.strokeRect(700, 40, 25, 25)
-    ctx.strokeRect(730, 40, 25, 25)
-  }
-  
-  y = 60
-  
-  // 分隔线
-  ctx.strokeStyle = '#333'
-  ctx.beginPath()
-  ctx.moveTo(0, y)
-  ctx.lineTo(800, y)
-  ctx.stroke()
-  
-  y += 5
-  
-  // ========== 产品图片 + Features + Dimension + Product Setup + Light Engine ==========
-  
-  const imgW = 180
-  const imgH = 110
-  const cellW = 155
-  
   // 产品图片区域
+  const imgW = 180
+  const imgH = 100
+  
   ctx.fillStyle = '#f8f8f8'
-  ctx.fillRect(0, y, imgW, imgH)
-  ctx.strokeRect(0, y, imgW, imgH)
+  ctx.fillRect(10, 10, imgW, imgH)
+  ctx.strokeRect(10, 10, imgW, imgH)
   
   // 如果有上传的产品图片
   if (customSettings.value?.productImage) {
@@ -938,64 +876,111 @@ const downloadSpec = () => {
     prodImg.crossOrigin = 'anonymous'
     prodImg.src = customSettings.value.productImage
     prodImg.onload = () => {
-      ctx.drawImage(prodImg, 0, y, imgW, imgH)
+      ctx.drawImage(prodImg, 10, 10, imgW, imgH)
     }
   } else {
     // LED灯带示意图
     ctx.fillStyle = '#e0e0e0'
-    ctx.fillRect(5, y + 10, 170, 50)
+    ctx.fillRect(15, 25, 170, 60)
     
     // LED灯珠
     ctx.fillStyle = '#ff8c00'
     for (let i = 0; i < 14; i++) {
-      ctx.fillRect(10 + i * 12, y + 20, 8, 30)
+      ctx.fillRect(20 + i * 12, 35, 8, 40)
     }
   }
   
   // LED密度标签
-  ctx.fillStyle = '#000'
-  ctx.fillRect(125, y + 85, 50, 20)
+  ctx.fillStyle = '#333'
+  ctx.fillRect(imgW - 55, imgH - 15, 50, 18)
   ctx.fillStyle = '#fff'
   ctx.font = 'bold 8px Arial'
   ctx.textAlign = 'center'
-  ctx.fillText('120 LED/M', 150, y + 99)
+  ctx.fillText('120 LED/M', imgW - 30, imgH - 2)
   
-  let cellX = imgW
+  // Logo（放在产品图片右侧）
+  const logoUrl = customSettings.value?.logoUrl || '/logo.jpg'
+  try {
+    const logoImg = new Image()
+    logoImg.crossOrigin = 'anonymous'
+    logoImg.src = logoUrl
+    logoImg.onload = () => {
+      ctx.drawImage(logoImg, imgW + 25, 10, 100, 35)
+    }
+  } catch (e) {
+    ctx.fillStyle = '#ff6b00'
+    ctx.font = 'bold 16px Arial'
+    ctx.textAlign = 'left'
+    ctx.fillText('LUMIMORE', imgW + 25, 32)
+  }
+  
+  // 标题文字
+  ctx.fillStyle = '#000'
+  ctx.font = 'bold 16px Arial'
+  ctx.textAlign = 'left'
+  ctx.fillText('White 14.4W 2835 120LED 10MM', imgW + 25, 55)
+  
+  ctx.font = '11px Arial'
+  ctx.fillText('Model: LS-SW28N120-10', imgW + 25, 72)
+  
+  // 5个认证图标框
+  for (let i = 0; i < 5; i++) {
+    const row = Math.floor(i / 3)
+    const col = i % 3
+    const certX = 620 + col * 35
+    const certY = 15 + row * 40
+    ctx.strokeStyle = '#999'
+    ctx.strokeRect(certX, certY, 30, 30)
+  }
+  
+  y = imgH + 15
+  
+  // 分隔线
+  ctx.strokeStyle = '#999'
+  ctx.beginPath()
+  ctx.moveTo(10, y)
+  ctx.lineTo(pageWidth - 10, y)
+  ctx.stroke()
+  
+  y += 10
+  
+  // ========== Features + Dimension ==========
+  
+  const cellW = 390
+  const cellH = 75
   
   // Features
   ctx.fillStyle = '#f5f5f5'
-  ctx.fillRect(cellX, y, cellW, 18)
-  ctx.strokeRect(cellX, y, cellW, 18)
+  ctx.fillRect(10, y, cellW, 18)
+  ctx.strokeRect(10, y, cellW, 18)
   ctx.fillStyle = '#000'
-  ctx.font = 'bold 9px Arial'
+  ctx.font = 'bold 10px Arial'
   ctx.textAlign = 'center'
-  ctx.fillText('Features', cellX + cellW/2, y + 13)
+  ctx.fillText('Features', 10 + cellW / 2, y + 13)
   
   ctx.fillStyle = '#fff'
-  ctx.fillRect(cellX, y + 18, cellW, imgH - 18)
-  ctx.strokeRect(cellX, y + 18, cellW, imgH - 18)
+  ctx.fillRect(10, y + 18, cellW, cellH - 18)
+  ctx.strokeRect(10, y + 18, cellW, cellH - 18)
   
   ctx.fillStyle = '#000'
-  ctx.font = '8px Arial'
+  ctx.font = '9px Arial'
   ctx.textAlign = 'left'
-  ctx.fillText('Super High CRI Ra98', cellX + 5, y + 35)
-  ctx.fillText('Ra9>98, Rg12>98', cellX + 5, y + 48)
-  ctx.fillText('120LED/M | 15W/m', cellX + 5, y + 61)
-  ctx.fillText('2835', cellX + 5, y + 74)
-  
-  cellX += cellW
+  ctx.fillText('Super High CRI Ra98', 15, y + 35)
+  ctx.fillText('Ra9>98, Ra12>98', 15, y + 48)
+  ctx.fillText('120LED/M | 15W/m', 15, y + 61)
+  ctx.fillText('2835', 15, y + 74)
   
   // Dimension
   ctx.fillStyle = '#f5f5f5'
-  ctx.fillRect(cellX, y, cellW, 18)
-  ctx.strokeRect(cellX, y, cellW, 18)
+  ctx.fillRect(10 + cellW, y, cellW, 18)
+  ctx.strokeRect(10 + cellW, y, cellW, 18)
   ctx.fillStyle = '#000'
   ctx.textAlign = 'center'
-  ctx.fillText('Dimension', cellX + cellW/2, y + 13)
+  ctx.fillText('Dimension', 10 + cellW + cellW / 2, y + 13)
   
   ctx.fillStyle = '#fff'
-  ctx.fillRect(cellX, y + 18, cellW, imgH - 18)
-  ctx.strokeRect(cellX, y + 18, cellW, imgH - 18)
+  ctx.fillRect(10 + cellW, y + 18, cellW, cellH - 18)
+  ctx.strokeRect(10 + cellW, y + 18, cellW, cellH - 18)
   
   // 如果有尺寸图片
   if (customSettings.value?.dimensionImage) {
@@ -1003,116 +988,122 @@ const downloadSpec = () => {
     dimImg.crossOrigin = 'anonymous'
     dimImg.src = customSettings.value.dimensionImage
     dimImg.onload = () => {
-      ctx.drawImage(dimImg, cellX + 10, y + 25, cellW - 20, imgH - 35)
+      ctx.drawImage(dimImg, 10 + cellW + 50, y + 25, cellW - 100, cellH - 35)
     }
   } else {
     // 默认尺寸示意图
     ctx.fillStyle = '#000'
-    ctx.fillRect(cellX + 20, y + 35, 110, 3)
-    ctx.fillRect(cellX + 20, y + 30, 55, 3)
-    ctx.fillRect(cellX + 30, y + 35, 2, 20)
-    ctx.fillRect(cellX + 120, y + 35, 2, 20)
+    ctx.fillRect(10 + cellW + 50, y + 35, 280, 3)
+    ctx.fillRect(10 + cellW + 50, y + 30, 140, 3)
+    ctx.fillRect(10 + cellW + 60, y + 35, 2, 15)
+    ctx.fillRect(10 + cellW + 200, y + 35, 2, 15)
     
-    ctx.font = '7px Arial'
+    ctx.font = '8px Arial'
     ctx.textAlign = 'center'
-    ctx.fillText('10mm', cellX + 60, y + 55)
-    ctx.fillText('50mm', cellX + 95, y + 45)
-    ctx.fillText('16.6mm', cellX + 75, y + 70)
+    ctx.fillText('50mm', 10 + cellW + 100, y + 42)
+    ctx.fillText('12mm', 10 + cellW + 160, y + 55)
+    ctx.fillText('16.6mm', 10 + cellW + 130, y + 68)
   }
   
-  cellX += cellW
-  
-  // Product Setup
-  ctx.fillStyle = '#f5f5f5'
-  ctx.fillRect(cellX, y, cellW, 18)
-  ctx.strokeRect(cellX, y, cellW, 18)
-  ctx.fillStyle = '#000'
-  ctx.textAlign = 'center'
-  ctx.fillText('Product Setup', cellX + cellW/2, y + 13)
-  
-  ctx.fillStyle = '#fff'
-  ctx.fillRect(cellX, y + 18, cellW, imgH - 18)
-  ctx.strokeRect(cellX, y + 18, cellW, imgH - 18)
-  
-  ctx.fillStyle = '#000'
-  ctx.font = '8px Arial'
-  ctx.textAlign = 'left'
-  ctx.fillText('Category: LumStrip', cellX + 5, y + 38)
-  ctx.fillText('Level: Core', cellX + 5, y + 52)
-  ctx.fillText('Spectrum: White', cellX + 5, y + 66)
-  
-  cellX += cellW
-  
-  // Light Engine
-  ctx.fillStyle = '#f5f5f5'
-  ctx.fillRect(cellX, y, cellW, 18)
-  ctx.strokeRect(cellX, y, cellW, 18)
-  ctx.fillStyle = '#000'
-  ctx.textAlign = 'center'
-  ctx.fillText('Light Engine', cellX + cellW/2, y + 13)
-  
-  ctx.fillStyle = '#fff'
-  ctx.fillRect(cellX, y + 18, cellW, imgH - 18)
-  ctx.strokeRect(cellX, y + 18, cellW, imgH - 18)
-  
-  ctx.fillStyle = '#000'
-  ctx.font = '8px Arial'
-  ctx.textAlign = 'left'
-  ctx.fillText('Category: LumStrip', cellX + 5, y + 38)
-  ctx.fillText('Level: Core', cellX + 5, y + 52)
-  ctx.fillText('Spectrum: White', cellX + 5, y + 66)
-  
-  y += imgH + 5
+  y += cellH + 5
   
   // 分隔线
   ctx.strokeStyle = '#999'
   ctx.beginPath()
-  ctx.moveTo(0, y)
-  ctx.lineTo(800, y)
+  ctx.moveTo(10, y)
+  ctx.lineTo(pageWidth - 10, y)
   ctx.stroke()
   
-  y += 5
+  y += 10
+  
+  // ========== Product Setup + Light Engine ==========
+  
+  // Product Setup
+  ctx.fillStyle = '#f5f5f5'
+  ctx.fillRect(10, y, cellW, 18)
+  ctx.strokeRect(10, y, cellW, 18)
+  ctx.fillStyle = '#000'
+  ctx.font = 'bold 10px Arial'
+  ctx.textAlign = 'center'
+  ctx.fillText('Product Setup', 10 + cellW / 2, y + 13)
+  
+  ctx.fillStyle = '#fff'
+  ctx.fillRect(10, y + 18, cellW, cellH - 18)
+  ctx.strokeRect(10, y + 18, cellW, cellH - 18)
+  
+  ctx.fillStyle = '#000'
+  ctx.font = '9px Arial'
+  ctx.textAlign = 'left'
+  ctx.fillText('Category: LumStrip', 15, y + 35)
+  ctx.fillText('Level: Core', 15, y + 48)
+  ctx.fillText('Spectrum: White', 15, y + 61)
+  
+  // Light Engine
+  ctx.fillStyle = '#f5f5f5'
+  ctx.fillRect(10 + cellW, y, cellW, 18)
+  ctx.strokeRect(10 + cellW, y, cellW, 18)
+  ctx.fillStyle = '#000'
+  ctx.textAlign = 'center'
+  ctx.fillText('Light Engine', 10 + cellW + cellW / 2, y + 13)
+  
+  ctx.fillStyle = '#fff'
+  ctx.fillRect(10 + cellW, y + 18, cellW, cellH - 18)
+  ctx.strokeRect(10 + cellW, y + 18, cellW, cellH - 18)
+  
+  ctx.fillStyle = '#000'
+  ctx.font = '9px Arial'
+  ctx.textAlign = 'left'
+  ctx.fillText('Category: LumStrip', 10 + cellW + 5, y + 35)
+  ctx.fillText('Level: Core', 10 + cellW + 5, y + 48)
+  ctx.fillText('Spectrum: White', 10 + cellW + 5, y + 61)
+  
+  y += cellH + 5
+  
+  // 分隔线
+  ctx.strokeStyle = '#999'
+  ctx.beginPath()
+  ctx.moveTo(10, y)
+  ctx.lineTo(pageWidth - 10, y)
+  ctx.stroke()
+  
+  y += 10
   
   // ========== 四列参数：Electrical + Photometric + Features + Remark ==========
   
-  const quadW = 200
+  const quadW = 195
   
   // 表头
   ctx.fillStyle = '#f5f5f5'
-  ctx.fillRect(0, y, 800, 18)
-  ctx.strokeRect(0, y, 800, 18)
+  ctx.fillRect(10, y, quadW * 4, 18)
+  ctx.strokeRect(10, y, quadW * 4, 18)
   
   // 竖线
   ctx.beginPath()
-  ctx.moveTo(200, y)
-  ctx.lineTo(200, y + 95)
-  ctx.moveTo(400, y)
-  ctx.lineTo(400, y + 95)
-  ctx.moveTo(600, y)
-  ctx.lineTo(600, y + 95)
+  for (let i = 1; i < 4; i++) {
+    ctx.moveTo(10 + quadW * i, y)
+    ctx.lineTo(10 + quadW * i, y + 95)
+  }
   ctx.stroke()
   
   ctx.fillStyle = '#000'
   ctx.font = 'bold 9px Arial'
   ctx.textAlign = 'center'
-  ctx.fillText('Electrical', 100, y + 13)
-  ctx.fillText('Photometric', 300, y + 13)
-  ctx.fillText('Features', 500, y + 13)
-  ctx.fillText('Remark', 700, y + 13)
+  ctx.fillText('Electrical', 10 + quadW * 0.5, y + 13)
+  ctx.fillText('Photometric', 10 + quadW * 1.5, y + 13)
+  ctx.fillText('Features', 10 + quadW * 2.5, y + 13)
+  ctx.fillText('Remark', 10 + quadW * 3.5, y + 13)
   
   // 内容
   ctx.fillStyle = '#fff'
-  ctx.fillRect(0, y + 18, 800, 77)
-  ctx.strokeRect(0, y + 18, 800, 77)
+  ctx.fillRect(10, y + 18, quadW * 4, 77)
+  ctx.strokeRect(10, y + 18, quadW * 4, 77)
   
   // 竖线
   ctx.beginPath()
-  ctx.moveTo(200, y + 18)
-  ctx.lineTo(200, y + 95)
-  ctx.moveTo(400, y + 18)
-  ctx.lineTo(400, y + 95)
-  ctx.moveTo(600, y + 18)
-  ctx.lineTo(600, y + 95)
+  for (let i = 1; i < 4; i++) {
+    ctx.moveTo(10 + quadW * i, y + 18)
+    ctx.lineTo(10 + quadW * i, y + 95)
+  }
   ctx.stroke()
   
   ctx.fillStyle = '#000'
@@ -1120,165 +1111,142 @@ const downloadSpec = () => {
   ctx.textAlign = 'left'
   
   // Electrical
-  ctx.fillText('Category: LumStrip', 5, y + 35)
-  ctx.fillText('Level: Core', 5, y + 50)
+  ctx.fillText('Category: LumStrip', 15, y + 35)
+  ctx.fillText('Level: Core', 15, y + 50)
   
   // Photometric - 6行
-  ctx.fillText('Category: LumStrip', 205, y + 30)
-  ctx.fillText('Level: Core', 205, y + 43)
-  ctx.fillText('Spectrum: White', 205, y + 56)
-  ctx.fillText('Category: LumStrip', 205, y + 69)
-  ctx.fillText('Level: Core', 205, y + 82)
-  ctx.fillText('Spectrum: White', 205, y + 95)
+  ctx.fillText('Category: LumStrip', 10 + quadW + 5, y + 30)
+  ctx.fillText('Level: Core', 10 + quadW + 5, y + 45)
+  ctx.fillText('Spectrum: White', 10 + quadW + 5, y + 60)
+  ctx.fillText('Category: LumStrip', 10 + quadW + 5, y + 75)
+  ctx.fillText('Level: Core', 10 + quadW + 5, y + 90)
   
   // Features - 3行
-  ctx.fillText('Category: LumStrip', 405, y + 35)
-  ctx.fillText('Level: Core', 405, y + 50)
-  ctx.fillText('Spectrum: White', 405, y + 65)
+  ctx.fillText('Category: LumStrip', 10 + quadW * 2 + 5, y + 35)
+  ctx.fillText('Level: Core', 10 + quadW * 2 + 5, y + 50)
+  ctx.fillText('Spectrum: White', 10 + quadW * 2 + 5, y + 65)
   
-  // Remark - 空
+  // Remark
+  ctx.fillText('Category: LumStrip', 10 + quadW * 3 + 5, y + 35)
+  ctx.fillText('Level: Core', 10 + quadW * 3 + 5, y + 50)
+  ctx.fillText('Spectrum: White', 10 + quadW * 3 + 5, y + 65)
   
   y += 95
   
   // 分隔线
   ctx.strokeStyle = '#999'
   ctx.beginPath()
-  ctx.moveTo(0, y)
-  ctx.lineTo(800, y)
+  ctx.moveTo(10, y)
+  ctx.lineTo(pageWidth - 10, y)
   ctx.stroke()
   
-  y += 5
+  y += 10
   
-  // ========== Photometric标题 + 数据表格（30行） ==========
+  // ========== Photometric标题 + 数据表格（24行） ==========
   
   ctx.fillStyle = '#f5f5f5'
-  ctx.fillRect(0, y, 800, 18)
-  ctx.strokeRect(0, y, 800, 18)
+  ctx.fillRect(10, y, pageWidth - 20, 18)
+  ctx.strokeRect(10, y, pageWidth - 20, 18)
   ctx.fillStyle = '#000'
   ctx.font = 'bold 10px Arial'
   ctx.textAlign = 'left'
-  ctx.fillText('Photometric', 10, y + 13)
+  ctx.fillText('Photometric', 15, y + 13)
   
   y += 18
   
   // 表头
   ctx.fillStyle = '#333'
-  ctx.fillRect(0, y, 800, 20)
+  ctx.fillRect(10, y, pageWidth - 20, 20)
   
-  const headers = [
-    { title: 'Model', x: 0, w: 280 },
-    { title: 'Power', x: 280, w: 100 },
-    { title: 'CCT', x: 380, w: 90 },
-    { title: 'CRI', x: 470, w: 90 },
-    { title: 'Lumen', x: 560, w: 120 },
-    { title: 'Efficacy', x: 680, w: 120 }
+  // 列宽比例: Model:Power:CCT:CRI:Lumen:Efficacy = 35:12:10:10:15:18
+  const colWidths = [
+    { title: 'Model', w: Math.floor((pageWidth - 20) * 0.35) },
+    { title: 'Power', w: Math.floor((pageWidth - 20) * 0.12) },
+    { title: 'CCT', w: Math.floor((pageWidth - 20) * 0.10) },
+    { title: 'CRI', w: Math.floor((pageWidth - 20) * 0.10) },
+    { title: 'Lumen', w: Math.floor((pageWidth - 20) * 0.15) },
+    { title: 'Efficacy', w: (pageWidth - 20) - Math.floor((pageWidth - 20) * 0.35) - Math.floor((pageWidth - 20) * 0.12) - Math.floor((pageWidth - 20) * 0.10) - Math.floor((pageWidth - 20) * 0.10) - Math.floor((pageWidth - 20) * 0.15) }
   ]
   
-  ctx.fillStyle = '#fff'
-  ctx.font = 'bold 10px Arial'
-  ctx.textAlign = 'center'
-  headers.forEach(h => {
-    ctx.fillText(h.title, h.x + h.w / 2, y + 14)
+  let colX = 10
+  colWidths.forEach((col, i) => {
+    ctx.fillStyle = '#fff'
+    ctx.font = 'bold 10px Arial'
+    ctx.textAlign = 'center'
+    ctx.fillText(col.title, colX + col.w / 2, y + 14)
+    colX += col.w
   })
   
   // 竖线
   ctx.strokeStyle = '#555'
+  colX = 10
   ctx.beginPath()
-  headers.forEach((h, i) => {
-    if (i < headers.length - 1) {
-      ctx.moveTo(h.x + h.w, y)
-      ctx.lineTo(h.x + h.w, y + 20)
+  colWidths.forEach((col, i) => {
+    if (i < colWidths.length - 1) {
+      ctx.moveTo(colX + col.w, y)
+      ctx.lineTo(colX + col.w, y + 20)
     }
+    colX += col.w
   })
   ctx.stroke()
   
   y += 20
   
-  // 数据行 - 30行数据（原图）
-  // 9.6W/m: 12行（6种色温 x 2组重复）
-  // 15W/m (Ra90+): 12行（6种色温 x 2组重复）
-  // 15W/m (Ra90): 6行（6种色温）
-  
+  // 数据行 - 24行（原图数据）
   const cctValues = ['2700K', '3000K', '3500K', '4000K', '5000K', '5700K']
   const rowHeight = 18
   
-  // 9.6W/m 12行（重复两次）
-  for (let group = 0; group < 2; group++) {
-    for (let i = 0; i < 6; i++) {
-      ctx.fillStyle = '#fff'
-      ctx.fillRect(0, y, 800, rowHeight)
-      ctx.strokeStyle = '#555'
-      ctx.strokeRect(0, y, 800, rowHeight)
-      
-      // 竖线
-      ctx.beginPath()
-      headers.forEach((h, j) => {
-        if (j < headers.length - 1) {
-          ctx.moveTo(h.x + h.w, y)
-          ctx.lineTo(h.x + h.w, y + rowHeight)
-        }
-      })
-      ctx.stroke()
-      
-      ctx.fillStyle = '#000'
-      ctx.font = '8px Arial'
-      ctx.textAlign = 'center'
-      ctx.fillText('LS-SW28N120-2790-2408-100', 140, y + 12)
-      ctx.fillText('9.6W/m', 330, y + 12)
-      ctx.fillText(cctValues[i], 425, y + 12)
-      ctx.fillText('Ra90+', 515, y + 12)
-      ctx.fillText('1200lm/m', 620, y + 12)
-      ctx.fillText('80lm/W', 740, y + 12)
-      
-      y += rowHeight
-    }
-  }
+  // 计算每列位置
+  const cols = [
+    { x: 10, w: colWidths[0].w },
+    { x: 10 + colWidths[0].w, w: colWidths[1].w },
+    { x: 10 + colWidths[0].w + colWidths[1].w, w: colWidths[2].w },
+    { x: 10 + colWidths[0].w + colWidths[1].w + colWidths[2].w, w: colWidths[3].w },
+    { x: 10 + colWidths[0].w + colWidths[1].w + colWidths[2].w + colWidths[3].w, w: colWidths[4].w },
+    { x: 10 + colWidths[0].w + colWidths[1].w + colWidths[2].w + colWidths[3].w + colWidths[4].w, w: colWidths[5].w }
+  ]
   
-  // 15W/m (Ra90+) 12行（重复两次）
-  for (let group = 0; group < 2; group++) {
-    for (let i = 0; i < 6; i++) {
-      ctx.fillStyle = '#fff'
-      ctx.fillRect(0, y, 800, rowHeight)
-      ctx.strokeStyle = '#555'
-      ctx.strokeRect(0, y, 800, rowHeight)
-      
-      // 竖线
-      ctx.beginPath()
-      headers.forEach((h, j) => {
-        if (j < headers.length - 1) {
-          ctx.moveTo(h.x + h.w, y)
-          ctx.lineTo(h.x + h.w, y + rowHeight)
-        }
-      })
-      ctx.stroke()
-      
-      ctx.fillStyle = '#000'
-      ctx.font = '8px Arial'
-      ctx.textAlign = 'center'
-      ctx.fillText('LS-SW28N120-2790-2408-100', 140, y + 12)
-      ctx.fillText('15W/m', 330, y + 12)
-      ctx.fillText(cctValues[i], 425, y + 12)
-      ctx.fillText('Ra90+', 515, y + 12)
-      ctx.fillText('1200lm/m', 620, y + 12)
-      ctx.fillText('80lm/W', 740, y + 12)
-      
-      y += rowHeight
-    }
-  }
+  // 原图24行数据
+  const dataRows = [
+    { power: '9.6W/m', cct: '2700K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { power: '9.6W/m', cct: '3000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { power: '9.6W/m', cct: '3500K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { power: '9.6W/m', cct: '4000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { power: '9.6W/m', cct: '5000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { power: '9.6W/m', cct: '5700K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { power: '9.6W/m', cct: '2700K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { power: '15W/m', cct: '2700K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { power: '15W/m', cct: '3000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { power: '15W/m', cct: '3500K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { power: '15W/m', cct: '4000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { power: '15W/m', cct: '5000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { power: '15W/m', cct: '5700K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { power: '15W/m', cct: '2700K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { power: '15W/m', cct: '3000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { power: '15W/m', cct: '3500K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { power: '15W/m', cct: '4000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { power: '15W/m', cct: '5000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { power: '15W/m', cct: '5700K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { power: '15W/m', cct: '2700K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { power: '15W/m', cct: '3000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { power: '15W/m', cct: '3500K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { power: '15W/m', cct: '4000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { power: '15W/m', cct: '5000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
+    { power: '15W/m', cct: '5700K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' }
+  ]
   
-  // 15W/m (Ra90) 6行
-  for (let i = 0; i < 6; i++) {
+  dataRows.forEach((row) => {
     ctx.fillStyle = '#fff'
-    ctx.fillRect(0, y, 800, rowHeight)
+    ctx.fillRect(10, y, pageWidth - 20, rowHeight)
     ctx.strokeStyle = '#555'
-    ctx.strokeRect(0, y, 800, rowHeight)
+    ctx.strokeRect(10, y, pageWidth - 20, rowHeight)
     
     // 竖线
     ctx.beginPath()
-    headers.forEach((h, j) => {
-      if (j < headers.length - 1) {
-        ctx.moveTo(h.x + h.w, y)
-        ctx.lineTo(h.x + h.w, y + rowHeight)
+    cols.forEach((col, i) => {
+      if (i < cols.length - 1) {
+        ctx.moveTo(col.x + col.w, y)
+        ctx.lineTo(col.x + col.w, y + rowHeight)
       }
     })
     ctx.stroke()
@@ -1286,15 +1254,15 @@ const downloadSpec = () => {
     ctx.fillStyle = '#000'
     ctx.font = '8px Arial'
     ctx.textAlign = 'center'
-    ctx.fillText('LS-SW28N120-2790-2408-100', 140, y + 12)
-    ctx.fillText('15W/m', 330, y + 12)
-    ctx.fillText(cctValues[i], 425, y + 12)
-    ctx.fillText('Ra90', 515, y + 12)
-    ctx.fillText('1200lm/m', 620, y + 12)
-    ctx.fillText('80lm/W', 740, y + 12)
+    ctx.fillText('LS-SW28N120-2790-2408-100', cols[0].x + cols[0].w / 2, y + 12)
+    ctx.fillText(row.power, cols[1].x + cols[1].w / 2, y + 12)
+    ctx.fillText(row.cct, cols[2].x + cols[2].w / 2, y + 12)
+    ctx.fillText(row.cri, cols[3].x + cols[3].w / 2, y + 12)
+    ctx.fillText(row.lumen, cols[4].x + cols[4].w / 2, y + 12)
+    ctx.fillText(row.efficacy, cols[5].x + cols[5].w / 2, y + 12)
     
     y += rowHeight
-  }
+  })
   
   // 下载图片
   const link = document.createElement('a')
@@ -1516,22 +1484,25 @@ defineExpose({
   align-items: center;
 }
 
-/* ========== 规格书样式 - 按照原图排版 ========== */
+/* ========== 规格书样式 - 按照原图排版 A4比例 ========== */
 .spec-document {
   background: white;
   padding: 0;
   font-family: Arial, sans-serif;
   width: 800px;
+  height: 1130px;
   border: 1px solid #333;
+  overflow: hidden;
 }
 
-/* 第1行：Logo + 产品图片 + 产品信息 + 认证图标 */
+/* 顶部标题区 */
 .spec-row1 {
   display: flex;
-  align-items: center;
-  padding: 5px 10px;
-  border-bottom: 1px solid #333;
+  align-items: flex-start;
+  padding: 10px;
+  border-bottom: 1px solid #999;
   gap: 10px;
+  height: 110px;
 }
 
 .spec-logo {
