@@ -368,28 +368,12 @@
               </tr>
             </thead>
             <tbody>
-              <!-- 9.6W/m Section -->
-              <tr class="section-header">
-                <td colspan="6">9.6W/m</td>
-              </tr>
-              <tr v-for="cct in ['2700K', '3000K', '3500K', '4000K', '5000K', '5700K']" :key="'96-'+cct">
-                <td>LS-SW28N60-{{cct.replace('K','')}}-2408-100</td>
-                <td>9.6W/m</td>
-                <td>{{cct}}</td>
-                <td>{{ currentProduct?.specs['显色指数'] || 'Ra90+' }}</td>
-                <td>960lm/m</td>
-                <td>{{ currentProduct?.specs['能效'] || '100lm/W' }}</td>
-              </tr>
-              <!-- 15W/m Section -->
-              <tr class="section-header">
-                <td colspan="6">15W/m</td>
-              </tr>
-              <tr v-for="cct in ['2700K', '3000K', '3500K', '4000K', '5000K', '5700K']" :key="'15-'+cct">
-                <td>LS-SW28N120-{{cct.replace('K','')}}-2408-100</td>
-                <td>15W/m</td>
-                <td>{{cct}}</td>
-                <td>{{ currentProduct?.specs['显色指数'] || 'Ra90+' }}</td>
-                <td>1200lm/m</td>
+              <tr>
+                <td>{{ currentProduct?.name }}</td>
+                <td>{{ currentProduct?.specs['功率'] || '14.4W/m' }}</td>
+                <td>{{ currentProduct?.specs['色温'] || '2700K-5700K' }}</td>
+                <td>{{ currentProduct?.specs['显色指数'] || 'Ra98+' }}</td>
+                <td>{{ currentProduct?.specs['光通量'] || '1200lm/m' }}</td>
                 <td>{{ currentProduct?.specs['能效'] || '80lm/W' }}</td>
               </tr>
             </tbody>
@@ -1121,52 +1105,35 @@ const downloadSpec = () => {
   y += 22
   
   // 数据行
-  const drawSection = (power: string, ledDensity: string) => {
-    ctx.fillStyle = '#f0f0f0'
-    ctx.fillRect(20, y, 810, 18)
+  const drawSection = () => {
+    ctx.fillStyle = '#fff'
+    ctx.fillRect(20, y, 810, 22)
     ctx.strokeStyle = '#ddd'
-    ctx.strokeRect(20, y, 810, 18)
-    ctx.fillStyle = '#333'
-    ctx.font = 'bold 10px Arial'
-    ctx.textAlign = 'center'
-    ctx.fillText(power, 425, y + 13)
-    y += 18
+    ctx.strokeRect(20, y, 810, 22)
     
-    const ccts = ['2700K', '3000K', '3500K', '4000K', '5000K', '5700K']
-    
-    ccts.forEach((cct, i) => {
-      if (i % 2 === 1) {
-        ctx.fillStyle = '#fafafa'
-        ctx.fillRect(20, y, 810, 18)
+    ctx.beginPath()
+    columns.forEach((col, j) => {
+      if (j < columns.length - 1) {
+        ctx.moveTo(col.x + col.w, y)
+        ctx.lineTo(col.x + col.w, y + 22)
       }
-      ctx.strokeStyle = '#ddd'
-      ctx.strokeRect(20, y, 810, 18)
-      
-      ctx.beginPath()
-      columns.forEach((col, j) => {
-        if (j < columns.length - 1) {
-          ctx.moveTo(col.x + col.w, y)
-          ctx.lineTo(col.x + col.w, y + 18)
-        }
-      })
-      ctx.stroke()
-      
-      ctx.fillStyle = '#333'
-      ctx.font = '9px Arial'
-      ctx.textAlign = 'center'
-      ctx.fillText(`LS-SW28N${ledDensity}-${cct.replace('K','')}-2408-100`, 160, y + 12)
-      ctx.fillText(power, 350, y + 12)
-      ctx.fillText(cct, 440, y + 12)
-      ctx.fillText(specs['显色指数'] || 'Ra98+', 520, y + 12)
-      ctx.fillText(ledDensity === '60' ? '960lm/m' : '1200lm/m', 620, y + 12)
-      ctx.fillText(specs['能效'] || '80lm/W', 755, y + 12)
-      
-      y += 18
     })
+    ctx.stroke()
+    
+    ctx.fillStyle = '#333'
+    ctx.font = '9px Arial'
+    ctx.textAlign = 'center'
+    ctx.fillText(currentProduct.value?.name || 'LED Strip', 160, y + 15)
+    ctx.fillText(specs['功率'] || '14.4W/m', 350, y + 15)
+    ctx.fillText(specs['色温'] || '2700K-5700K', 440, y + 15)
+    ctx.fillText(specs['显色指数'] || 'Ra98+', 520, y + 15)
+    ctx.fillText(specs['光通量'] || '1200lm/m', 620, y + 15)
+    ctx.fillText(specs['能效'] || '80lm/W', 755, y + 15)
+    
+    y += 22
   }
   
-  drawSection('9.6W/m', '60')
-  drawSection('15W/m', '120')
+  drawSection()
   
   // 页脚
   y += 10
