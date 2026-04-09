@@ -127,7 +127,12 @@
         </el-table-column>
       </el-table>
     </div>
-
+    
+    <!-- 调试：显示photometricData -->
+    <div style="position:fixed;top:0;left:0;background:yellow;padding:10px;z-index:99999;font-size:20px;">
+      测试：photometricData.length = {{ photometricData.length }}
+    </div>
+    
     <!-- 添加分类对话框 -->
     <el-dialog v-model="categoryDialogVisible" title="添加分类" width="500px">
       <el-form :model="categoryForm" label-width="100px">
