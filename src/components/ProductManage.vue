@@ -244,9 +244,9 @@
           <table class="spec-table features-table">
             <tr><th>Features</th></tr>
             <tr><td>
-              <div>Super High CRI Ra98+</div>
-              <div>Ra98, R1-R9:81</div>
-              <div>120LED [8MM] | 15W/m</div>
+              <div>Super High CRI Ra98</div>
+              <div>Ra9>98, R1-12>98</div>
+              <div>120LED [8MM]</div>
               <div>2835</div>
             </td></tr>
           </table>
@@ -284,19 +284,23 @@
           </table>
         </div>
         
-        <!-- 四列参数 -->
+        <!-- 四列参数 - 严格按照原图 -->
         <div class="spec-params-row">
           <div class="param-col"><div class="param-title">Electrical</div>
-            <div>V: 24V DC</div><div>P: 15W/m</div>
+            <div>Category: LumStrip</div>
+            <div>Level: Core</div>
           </div>
           <div class="param-col"><div class="param-title">Photometric</div>
-            <div>CCT: 2700K-5700K</div><div>CRI: Ra98+</div>
+            <div>Category: LumStrip</div>
+            <div>Level: Core</div>
+            <div>Spectrum: White</div>
           </div>
           <div class="param-col"><div class="param-title">Features</div>
-            <div>LED: 2835</div><div>IP: IP20</div>
+            <div>Category: LumStrip</div>
+            <div>Level: Core</div>
+            <div>Spectrum: White</div>
           </div>
           <div class="param-col"><div class="param-title">Remark</div>
-            <div>Cut: 50mm</div><div>Life: >50,000h</div>
           </div>
         </div>
         
@@ -474,24 +478,36 @@ const filteredProducts = computed(() => {
   return products
 })
 
-// Photometric表格数据
+// Photometric表格数据 - 按照原图18行数据
 const photometricData = computed(() => {
   const ccts = ['2700K', '3000K', '3500K', '4000K', '5000K', '5700K']
-  const powers = ['9.6W/m', '15W/m']
   const data: Array<{model: string, power: string, cct: string, cri: string, lumen: string, efficacy: string}> = []
   
-  ccts.forEach(cct => {
-    powers.forEach(power => {
+  // 9.6W/m 6行
+  for (let i = 0; i < 6; i++) {
+    data.push({
+      model: 'LS-SW28N120-2790-2408-100',
+      power: '9.6W/m',
+      cct: ccts[i],
+      cri: 'Ra90+',
+      lumen: '1200lm/m',
+      efficacy: '80lm/W'
+    })
+  }
+  
+  // 15W/m 12行（原图中有两组15W/m）
+  for (let group = 0; group < 2; group++) {
+    for (let i = 0; i < 6; i++) {
       data.push({
         model: 'LS-SW28N120-2790-2408-100',
-        power: power,
-        cct: cct,
+        power: '15W/m',
+        cct: ccts[i],
         cri: 'Ra90+',
         lumen: '1200lm/m',
         efficacy: '80lm/W'
       })
-    })
-  })
+    }
+  }
   
   return data
 })
@@ -755,9 +771,9 @@ const downloadSpec = () => {
   
   const specs = currentProduct.value?.specs || {}
   
-  // 画布尺寸
+  // 画布尺寸 - 根据18行数据调整高度
   canvas.width = 850
-  canvas.height = 750
+  canvas.height = 1000
   
   // 白色背景
   ctx.fillStyle = '#ffffff'
@@ -765,7 +781,6 @@ const downloadSpec = () => {
   
   // 边框颜色
   const borderColor = '#333'
-  const lineWidth = 1
   
   // ========== 1. 顶部Logo行 ==========
   const logoUrl = customSettings.value?.logoUrl || '/logo.jpg'
@@ -797,14 +812,12 @@ const downloadSpec = () => {
   
   // ========== 2. 顶部横向区域：产品图片 + 产品信息 + 认证图标 ==========
   
-  // 产品图片区域（左侧）
   const imgWidth = 200
   const imgHeight = 130
   
   ctx.fillStyle = '#f8f8f8'
   ctx.fillRect(20, y, imgWidth, imgHeight)
   ctx.strokeStyle = borderColor
-  ctx.lineWidth = 1
   ctx.strokeRect(20, y, imgWidth, imgHeight)
   
   // LED灯带示意图
@@ -853,12 +866,12 @@ const downloadSpec = () => {
   
   y += 10
   
-  // ========== 3. 中间左侧：Features + Dimension 并排 ==========
+  // ========== 3. Features + Dimension 并排 ==========
   
   const leftColWidth = 240
   const dimWidth = 220
   
-  // Features表格
+  // Features表格 - 按照原图内容
   ctx.fillStyle = '#f5f5f5'
   ctx.fillRect(20, y, leftColWidth, 18)
   ctx.strokeStyle = borderColor
@@ -875,9 +888,9 @@ const downloadSpec = () => {
   ctx.fillStyle = '#000'
   ctx.font = '9px Arial'
   ctx.textAlign = 'left'
-  ctx.fillText('Super High CRI Ra98+', 25, y + 33)
-  ctx.fillText('Ra98, R1-R9:81', 25, y + 46)
-  ctx.fillText('120LED [8MM] | 15W/m', 25, y + 59)
+  ctx.fillText('Super High CRI Ra98', 25, y + 33)
+  ctx.fillText('Ra9>98, R1-12>98', 25, y + 46)
+  ctx.fillText('120LED [8MM]', 25, y + 59)
   ctx.fillText('2835', 25, y + 72)
   
   // Dimension表格
@@ -895,11 +908,8 @@ const downloadSpec = () => {
   
   // 尺寸示意图
   ctx.fillStyle = '#000'
-  // 主体矩形
   ctx.fillRect(275, y + 30, 190, 4)
-  // 上层线
   ctx.fillRect(275, y + 26, 100, 4)
-  // 引脚
   ctx.fillRect(290, y + 30, 3, 15)
   ctx.fillRect(385, y + 30, 3, 15)
   
@@ -911,7 +921,7 @@ const downloadSpec = () => {
   
   y += 100
   
-  // ========== 4. 中间左侧下方：Product Setup + Light Engine 并排 ==========
+  // ========== 4. Product Setup + Light Engine 并排 ==========
   
   const setupWidth = 200
   const engineWidth = 200
@@ -964,7 +974,7 @@ const downloadSpec = () => {
   
   y += 90
   
-  // ========== 5. 中间右侧：Electrical / Photometric / Features / Remark 四列 ==========
+  // ========== 5. Electrical / Photometric / Features / Remark 四列 - 按照原图 ==========
   
   const colWidth = 95
   
@@ -975,11 +985,11 @@ const downloadSpec = () => {
   // 竖线
   ctx.beginPath()
   ctx.moveTo(535, y)
-  ctx.lineTo(535, y + 50)
+  ctx.lineTo(535, y + 60)
   ctx.moveTo(630, y)
-  ctx.lineTo(630, y + 50)
+  ctx.lineTo(630, y + 60)
   ctx.moveTo(725, y)
-  ctx.lineTo(725, y + 50)
+  ctx.lineTo(725, y + 60)
   ctx.stroke()
   
   ctx.fillStyle = '#000'
@@ -991,37 +1001,41 @@ const downloadSpec = () => {
   ctx.fillText('Remark', 772, y + 13)
   
   ctx.fillStyle = '#fff'
-  ctx.fillRect(440, y + 18, colWidth * 4 + 6, 32)
-  ctx.strokeRect(440, y + 18, colWidth * 4 + 6, 32)
+  ctx.fillRect(440, y + 18, colWidth * 4 + 6, 42)
+  ctx.strokeRect(440, y + 18, colWidth * 4 + 6, 42)
   
   // 竖线
   ctx.beginPath()
   ctx.moveTo(535, y + 18)
-  ctx.lineTo(535, y + 50)
+  ctx.lineTo(535, y + 60)
   ctx.moveTo(630, y + 18)
-  ctx.lineTo(630, y + 50)
+  ctx.lineTo(630, y + 60)
   ctx.moveTo(725, y + 18)
-  ctx.lineTo(725, y + 50)
+  ctx.lineTo(725, y + 60)
   ctx.stroke()
   
   ctx.fillStyle = '#000'
   ctx.font = '8px Arial'
   ctx.textAlign = 'left'
-  ctx.fillText('V: 24V DC', 445, y + 30)
-  ctx.fillText('P: 15W/m', 445, y + 43)
+  // Electrical
+  ctx.fillText('Category: LumStrip', 445, y + 30)
+  ctx.fillText('Level: Core', 445, y + 45)
   
-  ctx.fillText('CCT: 2700K-5700K', 540, y + 30)
-  ctx.fillText('CRI: Ra98+', 540, y + 43)
+  // Photometric - 原图显示多行
+  ctx.fillText('Category: LumStrip', 540, y + 30)
+  ctx.fillText('Level: Core', 540, y + 40)
+  ctx.fillText('Spectrum: White', 540, y + 50)
   
-  ctx.fillText('LED: 2835', 635, y + 30)
-  ctx.fillText('IP: IP20', 635, y + 43)
+  // Features
+  ctx.fillText('Category: LumStrip', 635, y + 30)
+  ctx.fillText('Level: Core', 635, y + 40)
+  ctx.fillText('Spectrum: White', 635, y + 50)
   
-  ctx.fillText('Cut: 50mm', 730, y + 30)
-  ctx.fillText('Life: >50,000h', 730, y + 43)
+  // Remark - 原图为空
   
-  y += 70
+  y += 80
   
-  // ========== 6. Photometric标题 + 数据表格 ==========
+  // ========== 6. Photometric标题 + 数据表格（18行） ==========
   
   ctx.fillStyle = '#f5f5f5'
   ctx.fillRect(20, y, 810, 18)
@@ -1065,13 +1079,46 @@ const downloadSpec = () => {
   
   y += 20
   
-  // 数据行 - 根据实际产品数据生成多行
+  // 数据行 - 18行数据（原图）：9.6W/m 6行 + 15W/m 12行
   const cctValues = ['2700K', '3000K', '3500K', '4000K', '5000K', '5700K']
-  const powers = ['9.6W/m', '15W/m']
   
   let dataY = y
-  cctValues.forEach((cct, cctIdx) => {
-    powers.forEach((power, powerIdx) => {
+  let powerCount = 0
+  
+  // 9.6W/m 6行
+  for (let i = 0; i < 6; i++) {
+    ctx.fillStyle = '#fff'
+    ctx.fillRect(20, dataY, 810, 18)
+    ctx.strokeStyle = '#555'
+    ctx.strokeRect(20, dataY, 810, 18)
+    
+    // 竖线
+    ctx.beginPath()
+    headers.forEach((h, j) => {
+      if (j < headers.length - 1) {
+        ctx.moveTo(h.x + h.w, dataY)
+        ctx.lineTo(h.x + h.w, dataY + 18)
+      }
+    })
+    ctx.stroke()
+    
+    ctx.fillStyle = '#000'
+    ctx.font = '8px Arial'
+    ctx.textAlign = 'center'
+    ctx.fillText('LS-SW28N120-2790-2408-100', 165, dataY + 12)
+    ctx.fillText('9.6W/m', 360, dataY + 12)
+    ctx.fillText(cctValues[i], 450, dataY + 12)
+    ctx.fillText('Ra90+', 535, dataY + 12)
+    ctx.fillText('1200lm/m', 640, dataY + 12)
+    ctx.fillText('80lm/W', 765, dataY + 12)
+    
+    dataY += 18
+    powerCount++
+  }
+  
+  // 15W/m 12行（原图中有两组15W/m）
+  for (let group = 0; group < 2; group++) {
+    for (let i = 0; i < 6; i++) {
       ctx.fillStyle = '#fff'
       ctx.fillRect(20, dataY, 810, 18)
       ctx.strokeStyle = '#555'
@@ -1079,8 +1126,8 @@ const downloadSpec = () => {
       
       // 竖线
       ctx.beginPath()
-      headers.forEach((h, i) => {
-        if (i < headers.length - 1) {
+      headers.forEach((h, j) => {
+        if (j < headers.length - 1) {
           ctx.moveTo(h.x + h.w, dataY)
           ctx.lineTo(h.x + h.w, dataY + 18)
         }
@@ -1091,15 +1138,15 @@ const downloadSpec = () => {
       ctx.font = '8px Arial'
       ctx.textAlign = 'center'
       ctx.fillText('LS-SW28N120-2790-2408-100', 165, dataY + 12)
-      ctx.fillText(power, 360, dataY + 12)
-      ctx.fillText(cct, 450, dataY + 12)
+      ctx.fillText('15W/m', 360, dataY + 12)
+      ctx.fillText(cctValues[i], 450, dataY + 12)
       ctx.fillText('Ra90+', 535, dataY + 12)
       ctx.fillText('1200lm/m', 640, dataY + 12)
       ctx.fillText('80lm/W', 765, dataY + 12)
       
       dataY += 18
-    })
-  })
+    }
+  }
   
   // 下载图片
   const link = document.createElement('a')
@@ -1510,6 +1557,7 @@ defineExpose({
   padding: 8px;
   border-right: 1px solid #333;
   font-size: 8px;
+  min-height: 45px;
 }
 
 .param-col:last-child {
