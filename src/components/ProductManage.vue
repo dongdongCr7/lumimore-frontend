@@ -1180,7 +1180,7 @@ const downloadSpec = () => {
   ]
   
   let colX = 10
-  colWidths.forEach((col, i) => {
+  colWidths.forEach((col) => {
     ctx.fillStyle = '#fff'
     ctx.font = 'bold 10px Arial'
     ctx.textAlign = 'center'
@@ -1192,8 +1192,8 @@ const downloadSpec = () => {
   ctx.strokeStyle = '#555'
   colX = 10
   ctx.beginPath()
-  colWidths.forEach((col, i) => {
-    if (i < colWidths.length - 1) {
+  colWidths.forEach((col, idx) => {
+    if (idx < colWidths.length - 1) {
       ctx.moveTo(colX + col.w, y)
       ctx.lineTo(colX + col.w, y + 20)
     }
@@ -1204,7 +1204,6 @@ const downloadSpec = () => {
   y += 20
   
   // 数据行 - 24行（原图数据）
-  const cctValues = ['2700K', '3000K', '3500K', '4000K', '5000K', '5700K']
   const rowHeight = 18
   
   // 计算每列位置
