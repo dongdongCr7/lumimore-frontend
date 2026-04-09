@@ -35,8 +35,8 @@
 
     <!-- 内容区域 -->
     <div class="content">
-      <Dashboard v-if="activeTab === 'dashboard'" />
-      <ProductManage v-else-if="activeTab === 'product'" />
+      <Dashboard v-if="activeTab === 'dashboard'" @go-to-product="handleGoToProduct" />
+      <ProductManage ref="productManageRef" v-else-if="activeTab === 'product'" />
       <UserManage v-else-if="activeTab === 'user'" />
     </div>
   </div>
@@ -54,6 +54,7 @@ import UserManage from '../components/UserManage.vue'
 const router = useRouter()
 const userStore = useUserStore()
 const activeTab = ref('dashboard')
+const productManageRef = ref<InstanceType<typeof ProductManage> | null>(null)
 
 const roleType = computed(() => {
   const role = userStore.user?.role
@@ -68,6 +69,16 @@ const handleCommand = (command: string) => {
     ElMessage.success('已退出登录')
     router.push('/login')
   }
+}
+
+const handleGoToProduct = (categoryId: number) => {
+  activeTab.value = 'product'
+  // 等待 ProductManage 组件渲染后设置筛选
+  setTimeout(() => {
+    if (productManageRef.value) {
+      productManageRef.value.setCategoryFilter(categoryId)
+    }
+  }, 100)
 }
 </script>
 

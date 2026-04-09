@@ -13,7 +13,7 @@
     
     <el-row :gutter="20" style="margin-top: 20px">
       <el-col :span="8" v-for="cat in productStore.categories" :key="cat.id">
-        <el-card shadow="hover">
+        <el-card shadow="hover" class="category-card" @click="goToProduct(cat.id)">
           <template #header>
             <div class="card-header">
               <span>{{ cat.name }}</span>
@@ -27,6 +27,7 @@
               <el-icon><Collection /></el-icon>
               包含 {{ getSeriesCount(cat.id) }} 个系列
             </p>
+            <p class="click-tip">点击查看该分类产品</p>
           </div>
         </el-card>
       </el-col>
@@ -43,9 +44,17 @@ import { TitleComponent, TooltipComponent, LegendComponent } from 'echarts/compo
 import VChart from 'vue-echarts'
 import { useProductStore } from '../stores/product'
 
+const emit = defineEmits<{
+  (e: 'go-to-product', categoryId: number): void
+}>()
+
 use([CanvasRenderer, PieChart, TitleComponent, TooltipComponent, LegendComponent])
 
 const productStore = useProductStore()
+
+const goToProduct = (categoryId: number) => {
+  emit('go-to-product', categoryId)
+}
 
 const chartOption = computed(() => ({
   tooltip: {
@@ -127,5 +136,22 @@ const getSeriesCount = (categoryId: number) => {
   margin: 0;
   font-size: 14px;
   color: #909399;
+}
+
+.category-card {
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.category-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(255, 107, 0, 0.2);
+}
+
+.click-tip {
+  text-align: center;
+  color: #ff6b00;
+  font-size: 12px;
+  margin: 10px 0 0 0;
 }
 </style>

@@ -752,6 +752,14 @@ const downloadSpec = async () => {
   
   ElMessage.success('规格书已下载')
 }
+
+// 暴露给父组件的方法
+defineExpose({
+  setCategoryFilter: (categoryId: number) => {
+    filterProductCategoryId.value = categoryId
+    filterProductSeriesId.value = null
+  }
+})
 </script>
 
 <style scoped>
