@@ -1,9 +1,10 @@
 <template>
   <div class="main-container">
-    <!-- 顶部导航 -->
+    <!-- 顶部导航 - LUMIMORE 风格 -->
     <div class="header">
       <div class="header-left">
-        <h2>产品管理系统</h2>
+        <img src="/logo.jpg" alt="LUMIMORE" class="header-logo" />
+        <span class="header-subtitle">LED LIGHTING</span>
       </div>
       <div class="header-right">
         <span class="role-tag" :type="roleType">
@@ -26,7 +27,7 @@
 
     <!-- Tab 导航 -->
     <div class="tab-nav">
-      <el-tabs v-model="activeTab" @tab-change="handleTabChange">
+      <el-tabs v-model="activeTab">
         <el-tab-pane label="仪表盘" name="dashboard"></el-tab-pane>
         <el-tab-pane label="产品管理" name="product"></el-tab-pane>
         <el-tab-pane label="用户管理" name="user" v-if="userStore.canManageUsers()"></el-tab-pane>
@@ -35,13 +36,8 @@
 
     <!-- 内容区域 -->
     <div class="content">
-      <!-- 仪表盘 -->
       <Dashboard v-if="activeTab === 'dashboard'" />
-      
-      <!-- 产品管理 -->
       <ProductManage v-else-if="activeTab === 'product'" />
-      
-      <!-- 用户管理 -->
       <UserManage v-else-if="activeTab === 'user'" />
     </div>
   </div>
@@ -67,10 +63,6 @@ const roleType = computed(() => {
   return 'info'
 })
 
-const handleTabChange = (tab: string) => {
-  console.log('切换到:', tab)
-}
-
 const handleCommand = (command: string) => {
   if (command === 'logout') {
     userStore.logout()
@@ -89,19 +81,33 @@ const handleCommand = (command: string) => {
 }
 
 .header {
-  height: 60px;
-  background: white;
+  height: 70px;
+  background: linear-gradient(135deg, #ff6b00 0%, #ff8c00 100%);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 24px;
-  border-bottom: 1px solid #e4e7ed;
+  padding: 0 30px;
+  box-shadow: 0 2px 10px rgba(255, 107, 0, 0.3);
 }
 
-.header-left h2 {
-  font-size: 18px;
-  color: #333;
-  margin: 0;
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.header-logo {
+  height: 50px;
+  width: auto;
+  object-fit: contain;
+}
+
+.header-subtitle {
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  opacity: 0.9;
 }
 
 .header-right {
@@ -114,6 +120,8 @@ const handleCommand = (command: string) => {
   padding: 4px 12px;
   border-radius: 4px;
   font-size: 12px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
 }
 
 .user-info {
@@ -121,21 +129,36 @@ const handleCommand = (command: string) => {
   align-items: center;
   gap: 6px;
   cursor: pointer;
-  color: #606266;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 4px;
+  transition: background 0.3s;
 }
 
 .user-info:hover {
-  color: #409eff;
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .tab-nav {
   background: white;
-  padding: 0 24px;
+  padding: 0 30px;
   border-bottom: 1px solid #e4e7ed;
 }
 
 .tab-nav :deep(.el-tabs__header) {
   margin: 0;
+}
+
+.tab-nav :deep(.el-tabs__item.is-active) {
+  color: #ff6b00;
+}
+
+.tab-nav :deep(.el-tabs__active-bar) {
+  background-color: #ff6b00;
+}
+
+.tab-nav :deep(.el-tabs__item:hover) {
+  color: #ff8c00;
 }
 
 .content {

@@ -307,8 +307,23 @@
         <el-form-item label="副标题">
           <el-input v-model="customSettingsForm.subtitle" placeholder="副标题" />
         </el-form-item>
-        <el-form-item label="Logo URL">
-          <el-input v-model="customSettingsForm.logoUrl" placeholder="输入Logo图片URL" />
+        <el-form-item label="Logo上传">
+          <div class="logo-upload">
+            <el-upload
+              class="logo-uploader"
+              :show-file-list="false"
+              :before-upload="beforeLogoUpload"
+              :http-request="handleLogoUpload"
+              accept="image/*"
+            >
+              <img v-if="customSettingsForm.logoUrl" :src="customSettingsForm.logoUrl" class="logo-preview" />
+              <el-icon v-else class="logo-uploader-icon"><Plus /></el-icon>
+            </el-upload>
+            <div class="logo-tip">
+              <span>点击上传 Logo</span>
+              <el-button v-if="customSettingsForm.logoUrl" type="danger" size="small" text @click="removeLogo">移除</el-button>
+            </div>
+          </div>
         </el-form-item>
         <el-form-item label="页脚">
           <el-input v-model="customSettingsForm.footer" type="textarea" placeholder="页脚内容" />
@@ -599,6 +614,34 @@ const showCustomDialog = () => {
   customDialogVisible.value = true
 }
 
+// Logo 上传相关
+const beforeLogoUpload = (file: File) => {
+  const isImage = file.type.startsWith('image/')
+  const isLt2M = file.size / 1024 / 1024 < 2
+  if (!isImage) {
+    ElMessage.error('只能上传图片文件!')
+    return false
+  }
+  if (!isLt2M) {
+    ElMessage.error('图片大小不能超过 2MB!')
+    return false
+  }
+  return true
+}
+
+const handleLogoUpload = (options: { file: File }) => {
+  const file = options.file
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    customSettingsForm.logoUrl = e.target?.result as string
+  }
+  reader.readAsDataURL(file)
+}
+
+const removeLogo = () => {
+  customSettingsForm.logoUrl = ''
+}
+
 const applyCustomSettings = () => {
   customSettings.value = {
     title: customSettingsForm.title,
@@ -669,7 +712,7 @@ const downloadSpec = async () => {
   
   // 绘制规格参数表头
   y += 50
-  ctx.fillStyle = '#409eff'
+  ctx.fillStyle = '#ff6b00'
   ctx.fillRect(50, y, 700, 35)
   ctx.fillStyle = '#ffffff'
   ctx.font = 'bold 14px Arial'
@@ -723,6 +766,16 @@ const downloadSpec = async () => {
   background: #fafafa;
 }
 
+.section-card :deep(.el-button--primary) {
+  background-color: #ff6b00;
+  border-color: #ff6b00;
+}
+
+.section-card :deep(.el-button--primary:hover) {
+  background-color: #ff8c00;
+  border-color: #ff8c00;
+}
+
 .section-header {
   display: flex;
   justify-content: space-between;
@@ -747,6 +800,51 @@ const downloadSpec = async () => {
   align-items: center;
 }
 
+/* Logo 上传样式 */
+.logo-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-uploader {
+  width: 120px;
+  height: 120px;
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.3s;
+}
+
+.logo-uploader:hover {
+  border-color: #ff6b00;
+}
+
+.logo-uploader-icon {
+  font-size: 28px;
+  color: #8c9399;
+}
+
+.logo-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.logo-tip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: #909399;
+}
+
 .spec-document {
   background: white;
   padding: 30px;
@@ -759,7 +857,7 @@ const downloadSpec = async () => {
   gap: 20px;
   margin-bottom: 30px;
   padding-bottom: 20px;
-  border-bottom: 2px solid #409eff;
+  border-bottom: 2px solid #ff6b00;
 }
 
 .logo-area {
@@ -826,7 +924,7 @@ const downloadSpec = async () => {
   margin: 20px 0;
   font-size: 16px;
   color: #333;
-  border-left: 3px solid #409eff;
+  border-left: 3px solid #ff6b00;
   padding-left: 10px;
 }
 
@@ -844,7 +942,7 @@ const downloadSpec = async () => {
 }
 
 .spec-table th {
-  background: #409eff;
+  background: #ff6b00;
   color: white;
 }
 
