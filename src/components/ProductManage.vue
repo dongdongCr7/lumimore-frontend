@@ -248,20 +248,15 @@
     <!-- 规格书对话框 -->
     <el-dialog v-model="specDialogVisible" title="产品规格书" width="700px">
       <div class="spec-document" ref="specDocumentRef">
-        <!-- 可定制区域 -->
-        <div class="spec-header-custom" v-if="customSettings">
+        <!-- 默认显示公司Logo -->
+        <div class="spec-header-custom">
           <div class="logo-area">
-            <img v-if="customSettings.logoUrl" :src="customSettings.logoUrl" alt="Logo" class="custom-logo" />
-            <div v-else class="logo-placeholder">LOGO</div>
+            <img :src="customSettings?.logoUrl || '/logo.jpg'" alt="LUMIMORE" class="custom-logo" />
           </div>
           <div class="custom-title">
-            <h2>{{ customSettings.title || '产品规格书' }}</h2>
-            <p class="custom-subtitle">{{ customSettings.subtitle }}</p>
+            <h2>{{ customSettings?.title || '产品规格书' }}</h2>
+            <p class="custom-subtitle">{{ customSettings?.subtitle || 'LUMIMORE LED LIGHTING' }}</p>
           </div>
-        </div>
-        
-        <div class="spec-header-default" v-else>
-          <h2>产品规格书</h2>
         </div>
         
         <div class="spec-info">
@@ -286,8 +281,8 @@
           </tbody>
         </table>
         
-        <p class="spec-footer" v-if="customSettings?.footer">
-          {{ customSettings.footer }}
+        <p class="spec-footer" v-if="customSettings?.footer || true">
+          {{ customSettings?.footer || 'LUMIMORE Lighting Technology Co., Ltd.' }}
         </p>
       </div>
       
@@ -615,7 +610,7 @@ const applyCustomSettings = () => {
   ElMessage.success('自定义设置已应用')
 }
 
-const downloadSpec = () => {
+const downloadSpec = async () => {
   if (!specDocumentRef.value) return
   
   // 创建临时 canvas 用于导出
@@ -631,17 +626,42 @@ const downloadSpec = () => {
   ctx.fillStyle = '#ffffff'
   ctx.fillRect(0, 0, canvas.width, canvas.height)
   
+  // 绘制Logo
+  const logoUrl = customSettings.value?.logoUrl || '/logo.jpg'
+  try {
+    const logoImg = new Image()
+    logoImg.crossOrigin = 'anonymous'
+    await new Promise<void>((resolve, reject) => {
+      logoImg.onload = () => resolve()
+      logoImg.onerror = () => reject()
+      logoImg.src = logoUrl
+    })
+    ctx.drawImage(logoImg, 50, 20, 150, 50)
+  } catch (e) {
+    // Logo加载失败，继续绘制
+  }
+  
   // 绘制标题
   ctx.fillStyle = '#333333'
   ctx.font = 'bold 24px Arial'
   ctx.textAlign = 'center'
   ctx.fillText(customSettings.value?.title || '产品规格书', 400, 50)
   
+  // 绘制副标题
+  ctx.font = '14px Arial'
+  ctx.fillStyle = '#666666'
+  ctx.fillText(customSettings.value?.subtitle || 'LUMIMORE LED LIGHTING', 400, 70)
+  
   // 绘制产品信息
   ctx.font = '16px Arial'
   ctx.textAlign = 'left'
-  let y = 100
+  ctx.fillStyle = '#333333'
+  let y = 120
   ctx.fillText(`产品名称：${currentProduct.value?.name || ''}`, 50, y)
+  y += 30
+  ctx.fillText(`所属分类：${getCategoryName(currentProduct.value?.categoryId || 0)}`, 50, y)
+  y += 30
+  ctx.fillText(`所属系列：${getSeriesName(currentProduct.value?.seriesId || 0)}`, 50, y)
   y += 30
   ctx.fillText(`所属分类：${getCategoryName(currentProduct.value?.categoryId || 0)}`, 50, y)
   y += 30
