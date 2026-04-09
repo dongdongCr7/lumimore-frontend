@@ -1493,9 +1493,8 @@ defineExpose({
   padding: 0;
   font-family: Arial, sans-serif;
   width: 800px;
-  height: 1130px;
+  min-height: 1130px;
   border: 1px solid #333;
-  overflow: hidden;
 }
 
 /* 顶部标题区 */
@@ -1505,7 +1504,6 @@ defineExpose({
   padding: 10px;
   border-bottom: 1px solid #999;
   gap: 10px;
-  height: 110px;
 }
 
 .spec-logo {
