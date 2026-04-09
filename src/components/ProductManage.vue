@@ -210,68 +210,189 @@
     </el-dialog>
 
     <!-- 规格书对话框 -->
-    <el-dialog v-model="specDialogVisible" title="产品规格书" width="800px">
+    <el-dialog v-model="specDialogVisible" title="产品规格书" width="900px">
       <div class="spec-document" ref="specDocumentRef">
-        <!-- 顶部区域：Logo + 产品信息 + 认证图标 -->
-        <div class="spec-header">
-          <div class="spec-logo">
-            <img :src="customSettings?.logoUrl || '/logo.jpg'" alt="Logo" />
+        <!-- 顶部区域：产品图片 + 产品信息 + 认证图标 -->
+        <div class="spec-header-new">
+          <!-- 左侧产品图片 -->
+          <div class="spec-product-image">
+            <div class="product-img-placeholder">
+              <div class="led-strip-visual">
+                <div class="led-strip-body"></div>
+              </div>
+            </div>
+            <div class="led-density-badge">120 LED/M</div>
           </div>
-          <div class="spec-product-info">
-            <div class="spec-product-title">{{ currentProduct?.name }}</div>
-            <div class="spec-product-model">型号: {{ getSeriesName(currentProduct?.seriesId || 0) }}</div>
+          
+          <!-- 中间产品信息 -->
+          <div class="spec-product-info-new">
+            <div class="spec-product-title-new">{{ currentProduct?.name }}</div>
+            <div class="spec-product-model-new">Model: {{ currentProduct?.name?.split(' ').pop() || 'N/A' }}</div>
           </div>
-          <div class="spec-certifications">
+          
+          <!-- 右侧认证图标 -->
+          <div class="spec-certifications-new">
             <div 
-              v-for="(cert, index) in customSettings?.certifications || []" 
-              :key="index"
-              class="cert-icon"
+              v-for="i in 5" 
+              :key="i"
+              class="cert-box"
+              :class="{ 'has-cert': customSettings?.certifications?.[i-1]?.image }"
             >
-              <img v-if="cert.image" :src="cert.image" :alt="cert.name" />
-              <span v-else>{{ cert.name }}</span>
+              <img 
+                v-if="customSettings?.certifications?.[i-1]?.image" 
+                :src="customSettings.certifications[i-1].image" 
+                alt="cert" 
+              />
             </div>
           </div>
         </div>
 
-        <!-- 特性表格 -->
-        <div class="spec-section">
-          <table class="spec-info-table">
-            <tr>
-              <td class="table-title">Features</td>
-              <td class="table-content">
-                <div class="features-list">
-                  <span v-for="(value, key) in currentProduct?.specs" :key="key">{{ key }}: {{ value }}</span>
-                </div>
-              </td>
-              <td class="table-title">Dimension</td>
-              <td class="table-content dimension-cell">
-                <!-- 预留尺寸图区域 -->
-              </td>
-            </tr>
-          </table>
+        <!-- 中上区域三组表格 -->
+        <div class="spec-mid-section">
+          <!-- 左侧 Features + Dimension -->
+          <div class="spec-left-tables">
+            <!-- Features表格 -->
+            <table class="spec-mini-table features-table">
+              <tr>
+                <td class="mini-table-title">Features</td>
+              </tr>
+              <tr>
+                <td class="mini-table-content">
+                  <div class="feature-item">Super High CRI Ra98</div>
+                  <div class="feature-item">Ra9&gt;98, Rg12&gt;98</div>
+                  <div class="feature-item">120LED/M | 15W/m</div>
+                  <div class="feature-item">2835</div>
+                </td>
+              </tr>
+            </table>
+            
+            <!-- Dimension尺寸图 -->
+            <table class="spec-mini-table dimension-table">
+              <tr>
+                <td class="mini-table-title">Dimension</td>
+              </tr>
+              <tr>
+                <td class="mini-table-content dimension-content">
+                  <div class="dimension-diagram">
+                    <div class="dimension-line dimension-width"></div>
+                    <div class="dimension-line dimension-base"></div>
+                    <div class="dimension-line dimension-leds"></div>
+                    <div class="dimension-label">16.6mm</div>
+                    <div class="dimension-label base-label">12mm</div>
+                    <div class="dimension-label led-label">50mm</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+          
+          <!-- 右侧参数组 -->
+          <div class="spec-right-tables">
+            <!-- Product Setup -->
+            <table class="spec-mini-table setup-table">
+              <tr>
+                <td class="mini-table-title">Product Setup</td>
+              </tr>
+              <tr>
+                <td class="mini-table-content">
+                  <div class="param-row"><span class="param-label">Category</span><span class="param-value">{{ getCategoryName(currentProduct?.categoryId || 0) }}</span></div>
+                  <div class="param-row"><span class="param-label">Level</span><span class="param-value">Core</span></div>
+                  <div class="param-row"><span class="param-label">Spectrum</span><span class="param-value">White</span></div>
+                </td>
+              </tr>
+            </table>
+            
+            <!-- Light Engine -->
+            <table class="spec-mini-table engine-table">
+              <tr>
+                <td class="mini-table-title">Light Engine</td>
+              </tr>
+              <tr>
+                <td class="mini-table-content">
+                  <div class="param-row"><span class="param-label">Category</span><span class="param-value">LumStrip</span></div>
+                  <div class="param-row"><span class="param-label">Level</span><span class="param-value">Core</span></div>
+                  <div class="param-row"><span class="param-label">Spectrum</span><span class="param-value">White</span></div>
+                </td>
+              </tr>
+            </table>
+            
+            <!-- Electrical / Photometric / Features -->
+            <table class="spec-mini-table combined-table">
+              <tr>
+                <td class="mini-table-title">Electrical</td>
+                <td class="mini-table-title">Photometric</td>
+                <td class="mini-table-title">Features</td>
+                <td class="mini-table-title">Remark</td>
+              </tr>
+              <tr>
+                <td class="mini-table-content">
+                  <div class="param-row"><span class="param-label">Category</span><span class="param-value">LumStrip</span></div>
+                  <div class="param-row"><span class="param-label">Level</span><span class="param-value">Core</span></div>
+                </td>
+                <td class="mini-table-content">
+                  <div class="param-row"><span class="param-label">Category</span><span class="param-value">LumStrip</span></div>
+                  <div class="param-row"><span class="param-label">Level</span><span class="param-value">Core</span></div>
+                  <div class="param-row"><span class="param-label">Spectrum</span><span class="param-value">White</span></div>
+                </td>
+                <td class="mini-table-content">
+                  <div class="param-row"><span class="param-label">Category</span><span class="param-value">LumStrip</span></div>
+                  <div class="param-row"><span class="param-label">Level</span><span class="param-value">Core</span></div>
+                </td>
+                <td class="mini-table-content"></td>
+              </tr>
+            </table>
+          </div>
         </div>
 
-        <!-- 产品参数表格 -->
-        <div class="spec-section">
-          <table class="spec-data-table">
+        <!-- 底部Photometric参数表格 -->
+        <div class="spec-photometric-section">
+          <table class="photometric-table">
             <thead>
               <tr>
-                <th>Model</th>
-                <th>Power</th>
-                <th>CCT</th>
-                <th>CRI</th>
-                <th>Lumen</th>
-                <th>Efficacy</th>
+                <th class="col-model">Model</th>
+                <th class="col-power">Power</th>
+                <th class="col-cct">CCT</th>
+                <th class="col-cri">CRI</th>
+                <th class="col-lumen">Lumen</th>
+                <th class="col-efficacy">Efficacy</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>{{ currentProduct?.name }}</td>
-                <td>{{ currentProduct?.specs['功率'] || '-' }}</td>
-                <td>{{ currentProduct?.specs['色温'] || '-' }}</td>
-                <td>{{ currentProduct?.specs['显色指数'] || '-' }}</td>
-                <td>{{ currentProduct?.specs['光通量'] || '-' }}</td>
-                <td>{{ currentProduct?.specs['能效'] || '-' }}</td>
+              <!-- 9.6W/m Section -->
+              <tr class="section-header">
+                <td colspan="6">9.6W/m</td>
+              </tr>
+              <tr v-for="cct in ['2700K', '3000K', '3500K', '4000K', '5000K', '5700K']" :key="'96-'+cct">
+                <td>LS-SW28N120-{{cct.slice(0,2)}}-2408-100</td>
+                <td>9.6W/m</td>
+                <td>{{cct}}</td>
+                <td>Ra90+</td>
+                <td>1200mm/m</td>
+                <td>80lm/W</td>
+              </tr>
+              <!-- 15W/m Section -->
+              <tr class="section-header">
+                <td colspan="6">15W/m</td>
+              </tr>
+              <tr v-for="cct in ['2700K', '3000K', '3500K', '4000K', '5000K', '5700K']" :key="'15-'+cct">
+                <td>LS-SW28N120-{{cct.slice(0,2)}}-2408-100</td>
+                <td>15W/m</td>
+                <td>{{cct}}</td>
+                <td>Ra90+</td>
+                <td>1200mm/m</td>
+                <td>80lm/W</td>
+              </tr>
+              <!-- Another 15W/m Section -->
+              <tr class="section-header">
+                <td colspan="6">15W/m</td>
+              </tr>
+              <tr v-for="cct in ['2700K', '3000K', '3500K', '4000K', '5000K', '5700K']" :key="'15b-'+cct">
+                <td>LS-SW28N120-{{cct.slice(0,2)}}-2408-100</td>
+                <td>15W/m</td>
+                <td>{{cct}}</td>
+                <td>Ra90</td>
+                <td>1200mm/m</td>
+                <td>80lm/W</td>
               </tr>
             </tbody>
           </table>
@@ -670,81 +791,279 @@ const downloadSpec = () => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
   
-  canvas.width = 800
-  canvas.height = 600
+  // 设置画布尺寸 - 适应新布局
+  canvas.width = 850
+  canvas.height = 900
   
   ctx.fillStyle = '#ffffff'
   ctx.fillRect(0, 0, canvas.width, canvas.height)
   
-  // Logo
-  const logoUrl = customSettings.value?.logoUrl || '/logo.jpg'
-  try {
-    const logoImg = new Image()
-    logoImg.crossOrigin = 'anonymous'
-    logoImg.src = logoUrl
-    ctx.drawImage(logoImg, 20, 20, 120, 40)
-  } catch (e) {
-    // Logo加载失败
+  let y = 20
+  
+  // === 顶部区域 ===
+  
+  // 左侧产品图片区域
+  ctx.fillStyle = '#f5f5f5'
+  ctx.fillRect(20, y, 130, 130)
+  ctx.strokeStyle = '#ddd'
+  ctx.strokeRect(20, y, 130, 130)
+  
+  // LED灯带示意图
+  ctx.fillStyle = '#ff6b00'
+  for (let i = 0; i < 8; i++) {
+    ctx.fillRect(35 + i * 14, y + 55, 10, 30)
+    if (i < 7) {
+      ctx.fillStyle = '#fff'
+      ctx.fillRect(45 + i * 14, y + 55, 4, 30)
+      ctx.fillStyle = '#ff6b00'
+    }
   }
   
-  // 产品信息
+  // LED密度标签
+  ctx.fillStyle = '#ff6b00'
+  ctx.fillRect(100, y + 105, 45, 18)
+  ctx.fillStyle = '#fff'
+  ctx.font = 'bold 9px Arial'
+  ctx.textAlign = 'center'
+  ctx.fillText('120 LED/M', 122, y + 118)
+  
+  // 中间产品信息
   ctx.fillStyle = '#333'
-  ctx.font = 'bold 18px Arial'
-  ctx.fillText(currentProduct.value?.name || '', 160, 40)
-  ctx.font = '14px Arial'
-  ctx.fillText(`型号: ${getSeriesName(currentProduct.value?.seriesId || 0)}`, 160, 60)
+  ctx.textAlign = 'left'
+  ctx.font = 'bold 20px Arial'
+  ctx.fillText(currentProduct.value?.name || 'LED Strip Light', 165, y + 50)
   
-  // Features
-  ctx.font = 'bold 14px Arial'
-  ctx.fillText('Features:', 20, 100)
-  ctx.font = '12px Arial'
-  const specs = currentProduct.value?.specs || {}
-  let y = 120
-  Object.entries(specs).forEach(([key, value]) => {
-    ctx.fillText(`${key}: ${value}`, 30, y)
-    y += 18
-  })
+  ctx.font = '13px Arial'
+  ctx.fillStyle = '#666'
+  ctx.fillText(`Model: ${currentProduct.value?.name?.split(' ').pop() || 'N/A'}`, 165, y + 75)
   
-  // 参数表格
-  y += 20
-  ctx.strokeStyle = '#ddd'
-  ctx.strokeRect(20, y, 760, 30)
-  ctx.font = 'bold 12px Arial'
-  ctx.fillText('Model', 30, y + 20)
-  ctx.fillText('Power', 150, y + 20)
-  ctx.fillText('CCT', 270, y + 20)
-  ctx.fillText('CRI', 390, y + 20)
-  ctx.fillText('Lumen', 510, y + 20)
-  ctx.fillText('Efficacy', 630, y + 20)
-  
-  y += 30
-  ctx.strokeRect(20, y, 760, 30)
-  ctx.font = '12px Arial'
-  ctx.fillText(currentProduct.value?.name || '', 30, y + 20)
-  ctx.fillText(specs['功率'] || '-', 150, y + 20)
-  ctx.fillText(specs['色温'] || '-', 270, y + 20)
-  ctx.fillText(specs['显色指数'] || '-', 390, y + 20)
-  ctx.fillText(specs['光通量'] || '-', 510, y + 20)
-  ctx.fillText(specs['能效'] || '-', 630, y + 20)
-  
-  // 认证图标
+  // 右侧认证图标框
   const certs = customSettings.value?.certifications || []
-  let certX = 650
-  certs.forEach((cert) => {
-    if (cert.image) {
+  for (let i = 0; i < 5; i++) {
+    const certX = 580 + i * 50
+    ctx.strokeStyle = '#ccc'
+    ctx.setLineDash([3, 3])
+    ctx.strokeRect(certX, y + 15, 40, 40)
+    ctx.setLineDash([])
+    
+    // 如果有认证图标
+    if (certs[i]?.image) {
       const certImg = new Image()
       certImg.crossOrigin = 'anonymous'
-      certImg.src = cert.image
-      ctx.drawImage(certImg, certX, 15, 30, 30)
+      certImg.src = certs[i].image
+      ctx.drawImage(certImg, certX + 2, y + 17, 36, 36)
     }
-    certX += 35
+  }
+  
+  y += 155
+  
+  // === 分隔线 ===
+  ctx.strokeStyle = '#ddd'
+  ctx.beginPath()
+  ctx.moveTo(20, y)
+  ctx.lineTo(830, y)
+  ctx.stroke()
+  
+  y += 20
+  
+  // === 中上区域三组表格 ===
+  
+  // 左侧 Features + Dimension
+  const leftWidth = 280
+  
+  // Features表格
+  ctx.fillStyle = '#f5f7fa'
+  ctx.fillRect(20, y, leftWidth, 25)
+  ctx.strokeStyle = '#ddd'
+  ctx.strokeRect(20, y, leftWidth, 25)
+  ctx.fillStyle = '#333'
+  ctx.font = 'bold 11px Arial'
+  ctx.fillText('Features', 25, y + 17)
+  
+  ctx.fillStyle = '#fff'
+  ctx.fillRect(20, y + 25, leftWidth, 80)
+  ctx.strokeRect(20, y + 25, leftWidth, 80)
+  ctx.fillStyle = '#333'
+  ctx.font = '11px Arial'
+  ctx.fillText('Super High CRI Ra98', 25, y + 47)
+  ctx.fillText('Ra9>98, Rg12>98', 25, y + 62)
+  ctx.fillText('120LED/M | 15W/m', 25, y + 77)
+  ctx.fillText('2835', 25, y + 92)
+  
+  y += 110
+  
+  // Dimension表格
+  ctx.fillStyle = '#f5f7fa'
+  ctx.fillRect(20, y, leftWidth, 25)
+  ctx.strokeStyle = '#ddd'
+  ctx.strokeRect(20, y, leftWidth, 25)
+  ctx.fillStyle = '#333'
+  ctx.font = 'bold 11px Arial'
+  ctx.fillText('Dimension', 25, y + 17)
+  
+  ctx.fillStyle = '#fff'
+  ctx.fillRect(20, y + 25, leftWidth, 85)
+  ctx.strokeRect(20, y + 25, leftWidth, 85)
+  
+  // 尺寸示意图
+  ctx.fillStyle = '#333'
+  ctx.fillRect(30, y + 55, 220, 2)  // 总宽度
+  ctx.fillRect(30, y + 70, 165, 2)  // 基板宽度
+  ctx.fillRect(80, y + 50, 2, 15)   // LED间距标记
+  
+  ctx.fillStyle = '#666'
+  ctx.font = '9px Arial'
+  ctx.textAlign = 'center'
+  ctx.fillText('16.6mm', 140, y + 52)
+  ctx.fillText('12mm', 112, y + 67)
+  ctx.fillText('50mm', 82, y + 80)
+  ctx.textAlign = 'left'
+  
+  y -= 110
+  
+  // 右侧参数组
+  const rightX = 320
+  const rightWidth = 490
+  
+  // Product Setup表格
+  ctx.fillStyle = '#f5f7fa'
+  ctx.fillRect(rightX, y, 160, 25)
+  ctx.strokeStyle = '#ddd'
+  ctx.strokeRect(rightX, y, 160, 25)
+  ctx.fillStyle = '#333'
+  ctx.font = 'bold 11px Arial'
+  ctx.fillText('Product Setup', rightX + 5, y + 17)
+  
+  ctx.fillStyle = '#fff'
+  ctx.fillRect(rightX, y + 25, 160, 55)
+  ctx.strokeRect(rightX, y + 25, 160, 55)
+  ctx.fillStyle = '#333'
+  ctx.font = '11px Arial'
+  ctx.fillText('Category', rightX + 5, y + 45)
+  ctx.fillText('LumStrip', rightX + 85, y + 45)
+  ctx.fillText('Level', rightX + 5, y + 58)
+  ctx.fillText('Core', rightX + 85, y + 58)
+  ctx.fillText('Spectrum', rightX + 5, y + 71)
+  ctx.fillText('White', rightX + 85, y + 71)
+  
+  // Light Engine表格
+  ctx.fillStyle = '#f5f7fa'
+  ctx.fillRect(rightX + 165, y, 160, 25)
+  ctx.strokeStyle = '#ddd'
+  ctx.strokeRect(rightX + 165, y, 160, 25)
+  ctx.fillStyle = '#333'
+  ctx.font = 'bold 11px Arial'
+  ctx.fillText('Light Engine', rightX + 170, y + 17)
+  
+  ctx.fillStyle = '#fff'
+  ctx.fillRect(rightX + 165, y + 25, 160, 55)
+  ctx.strokeRect(rightX + 165, y + 25, 160, 55)
+  ctx.fillStyle = '#333'
+  ctx.font = '11px Arial'
+  ctx.fillText('Category', rightX + 170, y + 45)
+  ctx.fillText('LumStrip', rightX + 250, y + 45)
+  ctx.fillText('Level', rightX + 170, y + 58)
+  ctx.fillText('Core', rightX + 250, y + 58)
+  ctx.fillText('Spectrum', rightX + 170, y + 71)
+  ctx.fillText('White', rightX + 250, y + 71)
+  
+  // Combined表格 (Electrical/Photometric/Features/Remark)
+  ctx.fillStyle = '#f5f7fa'
+  ctx.fillRect(rightX + 330, y, 160, 25)
+  ctx.strokeStyle = '#ddd'
+  ctx.strokeRect(rightX + 330, y, 160, 25)
+  ctx.fillStyle = '#333'
+  ctx.font = 'bold 10px Arial'
+  ctx.textAlign = 'center'
+  ctx.fillText('Electrical', rightX + 350, y + 17)
+  ctx.fillText('Photometric', rightX + 395, y + 17)
+  ctx.fillText('Features', rightX + 440, y + 17)
+  ctx.fillText('Remark', rightX + 475, y + 17)
+  ctx.textAlign = 'left'
+  
+  ctx.fillStyle = '#fff'
+  ctx.fillRect(rightX + 330, y + 25, 160, 55)
+  ctx.strokeRect(rightX + 330, y + 25, 160, 55)
+  
+  // 画竖线分隔
+  ctx.strokeStyle = '#ddd'
+  ctx.beginPath()
+  ctx.moveTo(rightX + 370, y + 25)
+  ctx.lineTo(rightX + 370, y + 80)
+  ctx.moveTo(rightX + 410, y + 25)
+  ctx.lineTo(rightX + 410, y + 80)
+  ctx.moveTo(rightX + 450, y + 25)
+  ctx.lineTo(rightX + 450, y + 80)
+  ctx.stroke()
+  
+  y += 115
+  
+  // === Photometric参数表格 ===
+  
+  // 表头
+  ctx.fillStyle = '#333'
+  ctx.fillRect(20, y, 810, 28)
+  
+  const columns = [
+    { title: 'Model', x: 20, w: 240 },
+    { title: 'Power', x: 260, w: 100 },
+    { title: 'CCT', x: 360, w: 100 },
+    { title: 'CRI', x: 460, w: 100 },
+    { title: 'Lumen', x: 560, w: 135 },
+    { title: 'Efficacy', x: 695, w: 135 }
+  ]
+  
+  ctx.fillStyle = '#fff'
+  ctx.font = 'bold 11px Arial'
+  ctx.textAlign = 'center'
+  columns.forEach(col => {
+    ctx.fillText(col.title, col.x + col.w / 2, y + 18)
+  })
+  
+  // 画竖线
+  ctx.strokeStyle = '#555'
+  columns.forEach(col => {
+    ctx.beginPath()
+    ctx.moveTo(col.x + col.w, y)
+    ctx.lineTo(col.x + col.w, y + 28)
+    ctx.stroke()
+  })
+  
+  y += 28
+  
+  // 数据行 - 9.6W/m
+  drawSectionHeader(ctx, '9.6W/m', 20, 810, y)
+  y += 25
+  
+  const ccts = ['2700K', '3000K', '3500K', '4000K', '5000K', '5700K']
+  ccts.forEach((cct, i) => {
+    drawDataRow(ctx, `LS-SW28N120-${cct.slice(0,2)}-2408-100`, '9.6W/m', cct, 'Ra90+', '1200mm/m', '80lm/W', columns, y, i % 2 === 1)
+    y += 25
+  })
+  
+  // 数据行 - 15W/m
+  drawSectionHeader(ctx, '15W/m', 20, 810, y)
+  y += 25
+  
+  ccts.forEach((cct, i) => {
+    drawDataRow(ctx, `LS-SW28N120-${cct.slice(0,2)}-2408-100`, '15W/m', cct, 'Ra90+', '1200mm/m', '80lm/W', columns, y, i % 2 === 1)
+    y += 25
+  })
+  
+  // 数据行 - 15W/m (another)
+  drawSectionHeader(ctx, '15W/m', 20, 810, y)
+  y += 25
+  
+  ccts.forEach((cct, i) => {
+    drawDataRow(ctx, `LS-SW28N120-${cct.slice(0,2)}-2408-100`, '15W/m', cct, 'Ra90', '1200mm/m', '80lm/W', columns, y, i % 2 === 1)
+    y += 25
   })
   
   // 页脚
   ctx.fillStyle = '#999'
   ctx.font = '10px Arial'
   ctx.textAlign = 'center'
-  ctx.fillText(customSettings.value?.footer || 'LUMIMORE Lighting Technology Co., Ltd.', 400, 580)
+  ctx.fillText(customSettings.value?.footer || 'LUMIMORE Lighting Technology Co., Ltd.', 425, 880)
   
   const link = document.createElement('a')
   link.download = `${currentProduct.value?.name || 'spec'}.png`
@@ -752,6 +1071,48 @@ const downloadSpec = () => {
   link.click()
   
   ElMessage.success('规格书已下载')
+}
+
+// 绘制分组标题行
+function drawSectionHeader(ctx: any, text: string, x: number, width: number, y: number) {
+  ctx.fillStyle = '#f0f0f0'
+  ctx.fillRect(x, y, width, 25)
+  ctx.strokeStyle = '#ddd'
+  ctx.strokeRect(x, y, width, 25)
+  ctx.fillStyle = '#333'
+  ctx.font = 'bold 11px Arial'
+  ctx.textAlign = 'center'
+  ctx.fillText(text, x + width / 2, y + 17)
+}
+
+// 绘制数据行
+function drawDataRow(ctx: any, model: string, power: string, cct: string, cri: string, lumen: string, efficacy: string, columns: any[], y: number, alternate: boolean) {
+  const values = [model, power, cct, cri, lumen, efficacy]
+  
+  if (alternate) {
+    ctx.fillStyle = '#fafafa'
+    ctx.fillRect(columns[0].x, y, columns[5].x + columns[5].w - columns[0].x, 25)
+  }
+  
+  ctx.strokeStyle = '#ddd'
+  ctx.fillRect(columns[0].x, y, columns[5].x + columns[5].w - columns[0].x, 25)
+  
+  // 画竖线
+  columns.forEach((col, i) => {
+    if (i < columns.length - 1) {
+      ctx.beginPath()
+      ctx.moveTo(col.x + col.w, y)
+      ctx.lineTo(col.x + col.w, y + 25)
+      ctx.stroke()
+    }
+  })
+  
+  ctx.fillStyle = '#333'
+  ctx.font = '11px Arial'
+  ctx.textAlign = 'center'
+  values.forEach((val, i) => {
+    ctx.fillText(val, columns[i].x + columns[i].w / 2, y + 17)
+  })
 }
 
 // 暴露给父组件的方法
@@ -965,132 +1326,318 @@ defineExpose({
   align-items: center;
 }
 
-/* 规格书样式 */
+/* ========== 新规格书样式 ========== */
 .spec-document {
   background: white;
-  padding: 20px;
+  padding: 15px;
   font-family: Arial, sans-serif;
   border: 1px solid #e4e7ed;
 }
 
-.spec-header {
+/* 顶部区域：产品图片 + 产品信息 + 认证图标 */
+.spec-header-new {
   display: flex;
   align-items: center;
   gap: 20px;
   padding-bottom: 15px;
-  border-bottom: 2px solid #ff6b00;
+  border-bottom: 1px solid #ddd;
   margin-bottom: 15px;
 }
 
-.spec-logo img {
-  height: 60px;
-  width: auto;
+.spec-product-image {
+  width: 140px;
+  height: 140px;
+  position: relative;
+  flex-shrink: 0;
 }
 
-.spec-product-info {
+.product-img-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+  border: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.led-strip-visual {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.led-strip-body {
+  width: 80%;
+  height: 40px;
+  background: linear-gradient(to right, #ff6b00 25%, #fff 25%, #fff 50%, #ff6b00 50%, #ff6b00 75%, #fff 75%);
+  background-size: 16px 40px;
+  border-radius: 2px;
+  border: 1px solid #ccc;
+}
+
+.led-density-badge {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  background: #ff6b00;
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.spec-product-info-new {
   flex: 1;
+  min-width: 0;
 }
 
-.spec-product-title {
-  font-size: 20px;
+.spec-product-title-new {
+  font-size: 22px;
   font-weight: bold;
   color: #333;
+  line-height: 1.3;
 }
 
-.spec-product-model {
+.spec-product-model-new {
   font-size: 14px;
   color: #666;
-  margin-top: 5px;
+  margin-top: 8px;
 }
 
-.spec-certifications {
+.spec-certifications-new {
   display: flex;
-  gap: 8px;
+  gap: 6px;
+  flex-shrink: 0;
 }
 
-.cert-icon {
-  width: 40px;
-  height: 40px;
-  border: 1px solid #ddd;
+.cert-box {
+  width: 45px;
+  height: 45px;
+  border: 2px dashed #ccc;
   border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
-  color: #666;
+  background: #fafafa;
 }
 
-.cert-icon img {
+.cert-box.has-cert {
+  border: 1px solid #ddd;
+  background: white;
+}
+
+.cert-box img {
   width: 100%;
   height: 100%;
   object-fit: contain;
 }
 
-.spec-section {
+/* 中上区域三组表格 */
+.spec-mid-section {
+  display: flex;
+  gap: 15px;
   margin-bottom: 15px;
 }
 
-.spec-info-table {
+.spec-left-tables {
+  width: 35%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.spec-right-tables {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.spec-mini-table {
   width: 100%;
   border-collapse: collapse;
-}
-
-.spec-info-table td {
-  border: 1px solid #e4e7ed;
-  padding: 10px;
-  vertical-align: top;
-}
-
-.table-title {
-  width: 120px;
-  background: #f5f7fa;
-  font-weight: bold;
-  color: #333;
-}
-
-.features-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.features-list span {
-  background: #f0f0f0;
-  padding: 4px 8px;
-  border-radius: 4px;
   font-size: 12px;
 }
 
-.dimension-cell {
-  width: 200px;
+.mini-table-title {
+  background: #f5f7fa;
+  font-weight: bold;
+  color: #333;
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  text-align: left;
 }
 
-.spec-data-table {
+.mini-table-content {
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-top: none;
+  background: white;
+  vertical-align: top;
+}
+
+.feature-item {
+  color: #333;
+  line-height: 1.6;
+}
+
+.param-row {
+  display: flex;
+  justify-content: space-between;
+  line-height: 1.8;
+}
+
+.param-label {
+  color: #666;
+}
+
+.param-value {
+  color: #333;
+  font-weight: 500;
+}
+
+/* Dimension尺寸图 */
+.dimension-content {
+  padding: 15px;
+}
+
+.dimension-diagram {
+  position: relative;
+  width: 100%;
+  height: 80px;
+}
+
+.dimension-line {
+  position: absolute;
+  background: #333;
+}
+
+.dimension-width {
+  width: 100%;
+  height: 3px;
+  top: 20px;
+  left: 0;
+}
+
+.dimension-base {
+  width: 75%;
+  height: 3px;
+  top: 35px;
+  left: 0;
+}
+
+.dimension-leds {
+  width: 2px;
+  height: 15px;
+  top: 28px;
+  left: 20%;
+}
+
+.dimension-label {
+  position: absolute;
+  font-size: 9px;
+  color: #666;
+  top: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.base-label {
+  top: 38px;
+  left: 38%;
+}
+
+.led-label {
+  top: 48px;
+  left: 22%;
+}
+
+.features-table {
+  margin-bottom: 0;
+}
+
+.dimension-table {
+  margin-bottom: 0;
+}
+
+.setup-table,
+.engine-table {
+  margin-bottom: 0;
+}
+
+.combined-table .mini-table-title,
+.combined-table .mini-table-content {
+  width: 25%;
+  display: table-cell;
+}
+
+/* 底部Photometric表格 */
+.spec-photometric-section {
+  margin-bottom: 15px;
+}
+
+.photometric-table {
   width: 100%;
   border-collapse: collapse;
+  font-size: 12px;
 }
 
-.spec-data-table th,
-.spec-data-table td {
-  border: 1px solid #e4e7ed;
-  padding: 10px;
+.photometric-table th,
+.photometric-table td {
+  border: 1px solid #ddd;
+  padding: 8px 12px;
   text-align: center;
 }
 
-.spec-data-table th {
-  background: #ff6b00;
+.photometric-table th {
+  background: #333;
   color: white;
   font-weight: bold;
 }
 
-.spec-data-table tbody tr:nth-child(even) {
+.photometric-table .col-model {
+  width: 30%;
+}
+
+.photometric-table .col-power {
+  width: 12%;
+}
+
+.photometric-table .col-cct {
+  width: 12%;
+}
+
+.photometric-table .col-cri {
+  width: 12%;
+}
+
+.photometric-table .col-lumen {
+  width: 17%;
+}
+
+.photometric-table .col-efficacy {
+  width: 17%;
+}
+
+.photometric-table .section-header {
+  background: #f0f0f0;
+  font-weight: bold;
+  color: #333;
+}
+
+.photometric-table tbody tr:nth-child(even):not(.section-header) {
   background: #fafafa;
 }
 
 .spec-footer {
   margin-top: 20px;
   padding-top: 15px;
-  border-top: 1px solid #e4e7ed;
+  border-top: 1px solid #ddd;
   text-align: center;
   color: #999;
   font-size: 12px;
