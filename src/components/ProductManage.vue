@@ -308,16 +308,19 @@
             </tr>
           </table>
         </div>
+        
+        <!-- 第4行：Photometric大表格 -->
+        <div class="spec-row5">
           <div class="photometric-title">Photometric</div>
           <table class="photometric-big-table">
             <thead>
               <tr>
                 <th style="width:35%">Model</th>
                 <th style="width:12%">Power</th>
-                <th style="width:12%">CCT</th>
-                <th style="width:12%">CRI</th>
+                <th style="width:10%">CCT</th>
+                <th style="width:10%">CRI</th>
                 <th style="width:15%">Lumen</th>
-                <th style="width:14%">Efficacy</th>
+                <th style="width:18%">Efficacy</th>
               </tr>
             </thead>
             <tbody>
