@@ -4,7 +4,6 @@
     <div class="header">
       <div class="header-left">
         <img src="/logo.jpg" alt="LUMIMORE" class="header-logo" />
-        <span class="header-subtitle">LED LIGHTING</span>
       </div>
       <div class="header-right">
         <span class="role-tag" :type="roleType">
@@ -82,32 +81,24 @@ const handleCommand = (command: string) => {
 
 .header {
   height: 70px;
-  background: linear-gradient(135deg, #ff6b00 0%, #ff8c00 100%);
+  background: white;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 30px;
-  box-shadow: 0 2px 10px rgba(255, 107, 0, 0.3);
+  border-bottom: 1px solid #e4e7ed;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .header-left {
   display: flex;
   align-items: center;
-  gap: 15px;
 }
 
 .header-logo {
   height: 50px;
   width: auto;
   object-fit: contain;
-}
-
-.header-subtitle {
-  color: white;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 2px;
-  opacity: 0.9;
 }
 
 .header-right {
