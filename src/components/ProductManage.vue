@@ -886,7 +886,7 @@ const downloadSpec = () => {
     if (certs[i]?.image) {
       const certImg = new Image()
       certImg.crossOrigin = 'anonymous'
-      certImg.src = certs[i].image
+      certImg.src = certs[i].image!
       ctx.drawImage(certImg, certX + 2, y + 17, 36, 36)
     }
   }
