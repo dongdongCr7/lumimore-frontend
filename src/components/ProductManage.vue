@@ -360,7 +360,7 @@
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="specDialogVisible = false">取消</el-button>
-          <el-button type="success" @click="saveSpecSettings">
+          <el-button type="success" @click="() => { saveSpecSettings(); specDialogVisible = false }">
             <el-icon><Check /></el-icon> 保存
           </el-button>
           <el-button type="primary" @click="downloadSpec">
@@ -835,20 +835,28 @@ const saveSpecSettings = () => {
     editableSpecs: editableSpecs.value,
     photometricGroups: photometricGroups.value
   })
-  
-  ElMessage.success('规格书已保存')
-  specDialogVisible.value = false
 }
 
 // 下载规格书 - 使用html2canvas截取DOM
 const downloadSpec = async () => {
   if (!specDocumentRef.value || !currentProduct.value) return
   
-  // 先保存当前设置到 localStorage
-  saveSpecSettings()
+  // 先保存当前设置到 localStorage（不关闭对话框）
+  productStore.saveSpecSettingsForProduct(currentProduct.value.id, {
+    logoUrl: customSettings.value?.logoUrl,
+    productImage: customSettings.value?.productImage,
+    dimensionImage: customSettings.value?.dimensionImage,
+    certifications: customSettings.value?.certifications,
+    footer: customSettings.value?.footer,
+    editableSpecs: editableSpecs.value,
+    photometricGroups: photometricGroups.value
+  })
   
   try {
     ElMessage.info('正在生成规格书...')
+    
+    // 等待一下确保数据渲染完成
+    await new Promise(resolve => setTimeout(resolve, 100))
     
     const canvas = await html2canvas(specDocumentRef.value, {
       scale: 2, // 2倍清晰度
