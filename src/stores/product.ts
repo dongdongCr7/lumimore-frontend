@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed, watch } from 'vue'
 import type { Category, Series, Product, PhotometricGroup } from '@/storage/database/database'
-import { jsonbinApi } from '@/storage/jsonbin-api'
+import { cloudStorage } from '@/storage/cloud-storage'
 
 export type { Category, Series, Product, PhotometricGroup }
 
@@ -100,7 +100,7 @@ export const useProductStore = defineStore('product', () => {
   // 保存到云端
   async function saveToCloud() {
     if (!useCloudStorage.value) return
-    await jsonbinApi.saveData({
+    await cloudStorage.saveData({
       categories: categories.value,
       seriesList: seriesList.value,
       products: products.value,
@@ -112,14 +112,14 @@ export const useProductStore = defineStore('product', () => {
   // 从云端加载
   async function loadFromCloud() {
     try {
-      const data = await jsonbinApi.readData()
+      const data = await cloudStorage.readData()
       if (data) {
         if (data.categories?.length) categories.value = data.categories
         if (data.seriesList?.length) seriesList.value = data.seriesList
         if (data.products?.length) products.value = data.products
         if (data.specTemplates?.length) specTemplates.value = data.specTemplates
         if (data.specSettings) specSettings.value = data.specSettings
-        cloudBinUrl.value = jsonbinApi.getShareLink()
+        cloudBinUrl.value = cloudStorage.getShareLink()
         return true
       }
     } catch (e) {
@@ -162,9 +162,10 @@ export const useProductStore = defineStore('product', () => {
         products.value = defaultProducts
         
         // 保存到云端
+        await cloudStorage.init()
         await saveToCloud()
         useCloudStorage.value = true
-        cloudBinUrl.value = jsonbinApi.getShareLink()
+        cloudBinUrl.value = cloudStorage.getShareLink()
         console.log('已创建云端存储:', cloudBinUrl.value)
       }
       
