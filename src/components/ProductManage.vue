@@ -160,8 +160,8 @@
       <div class="spec-dialog-content">
         <div class="spec-document" ref="specDocumentRef">
         
-        <!-- Logo + 认证图标 + 产品图片 一行 -->
-        <div class="spec-header-row">
+        <!-- Logo单独一行 -->
+        <div class="spec-logo-row">
           <div class="logo-upload-area" @click="triggerLogoUpload">
             <img v-if="customSettings?.logoUrl" :src="customSettings.logoUrl" class="spec-logo-img" />
             <div v-else class="logo-upload-placeholder">
@@ -170,8 +170,21 @@
             </div>
           </div>
           <input type="file" ref="logoInputRef" @change="handleLogoFileChange" accept="image/*" style="display:none" />
+        </div>
+        
+        <!-- 产品图片 + 认证图标 + 产品信息 -->
+        <div class="spec-row1">
+          <div class="spec-product-img" @click="triggerProductImageUpload">
+            <img v-if="customSettings?.productImage" :src="customSettings.productImage" class="product-img-uploaded" />
+            <div v-else class="product-img-placeholder">
+              <div class="led-strip-visual"></div>
+              <div class="led-badge">{{ editableSpecs.power || '14.4W/m' }}</div>
+              <div class="upload-hint">点击上传</div>
+            </div>
+          </div>
+          <input type="file" ref="productImageInputRef" @change="handleProductImageFileChange" accept="image/*" style="display:none" />
           
-          <div class="spec-header-right">
+          <div class="spec-info">
             <div class="spec-cert-row">
               <div v-for="i in 5" :key="i" class="cert-box" @click="triggerCertUpload(i-1)">
                 <img v-if="customSettings?.certifications?.[i-1]?.image" :src="customSettings.certifications[i-1].image" />
@@ -180,15 +193,8 @@
             </div>
             <input type="file" ref="certInputRef" @change="handleCertFileChange" accept="image/*" style="display:none" />
             
-            <div class="spec-product-img" @click="triggerProductImageUpload">
-              <img v-if="customSettings?.productImage" :src="customSettings.productImage" class="product-img-uploaded" />
-              <div v-else class="product-img-placeholder">
-                <div class="led-strip-visual"></div>
-                <div class="led-badge">{{ editableSpecs.power || '14.4W/m' }}</div>
-                <div class="upload-hint">点击上传</div>
-              </div>
-            </div>
-            <input type="file" ref="productImageInputRef" @change="handleProductImageFileChange" accept="image/*" style="display:none" />
+            <input type="text" class="spec-title-input borderless" v-model="editableSpecs.title" placeholder="产品名称" />
+            <input type="text" class="spec-model-input borderless" v-model="editableSpecs.model" placeholder="Model: LS-XXXX" />
           </div>
         </div>
         
@@ -1148,6 +1154,35 @@ defineExpose({
   cursor: pointer;
 }
 
+/* 产品信息行 */
+.spec-row1 {
+  display: flex;
+  align-items: flex-start;
+  padding: 10px;
+  border-bottom: 1px solid #999;
+  gap: 10px;
+}
+
+.spec-row1 .spec-product-img {
+  width: 200px;
+  height: 120px;
+  background: #f8f8f8;
+  border: 1px solid #333;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.spec-product-img {
+  width: 200px;
+  height: 120px;
+  background: #f8f8f8;
+  border: 1px solid #333;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
 /* ========== 规格书对话框样式 ========== */
 .spec-dialog .el-dialog__body {
   padding: 0;
@@ -1172,10 +1207,9 @@ defineExpose({
   flex-shrink: 0;
 }
 
-/* Logo单独一行 - 小尺寸 */
-.spec-header-row {
+/* Logo单独一行 */
+.spec-logo-row {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   padding: 8px 10px;
   border-bottom: 1px solid #ddd;
@@ -1195,13 +1229,6 @@ defineExpose({
 
 .logo-upload-area:hover {
   opacity: 0.8;
-}
-
-.spec-header-right {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 5px;
 }
 
 .spec-logo-img {
