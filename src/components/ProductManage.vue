@@ -310,8 +310,8 @@
           <input type="file" ref="productImageInputRef" @change="handleProductImageFileChange" accept="image/*" style="display:none" />
           
           <div class="spec-info">
-            <input type="text" class="spec-title-input" v-model="editableSpecs.title" placeholder="产品名称" />
-            <input type="text" class="spec-model-input" v-model="editableSpecs.model" placeholder="Model: LS-XXXX" />
+            <input type="text" class="spec-title-input borderless" v-model="editableSpecs.title" placeholder="产品名称" />
+            <input type="text" class="spec-model-input borderless" v-model="editableSpecs.model" placeholder="Model: LS-XXXX" />
             <div class="spec-cert-row">
               <div v-for="i in 5" :key="i" class="cert-box" @click="triggerCertUpload(i-1)">
                 <img v-if="customSettings?.certifications?.[i-1]?.image" :src="customSettings.certifications[i-1].image" />
@@ -327,10 +327,10 @@
           <table class="spec-mini-table">
             <tr><th>Features</th></tr>
             <tr><td>
-              <input type="text" class="spec-cell-input" v-model="editableSpecs.feature1" placeholder="Super High CRI Ra98" />
-              <input type="text" class="spec-cell-input" v-model="editableSpecs.feature2" placeholder="Ra9>98, Rg12>98" />
-              <input type="text" class="spec-cell-input" v-model="editableSpecs.feature3" placeholder="120LED/M | 15W/m" />
-              <input type="text" class="spec-cell-input" v-model="editableSpecs.feature4" placeholder="2835" />
+              <input type="text" class="spec-cell-input borderless" v-model="editableSpecs.feature1" placeholder="Super High CRI Ra98" />
+              <input type="text" class="spec-cell-input borderless" v-model="editableSpecs.feature2" placeholder="Ra9>98, Rg12>98" />
+              <input type="text" class="spec-cell-input borderless" v-model="editableSpecs.feature3" placeholder="120LED/M | 15W/m" />
+              <input type="text" class="spec-cell-input borderless" v-model="editableSpecs.feature4" placeholder="2835" />
             </td></tr>
           </table>
           <table class="spec-mini-table">
@@ -353,15 +353,15 @@
             <tr><td>
               <div class="hex-cell">
                 <span class="hex-label">Category</span>
-                <input type="text" class="hex-input" v-model="editableSpecs.category" />
+                <input type="text" class="hex-input borderless" v-model="editableSpecs.category" />
               </div>
               <div class="hex-cell">
                 <span class="hex-label">Level</span>
-                <input type="text" class="hex-input" v-model="editableSpecs.level" />
+                <input type="text" class="hex-input borderless" v-model="editableSpecs.level" />
               </div>
               <div class="hex-cell">
                 <span class="hex-label">Spectrum</span>
-                <input type="text" class="hex-input" v-model="editableSpecs.spectrum" />
+                <input type="text" class="hex-input borderless" v-model="editableSpecs.spectrum" />
               </div>
             </td></tr>
           </table>
@@ -370,16 +370,12 @@
             <tr><th>Light Engine</th></tr>
             <tr><td>
               <div class="hex-cell">
-                <span class="hex-label">Category</span>
-                <input type="text" class="hex-input" v-model="editableSpecs.category" />
+                <span class="hex-label">LED Type</span>
+                <input type="text" class="hex-input borderless" v-model="editableSpecs.ledType" />
               </div>
               <div class="hex-cell">
-                <span class="hex-label">Level</span>
-                <input type="text" class="hex-input" v-model="editableSpecs.level" />
-              </div>
-              <div class="hex-cell">
-                <span class="hex-label">Spectrum</span>
-                <input type="text" class="hex-input" v-model="editableSpecs.spectrum" />
+                <span class="hex-label">LED Density</span>
+                <input type="text" class="hex-input borderless" v-model="editableSpecs.ledDensity" />
               </div>
             </td></tr>
           </table>
@@ -389,19 +385,19 @@
             <tr><td>
               <div class="hex-cell">
                 <span class="hex-label">Voltage</span>
-                <input type="text" class="hex-input" v-model="editableSpecs.voltage" />
+                <input type="text" class="hex-input borderless" v-model="editableSpecs.voltage" />
               </div>
               <div class="hex-cell">
                 <span class="hex-label">Power</span>
-                <input type="text" class="hex-input" v-model="editableSpecs.power" />
+                <input type="text" class="hex-input borderless" v-model="editableSpecs.power" />
               </div>
               <div class="hex-cell">
                 <span class="hex-label">IP Rating</span>
-                <input type="text" class="hex-input" v-model="editableSpecs.ipRating" />
+                <input type="text" class="hex-input borderless" v-model="editableSpecs.ipRating" />
               </div>
               <div class="hex-cell">
                 <span class="hex-label">Beam Angle</span>
-                <input type="text" class="hex-input" v-model="editableSpecs.beamAngle" />
+                <input type="text" class="hex-input borderless" v-model="editableSpecs.beamAngle" />
               </div>
             </td></tr>
           </table>
@@ -411,15 +407,15 @@
             <tr><td>
               <div class="hex-cell">
                 <span class="hex-label">CCT</span>
-                <input type="text" class="hex-input" v-model="editableSpecs.cct" />
+                <input type="text" class="hex-input borderless" v-model="editableSpecs.cct" />
               </div>
               <div class="hex-cell">
                 <span class="hex-label">Lumen</span>
-                <input type="text" class="hex-input" v-model="editableSpecs.lumen" />
+                <input type="text" class="hex-input borderless" v-model="editableSpecs.lumen" />
               </div>
               <div class="hex-cell">
                 <span class="hex-label">Efficacy</span>
-                <input type="text" class="hex-input" v-model="editableSpecs.efficacy" />
+                <input type="text" class="hex-input borderless" v-model="editableSpecs.efficacy" />
               </div>
             </td></tr>
           </table>
@@ -428,12 +424,12 @@
             <tr><th>Features</th></tr>
             <tr><td>
               <div class="hex-cell">
-                <span class="hex-label">LED Type</span>
-                <input type="text" class="hex-input" v-model="editableSpecs.ledType" />
+                <span class="hex-label">LED Brand</span>
+                <input type="text" class="hex-input borderless" v-model="editableSpecs.ledBrand" />
               </div>
               <div class="hex-cell">
-                <span class="hex-label">LED Density</span>
-                <input type="text" class="hex-input" v-model="editableSpecs.ledDensity" />
+                <span class="hex-label">Lifetime</span>
+                <input type="text" class="hex-input borderless" v-model="editableSpecs.lifetime" />
               </div>
             </td></tr>
           </table>
@@ -441,12 +437,12 @@
           <table class="spec-hex-table">
             <tr><th>Remark</th></tr>
             <tr><td class="remark-cell">
-              <input type="text" class="hex-input" v-model="editableSpecs.remark" placeholder="备注..." />
+              <input type="text" class="hex-input borderless" v-model="editableSpecs.remark" placeholder="备注..." />
             </td></tr>
           </table>
         </div>
         
-        <!-- 第5行：Photometric大表格 - 按功率分组 -->
+        <!-- 第5行：Photometric大表格 - 按功率分组，可编辑 -->
         <div class="spec-row5">
           <div class="photometric-title">Photometric</div>
           <table class="photometric-big-table">
@@ -463,36 +459,36 @@
             <tbody>
               <!-- 9.6W/m 组 -->
               <tr class="power-group-start">
-                <td :rowspan="6">{{ editableSpecs.model || 'LS-SW28N120-2790-2408-100' }}</td>
-                <td :rowspan="6" class="power-cell">9.6W/m</td>
+                <td :rowspan="6"><input type="text" class="table-input borderless center" v-model="editableSpecs.model9_6_1" /></td>
+                <td :rowspan="6" class="power-cell"><input type="text" class="table-input borderless center" v-model="editableSpecs.power9_6" /></td>
                 <td>2700K</td>
-                <td>Ra90+</td>
-                <td :rowspan="6">{{ editableSpecs.lumen9_6 || '960lm/m' }}</td>
-                <td :rowspan="6">{{ editableSpecs.efficacy9_6 || '100lm/W' }}</td>
+                <td><input type="text" class="table-input borderless center small" v-model="editableSpecs.cri9_6_2700" /></td>
+                <td :rowspan="6"><input type="text" class="table-input borderless center" v-model="editableSpecs.lumen9_6" /></td>
+                <td :rowspan="6"><input type="text" class="table-input borderless center" v-model="editableSpecs.efficacy9_6" /></td>
               </tr>
-              <tr><td>3000K</td><td>Ra90+</td></tr>
-              <tr><td>3500K</td><td>Ra90+</td></tr>
-              <tr><td>4000K</td><td>Ra90+</td></tr>
-              <tr><td>5000K</td><td>Ra90+</td></tr>
-              <tr><td>5700K</td><td>Ra90+</td></tr>
+              <tr><td>3000K</td><td><input type="text" class="table-input borderless center small" v-model="editableSpecs.cri9_6_3000" /></td></tr>
+              <tr><td>3500K</td><td><input type="text" class="table-input borderless center small" v-model="editableSpecs.cri9_6_3500" /></td></tr>
+              <tr><td>4000K</td><td><input type="text" class="table-input borderless center small" v-model="editableSpecs.cri9_6_4000" /></td></tr>
+              <tr><td>5000K</td><td><input type="text" class="table-input borderless center small" v-model="editableSpecs.cri9_6_5000" /></td></tr>
+              <tr><td>5700K</td><td><input type="text" class="table-input borderless center small" v-model="editableSpecs.cri9_6_5700" /></td></tr>
               
               <!-- 分隔线 -->
               <tr class="power-separator"><td colspan="6"></td></tr>
               
               <!-- 15W/m 组 -->
               <tr class="power-group-start">
-                <td :rowspan="6">{{ editableSpecs.model || 'LS-SW28N120-2790-2408-100' }}</td>
-                <td :rowspan="6" class="power-cell">15W/m</td>
+                <td :rowspan="6"><input type="text" class="table-input borderless center" v-model="editableSpecs.model15_1" /></td>
+                <td :rowspan="6" class="power-cell"><input type="text" class="table-input borderless center" v-model="editableSpecs.power15" /></td>
                 <td>2700K</td>
-                <td>Ra98+</td>
-                <td :rowspan="6">{{ editableSpecs.lumen15 || '1500lm/m' }}</td>
-                <td :rowspan="6">{{ editableSpecs.efficacy15 || '100lm/W' }}</td>
+                <td><input type="text" class="table-input borderless center small" v-model="editableSpecs.cri15_2700" /></td>
+                <td :rowspan="6"><input type="text" class="table-input borderless center" v-model="editableSpecs.lumen15" /></td>
+                <td :rowspan="6"><input type="text" class="table-input borderless center" v-model="editableSpecs.efficacy15" /></td>
               </tr>
-              <tr><td>3000K</td><td>Ra98+</td></tr>
-              <tr><td>3500K</td><td>Ra90+</td></tr>
-              <tr><td>4000K</td><td>Ra90+</td></tr>
-              <tr><td>5000K</td><td>Ra90+</td></tr>
-              <tr><td>5700K</td><td>Ra90+</td></tr>
+              <tr><td>3000K</td><td><input type="text" class="table-input borderless center small" v-model="editableSpecs.cri15_3000" /></td></tr>
+              <tr><td>3500K</td><td><input type="text" class="table-input borderless center small" v-model="editableSpecs.cri15_3500" /></td></tr>
+              <tr><td>4000K</td><td><input type="text" class="table-input borderless center small" v-model="editableSpecs.cri15_4000" /></td></tr>
+              <tr><td>5000K</td><td><input type="text" class="table-input borderless center small" v-model="editableSpecs.cri15_5000" /></td></tr>
+              <tr><td>5700K</td><td><input type="text" class="table-input borderless center small" v-model="editableSpecs.cri15_5700" /></td></tr>
             </tbody>
           </table>
         </div>
@@ -502,8 +498,6 @@
       
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="showCustomDialog">自定义设置</el-button>
-          <el-button @click="applyEdits">保存修改</el-button>
           <el-button type="primary" @click="downloadSpec">
             <el-icon><Download /></el-icon> 下载规格书
           </el-button>
@@ -1037,27 +1031,38 @@ const showSpecDialog = (product: Product) => {
     efficacy: savedEditableSpecs?.['efficacy'] || specs['能效'] || '80lm/W',
     
     // 9.6W/m 组
+    model9_6_1: savedEditableSpecs?.['model9_6_1'] || defaultModel,
+    power9_6: savedEditableSpecs?.['power9_6'] || '9.6W/m',
     lumen9_6: savedEditableSpecs?.['lumen9_6'] || '960lm/m',
     efficacy9_6: savedEditableSpecs?.['efficacy9_6'] || '100lm/W',
+    cri9_6_2700: savedEditableSpecs?.['cri9_6_2700'] || 'Ra90+',
+    cri9_6_3000: savedEditableSpecs?.['cri9_6_3000'] || 'Ra90+',
+    cri9_6_3500: savedEditableSpecs?.['cri9_6_3500'] || 'Ra90+',
+    cri9_6_4000: savedEditableSpecs?.['cri9_6_4000'] || 'Ra90+',
+    cri9_6_5000: savedEditableSpecs?.['cri9_6_5000'] || 'Ra90+',
+    cri9_6_5700: savedEditableSpecs?.['cri9_6_5700'] || 'Ra90+',
     
     // 15W/m 组
+    model15_1: savedEditableSpecs?.['model15_1'] || defaultModel,
+    power15: savedEditableSpecs?.['power15'] || '15W/m',
     lumen15: savedEditableSpecs?.['lumen15'] || '1500lm/m',
     efficacy15: savedEditableSpecs?.['efficacy15'] || '100lm/W',
+    cri15_2700: savedEditableSpecs?.['cri15_2700'] || 'Ra98+',
+    cri15_3000: savedEditableSpecs?.['cri15_3000'] || 'Ra98+',
+    cri15_3500: savedEditableSpecs?.['cri15_3500'] || 'Ra90+',
+    cri15_4000: savedEditableSpecs?.['cri15_4000'] || 'Ra90+',
+    cri15_5000: savedEditableSpecs?.['cri15_5000'] || 'Ra90+',
+    cri15_5700: savedEditableSpecs?.['cri15_5700'] || 'Ra90+',
+    
+    // LED Brand & Lifetime
+    ledBrand: savedEditableSpecs?.['ledBrand'] || specs['LED品牌'] || 'Lumileds',
+    lifetime: savedEditableSpecs?.['lifetime'] || specs['寿命'] || '50,000Hrs',
     
     // Remark
     remark: savedEditableSpecs?.['remark'] || '',
   }
   
   specDialogVisible.value = true
-}
-
-const showCustomDialog = () => {
-  customSettingsForm.logoUrl = customSettings.value?.logoUrl || ''
-  customSettingsForm.productImage = customSettings.value?.productImage || ''
-  customSettingsForm.dimensionImage = customSettings.value?.dimensionImage || ''
-  customSettingsForm.certifications = customSettings.value?.certifications ? [...customSettings.value.certifications] : []
-  customSettingsForm.footer = customSettings.value?.footer || ''
-  customDialogVisible.value = true
 }
 
 const addCert = () => {
@@ -1202,23 +1207,6 @@ const applyCustomSettings = () => {
   
   customDialogVisible.value = false
   ElMessage.success('设置已保存，下次打开将保留')
-}
-
-// 应用规格书编辑
-const applyEdits = () => {
-  if (!currentProduct.value) return
-  
-  // 保存到store（localStorage持久化）
-  productStore.saveSpecSettingsForProduct(currentProduct.value.id, {
-    logoUrl: customSettings.value?.logoUrl,
-    productImage: customSettings.value?.productImage,
-    dimensionImage: customSettings.value?.dimensionImage,
-    certifications: customSettings.value?.certifications,
-    footer: customSettings.value?.footer,
-    editableSpecs: editableSpecs.value
-  })
-  
-  ElMessage.success('规格已保存')
 }
 
 // 下载规格书 - 使用html2canvas截取DOM
@@ -1759,5 +1747,37 @@ defineExpose({
   display: flex;
   gap: 10px;
   align-items: center;
+}
+
+/* 无边框输入框样式 - 与生成规格书一致的编辑体验 */
+.borderless {
+  border: none !important;
+  background: transparent !important;
+  outline: none !important;
+  box-shadow: none !important;
+  padding: 2px 4px !important;
+  font-family: inherit !important;
+  font-size: inherit !important;
+  color: inherit !important;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.borderless:focus {
+  background: rgba(255, 107, 0, 0.05) !important;
+  border: 1px dashed #ff6b00 !important;
+}
+
+.table-input.borderless {
+  padding: 2px !important;
+  font-size: 8px !important;
+}
+
+.table-input.borderless.small {
+  width: 90% !important;
+}
+
+.center {
+  text-align: center !important;
 }
 </style>
