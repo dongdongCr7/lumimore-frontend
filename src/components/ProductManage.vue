@@ -1414,8 +1414,8 @@ defineExpose({
 }
 
 .led-strip-visual {
-  width: 190px;
-  height: 90px;
+  width: 170px;
+  height: 80px;
   background: repeating-linear-gradient(
     90deg,
     #ff8c00 0px,
@@ -1423,7 +1423,8 @@ defineExpose({
     #e0e0e0 8px,
     #e0e0e0 12px
   );
-  background-size: 12px 90px;
+  background-size: 12px 80px;
+  border: 1px solid #333;
 }
 
 .led-badge {
