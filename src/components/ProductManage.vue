@@ -889,6 +889,16 @@ const downloadSpec = async () => {
       }
     })
     
+    // 添加必要的CSS样式到克隆的DOM
+    const style = document.createElement('style')
+    style.textContent = `
+      .spec-cert-row { display: flex !important; flex-wrap: wrap !important; gap: 5px !important; }
+      .cert-box { width: 35px !important; height: 25px !important; display: flex !important; align-items: center !important; justify-content: center !important; }
+      .cert-placeholder { font-size: 8px !important; color: #ccc !important; }
+      * { box-sizing: border-box !important; }
+    `
+    clone.insertBefore(style, clone.firstChild)
+    
     // 创建一个独立的容器用于截图
     const container = document.createElement('div')
     container.style.cssText = `
