@@ -304,6 +304,9 @@
         <div class="spec-row5">
           <div class="photometric-title-row">
             <div class="photometric-title">Photometric</div>
+            <el-button size="small" type="primary" text @click="addPhotometricGroup">
+              <el-icon><Plus /></el-icon> 添加功率
+            </el-button>
           </div>
           <table class="photometric-big-table">
             <thead>
@@ -336,6 +339,13 @@
                 <tr><td>4000K</td><td><input type="text" class="table-input borderless center small" v-model="group.cri4000" /></td></tr>
                 <tr><td>5000K</td><td><input type="text" class="table-input borderless center small" v-model="group.cri5000" /></td></tr>
                 <tr><td>5700K</td><td><input type="text" class="table-input borderless center small" v-model="group.cri5700" /></td></tr>
+                <tr class="power-group-actions">
+                  <td colspan="6" style="text-align: right; padding: 4px 8px;">
+                    <el-button v-if="photometricGroups.length > 1" size="small" type="danger" text @click="removePhotometricGroup(groupIndex)">
+                      <el-icon><Delete /></el-icon> 删除此功率
+                    </el-button>
+                  </td>
+                </tr>
                 
                 <!-- 分隔线（除了最后一个） -->
                 <tr v-if="groupIndex < photometricGroups.length - 1" class="power-separator"><td colspan="6"></td></tr>
@@ -522,6 +532,29 @@ interface PhotometricGroup {
 }
 
 const photometricGroups = ref<PhotometricGroup[]>([])
+
+// 添加功率组
+const addPhotometricGroup = () => {
+  photometricGroups.value.push({
+    model: 'LS-SW28N120-2790-2408-100',
+    power: '10W/m',
+    lumen: '1000lm/m',
+    efficacy: '100lm/W',
+    cri2700: 'Ra98+',
+    cri3000: 'Ra98+',
+    cri3500: 'Ra90+',
+    cri4000: 'Ra90+',
+    cri5000: 'Ra90+',
+    cri5700: 'Ra90+'
+  })
+}
+
+// 删除功率组
+const removePhotometricGroup = (index: number) => {
+  if (photometricGroups.value.length > 1) {
+    photometricGroups.value.splice(index, 1)
+  }
+}
 
 // 压缩图片到指定大小以内
 const compressImage = (file: File, maxSizeMB: number = 2): Promise<string> => {
