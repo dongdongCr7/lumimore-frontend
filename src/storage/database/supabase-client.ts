@@ -5,6 +5,7 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js'
 
 let client: SupabaseClient | null = null
+let initError: string | null = null
 
 /**
  * 获取 Supabase 客户端实例
@@ -19,12 +20,11 @@ function getSupabaseClient(): SupabaseClient {
   const url = (import.meta.env.VITE_SUPABASE_URL || import.meta.env.COZE_SUPABASE_URL) as string
   const anonKey = (import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.COZE_SUPABASE_ANON_KEY) as string
 
-  if (!url) {
-    throw new Error('Supabase URL is not configured. Please set VITE_SUPABASE_URL or COZE_SUPABASE_URL environment variable.')
-  }
-
-  if (!anonKey) {
-    throw new Error('Supabase Anon Key is not configured. Please set VITE_SUPABASE_ANON_KEY or COZE_SUPABASE_ANON_KEY environment variable.')
+  if (!url || !anonKey) {
+    initError = 'Supabase credentials not configured. Using localStorage fallback.'
+    console.warn(initError)
+    // 返回一个"假"客户端，在调用时会报错提示
+    throw new Error('SUPABASE_NOT_CONFIGURED')
   }
 
   client = createClient(url, anonKey, {
@@ -40,4 +40,14 @@ function getSupabaseClient(): SupabaseClient {
   return client
 }
 
-export { getSupabaseClient }
+/**
+ * 检查 Supabase 是否已配置
+ */
+function isSupabaseConfigured(): boolean {
+  if (initError) return false
+  const url = (import.meta.env.VITE_SUPABASE_URL || import.meta.env.COZE_SUPABASE_URL) as string
+  const anonKey = (import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.COZE_SUPABASE_ANON_KEY) as string
+  return !!(url && anonKey)
+}
+
+export { getSupabaseClient, isSupabaseConfigured }

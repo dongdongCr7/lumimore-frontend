@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { 
   categoryApi, 
   seriesApi, 
@@ -11,6 +11,7 @@ import {
   type SpecSettings,
   type PhotometricGroup
 } from '@/storage/database/database'
+import { isSupabaseConfigured } from '@/storage/database/supabase-client'
 
 export type { Category, Series, Product, SpecSettings, PhotometricGroup }
 
@@ -32,7 +33,47 @@ export interface CustomSpecSettings {
   photometricGroups?: PhotometricGroup[]
 }
 
-// 默认数据
+// ============ LocalStorage Fallback ============
+const STORAGE_KEY = 'lumimore_product_data'
+const SPEC_SETTINGS_KEY = 'lumimore_spec_settings'
+
+function loadFromStorage(): any {
+  try {
+    const data = localStorage.getItem(STORAGE_KEY)
+    if (data) return JSON.parse(data)
+  } catch (e) {
+    console.error('加载数据失败:', e)
+  }
+  return null
+}
+
+function saveToStorage(data: any) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
+  } catch (e) {
+    console.error('保存数据失败:', e)
+  }
+}
+
+function loadSpecSettingsFromStorage(): Record<number, CustomSpecSettings> {
+  try {
+    const data = localStorage.getItem(SPEC_SETTINGS_KEY)
+    if (data) return JSON.parse(data)
+  } catch (e) {
+    console.error('加载规格书设置失败:', e)
+  }
+  return {}
+}
+
+function saveSpecSettingsToStorage(data: Record<number, CustomSpecSettings>) {
+  try {
+    localStorage.setItem(SPEC_SETTINGS_KEY, JSON.stringify(data))
+  } catch (e) {
+    console.error('保存规格书设置失败:', e)
+  }
+}
+
+// ============ 默认数据 ============
 const defaultCategories: Category[] = [
   { id: 5, name: 'LUMISTRIP', description: '高显指LED灯带系列' }
 ]
@@ -71,9 +112,11 @@ const defaultProducts: Product[] = [
   }
 ]
 
+// ============ Store ============
 export const useProductStore = defineStore('product', () => {
   const isLoading = ref(false)
   const isInitialized = ref(false)
+  const useLocalStorage = ref(false) // 是否使用 localStorage
   const error = ref<string | null>(null)
 
   // 数据状态
@@ -91,12 +134,41 @@ export const useProductStore = defineStore('product', () => {
     { id: 3, categoryId: 3, specNames: ['输入', '输出', '效率', '保护'] }
   ])
 
+  // 监听数据变化，自动保存（localStorage 模式）
+  watch([categories, seriesList, products], () => {
+    if (useLocalStorage.value) {
+      saveToStorage({
+        categories: categories.value,
+        seriesList: seriesList.value,
+        products: products.value,
+        specTemplates: specTemplates.value
+      })
+    }
+  }, { deep: true })
+
+  // 监听规格书设置变化，自动保存
+  watch(specSettings, (newSettings) => {
+    if (useLocalStorage.value) {
+      saveSpecSettingsToStorage(newSettings)
+    }
+  }, { deep: true })
+
   // 初始化：从数据库加载数据
   async function initialize() {
     if (isInitialized.value) return
     
     isLoading.value = true
     error.value = null
+    
+    // 检查 Supabase 是否配置
+    if (!isSupabaseConfigured()) {
+      console.log('Supabase 未配置，使用 localStorage 模式')
+      useLocalStorage.value = true
+      loadFromLocalStorage()
+      isLoading.value = false
+      isInitialized.value = true
+      return
+    }
     
     try {
       // 并行加载所有数据
@@ -132,16 +204,43 @@ export const useProductStore = defineStore('product', () => {
       
       isInitialized.value = true
     } catch (e: any) {
-      console.error('初始化数据失败:', e)
+      console.error('数据库连接失败，使用 localStorage 降级:', e)
       error.value = e.message
-      // 使用本地默认数据作为降级
-      categories.value = defaultCategories
-      seriesList.value = defaultSeries
-      products.value = defaultProducts
-      isInitialized.value = true
+      useLocalStorage.value = true
+      loadFromLocalStorage()
     } finally {
       isLoading.value = false
     }
+  }
+
+  // 从 localStorage 加载数据
+  function loadFromLocalStorage() {
+    const savedData = loadFromStorage()
+    
+    if (savedData?.categories?.length) {
+      categories.value = savedData.categories
+    } else {
+      categories.value = defaultCategories
+    }
+    
+    if (savedData?.seriesList?.length) {
+      seriesList.value = savedData.seriesList
+    } else {
+      seriesList.value = defaultSeries
+    }
+    
+    if (savedData?.products?.length) {
+      products.value = savedData.products
+    } else {
+      products.value = defaultProducts
+    }
+    
+    if (savedData?.specTemplates?.length) {
+      specTemplates.value = savedData.specTemplates
+    }
+    
+    specSettings.value = loadSpecSettingsFromStorage()
+    isInitialized.value = true
   }
 
   // 获取某分类下的产品数量
@@ -164,6 +263,11 @@ export const useProductStore = defineStore('product', () => {
 
   // 添加分类
   async function addCategory(name: string, description: string) {
+    if (useLocalStorage.value) {
+      const id = Math.max(...categories.value.map(c => c.id), 0) + 1
+      categories.value.push({ id, name, description })
+      return
+    }
     try {
       const newCategory = await categoryApi.create(name, description)
       categories.value.push(newCategory)
@@ -175,6 +279,11 @@ export const useProductStore = defineStore('product', () => {
 
   // 添加系列
   async function addSeries(categoryId: number, name: string, description: string, keywords: string[]) {
+    if (useLocalStorage.value) {
+      const id = Math.max(...seriesList.value.map(s => s.id), 0) + 1
+      seriesList.value.push({ id, categoryId, name, description, keywords })
+      return
+    }
     try {
       const newSeries = await seriesApi.create(categoryId, name, description, keywords)
       seriesList.value.push(newSeries)
@@ -186,6 +295,11 @@ export const useProductStore = defineStore('product', () => {
 
   // 添加产品
   async function addProduct(seriesId: number, categoryId: number, name: string, specs: Record<string, string>) {
+    if (useLocalStorage.value) {
+      const id = Math.max(...products.value.map(p => p.id), 0) + 1
+      products.value.push({ id, seriesId, categoryId, name, specs })
+      return
+    }
     try {
       const newProduct = await productApi.create(seriesId, categoryId, name, specs)
       products.value.push(newProduct)
@@ -197,10 +311,15 @@ export const useProductStore = defineStore('product', () => {
 
   // 删除分类
   async function deleteCategory(id: number) {
+    if (useLocalStorage.value) {
+      categories.value = categories.value.filter(c => c.id !== id)
+      seriesList.value = seriesList.value.filter(s => s.categoryId !== id)
+      products.value = products.value.filter(p => p.categoryId !== id)
+      return
+    }
     try {
       await categoryApi.delete(id)
       categories.value = categories.value.filter(c => c.id !== id)
-      // 同时删除该分类下的系列和产品
       seriesList.value = seriesList.value.filter(s => s.categoryId !== id)
       products.value = products.value.filter(p => p.categoryId !== id)
     } catch (e: any) {
@@ -211,6 +330,11 @@ export const useProductStore = defineStore('product', () => {
 
   // 删除系列
   async function deleteSeries(id: number) {
+    if (useLocalStorage.value) {
+      seriesList.value = seriesList.value.filter(s => s.id !== id)
+      products.value = products.value.filter(p => p.seriesId !== id)
+      return
+    }
     try {
       await seriesApi.delete(id)
       seriesList.value = seriesList.value.filter(s => s.id !== id)
@@ -223,10 +347,14 @@ export const useProductStore = defineStore('product', () => {
 
   // 删除产品
   async function deleteProduct(id: number) {
+    if (useLocalStorage.value) {
+      products.value = products.value.filter(p => p.id !== id)
+      delete specSettings.value[id]
+      return
+    }
     try {
       await productApi.delete(id)
       products.value = products.value.filter(p => p.id !== id)
-      // 删除对应的规格书设置
       delete specSettings.value[id]
     } catch (e: any) {
       console.error('删除产品失败:', e)
@@ -236,6 +364,14 @@ export const useProductStore = defineStore('product', () => {
 
   // 更新产品
   async function updateProduct(id: number, name: string, specs: Record<string, string>) {
+    if (useLocalStorage.value) {
+      const product = products.value.find(p => p.id === id)
+      if (product) {
+        product.name = name
+        product.specs = specs
+      }
+      return
+    }
     try {
       const updated = await productApi.update(id, name, specs)
       const index = products.value.findIndex(p => p.id === id)
@@ -250,8 +386,19 @@ export const useProductStore = defineStore('product', () => {
 
   // 获取某产品ID的规格书设置（从数据库加载）
   async function loadSpecSettings(productId: number): Promise<CustomSpecSettings | undefined> {
+    // 先检查本地
     if (specSettings.value[productId]) {
       return specSettings.value[productId]
+    }
+    
+    // localStorage 模式
+    if (useLocalStorage.value) {
+      const stored = loadSpecSettingsFromStorage()
+      if (stored[productId]) {
+        specSettings.value[productId] = stored[productId]
+        return stored[productId]
+      }
+      return undefined
     }
     
     try {
@@ -281,8 +428,19 @@ export const useProductStore = defineStore('product', () => {
     return specSettings.value[productId]
   }
 
-  // 保存某产品ID的规格书设置到数据库
+  // 保存某产品ID的规格书设置
   async function saveSpecSettingsForProduct(productId: number, settings: Omit<CustomSpecSettings, 'productId'>) {
+    // 更新本地缓存
+    specSettings.value[productId] = {
+      productId,
+      ...settings
+    }
+    
+    if (useLocalStorage.value) {
+      saveSpecSettingsToStorage(specSettings.value)
+      return
+    }
+    
     try {
       await specSettingsApi.upsert({
         product_id: productId,
@@ -294,21 +452,17 @@ export const useProductStore = defineStore('product', () => {
         editable_specs: settings.editableSpecs,
         photometric_groups: settings.photometricGroups
       })
-      
-      // 更新本地缓存
-      specSettings.value[productId] = {
-        productId,
-        ...settings
-      }
     } catch (e: any) {
       console.error('保存规格书设置失败:', e)
-      throw e
+      // 即使数据库保存失败，也保留在本地
+      saveSpecSettingsToStorage(specSettings.value)
     }
   }
 
   return {
     isLoading,
     isInitialized,
+    useLocalStorage,
     error,
     categories,
     seriesList,
