@@ -221,12 +221,12 @@
             <img v-if="customSettings?.productImage" :src="customSettings.productImage" class="product-img-uploaded" />
             <div v-else class="product-img-placeholder">
               <div class="led-strip-visual"></div>
-              <div class="led-badge">120 LED/M</div>
+              <div class="led-badge">{{ specData?.electrical.power || '14.4W/m' }}</div>
             </div>
           </div>
           <div class="spec-info">
-            <div class="spec-title">White 14.4W 2835 120LED 10MM</div>
-            <div class="spec-model">Model: LS-SW28N120-10</div>
+            <div class="spec-title">{{ specData?.title || 'Product Name' }}</div>
+            <div class="spec-model">{{ specData?.model || 'Model: LS-XXNXXX-XX-XX' }}</div>
           </div>
           <div class="spec-certs">
             <div v-for="i in 5" :key="i" class="cert-box">
@@ -240,10 +240,7 @@
           <table class="spec-mini-table">
             <tr><th>Features</th></tr>
             <tr><td>
-              <div>Super High CRI Ra98</div>
-              <div>Ra9>98, Rg12>98</div>
-              <div>120LED/M | 15W/m</div>
-              <div>2835</div>
+              <div v-for="(feature, idx) in specData?.features || []" :key="idx">{{ feature }}</div>
             </td></tr>
           </table>
           <table class="spec-mini-table">
@@ -260,17 +257,17 @@
           <table class="spec-mini-table">
             <tr><th>Product Setup</th></tr>
             <tr><td>
-              <div>Category&nbsp;&nbsp;LumStrip</div>
-              <div>Level&nbsp;&nbsp;&nbsp;&nbsp;Core</div>
-              <div>Spectrum&nbsp;White</div>
+              <div>Category&nbsp;&nbsp;{{ specData?.category || 'LumStrip' }}</div>
+              <div>Level&nbsp;&nbsp;&nbsp;&nbsp;{{ specData?.series || 'Core' }}</div>
+              <div>Spectrum&nbsp;{{ specData?.spectrum || 'White' }}</div>
             </td></tr>
           </table>
           <table class="spec-mini-table">
             <tr><th>Light Engine</th></tr>
             <tr><td>
-              <div>Category&nbsp;&nbsp;LumStrip</div>
-              <div>Level&nbsp;&nbsp;&nbsp;&nbsp;Core</div>
-              <div>Spectrum&nbsp;White</div>
+              <div>Category&nbsp;&nbsp;{{ specData?.category || 'LumStrip' }}</div>
+              <div>Level&nbsp;&nbsp;&nbsp;&nbsp;{{ specData?.series || 'Core' }}</div>
+              <div>Spectrum&nbsp;{{ specData?.spectrum || 'White' }}</div>
             </td></tr>
           </table>
         </div>
@@ -286,21 +283,17 @@
             </tr>
             <tr>
               <td>
-                <div>Category&nbsp;&nbsp;LumStrip</div>
-                <div>Level&nbsp;&nbsp;&nbsp;&nbsp;Core</div>
+                <div>Voltage&nbsp;&nbsp;{{ specData?.electrical.voltage || '24V DC' }}</div>
+                <div>Power&nbsp;&nbsp;&nbsp;{{ specData?.electrical.power || '14.4W/m' }}</div>
               </td>
               <td>
-                <div>Category&nbsp;&nbsp;LumStrip</div>
-                <div>Level&nbsp;&nbsp;&nbsp;&nbsp;Core</div>
-                <div>Spectrum&nbsp;White</div>
-                <div>Category&nbsp;&nbsp;LumStrip</div>
-                <div>Level&nbsp;&nbsp;&nbsp;&nbsp;Core</div>
-                <div>Spectrum&nbsp;White</div>
+                <div>CCT&nbsp;&nbsp;&nbsp;&nbsp;{{ specData?.photometric.cct || '2700K-5700K' }}</div>
+                <div>Lumen&nbsp;&nbsp;{{ specData?.photometric.lumen || '1200lm/m' }}</div>
+                <div>Efficacy&nbsp;{{ specData?.photometric.efficacy || '80lm/W' }}</div>
               </td>
               <td>
-                <div>Category&nbsp;&nbsp;LumStrip</div>
-                <div>Level&nbsp;&nbsp;&nbsp;&nbsp;Core</div>
-                <div>Spectrum&nbsp;White</div>
+                <div>IP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ specData?.electrical.ipRating || 'IP20' }}</div>
+                <div>Beam&nbsp;&nbsp;&nbsp;&nbsp;{{ specData?.electrical.beamAngle || '120°' }}</div>
               </td>
               <td></td>
             </tr>
@@ -556,6 +549,53 @@ const getSeriesName = (id: number | null) => {
   if (!id) return '-'
   return productStore.seriesList.find(s => s.id === id)?.name || '-'
 }
+
+// 根据产品生成规格书数据
+const specData = computed(() => {
+  if (!currentProduct.value) return null
+  
+  const product = currentProduct.value
+  const specs = product.specs
+  const series = productStore.seriesList.find(s => s.id === product.seriesId)
+  const category = productStore.categories.find(c => c.id === product.categoryId)
+  
+  // 生成Model名称
+  const modelName = `LS-${series?.name || 'XX'}N${(specs['LED密度'] || '120').replace('LED/M', '')}-${(specs['功率'] || '14.4').replace('W/m', '')}-${(specs['总宽度'] || '10').replace('mm', '')}`
+  
+  return {
+    title: product.name,
+    model: `Model: ${modelName}`,
+    category: category?.name || 'LumStrip',
+    series: series?.name || 'Core',
+    spectrum: 'White',
+    // Features
+    features: [
+      specs['显色指数'] ? `Super High CRI ${specs['显色指数']}` : 'Super High CRI Ra98+',
+      specs['R9值'] && specs['R12值'] ? `Ra9 ${specs['R9值']}, Rg12 ${specs['R12值']}` : 'Ra9 >98, Rg12 >98',
+      specs['LED密度'] || '120LED/M',
+      specs['LED类型'] || '2835 SMD'
+    ],
+    // Dimension数据
+    dimension: {
+      totalWidth: specs['总宽度'] || '10mm',
+      baseWidth: specs['基板宽度'] || '12mm',
+      cutLength: specs['裁剪单元'] || '50mm'
+    },
+    // 电气参数
+    electrical: {
+      voltage: specs['输入电压'] || '24V DC',
+      power: specs['功率'] || '14.4W/m',
+      ipRating: specs['IP等级'] || 'IP20',
+      beamAngle: specs['发光角度'] || '120°'
+    },
+    // 光度参数
+    photometric: {
+      cct: specs['色温'] || '2700K-5700K',
+      lumen: specs['光通量'] || '1200lm/m',
+      efficacy: specs['能效'] || '80lm/W'
+    }
+  }
+})
 
 // 选择分类
 const selectCategory = (categoryId: number) => {
