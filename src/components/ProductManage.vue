@@ -1066,40 +1066,58 @@ defineExpose({
 /* 两列表格行 */
 .spec-row-duo {
   display: flex;
-  border-bottom: 1px solid #999;
+  border-bottom: 1px solid #ddd;
 }
 
 .spec-duo-table {
   flex: 1;
   border-collapse: collapse;
   font-size: 9px;
+  border-right: 1px solid #ddd;
 }
 
-.spec-duo-table:first-child {
-  border-right: 1px solid #999;
+.spec-duo-table:last-child {
+  border-right: none;
 }
 
 .spec-duo-table th {
   background: #f5f5f5;
-  border: 1px solid #333;
-  border-top: none;
+  border: 1px solid #ddd;
+  border-top: 2px solid #333;
   padding: 5px 8px;
   font-weight: bold;
   text-align: center;
 }
 
 .spec-duo-table td {
-  border: 1px solid #333;
-  border-top: none;
-  border-left: none;
+  border: 1px solid #ddd;
   padding: 5px 8px;
   background: #fff;
   vertical-align: top;
 }
 
-.spec-duo-table:last-child th,
-.spec-duo-table:last-child td {
-  border-right: none;
+/* 通用表格样式优化 */
+.spec-mini-table {
+  border-collapse: collapse;
+  font-size: 9px;
+  width: 100%;
+  border: 1px solid #ddd;
+}
+
+.spec-mini-table th {
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  border-top: 2px solid #333;
+  padding: 5px 8px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.spec-mini-table td {
+  border: 1px solid #ddd;
+  padding: 5px 8px;
+  background: #fff;
+  vertical-align: top;
 }
 
 /* Hex单元格样式 */
@@ -1181,12 +1199,13 @@ defineExpose({
   gap: 5px;
 }
 
-/* 认证图标横排在最右边 */
+/* 认证图标横排，三个一行 */
 .spec-row1 .spec-cert-row {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   gap: 5px;
-  align-items: flex-end;
+  width: 120px;
+  justify-content: flex-end;
 }
 
 .spec-row1 .spec-cert-row .cert-box {
@@ -1388,12 +1407,12 @@ defineExpose({
   font-size: 8px !important;
 }
 
-/* 认证图标横排 */
+/* 产品信息行 */
 .spec-row1 {
   display: flex;
   align-items: flex-start;
   padding: 10px;
-  border-bottom: 1px solid #999;
+  border-bottom: 1px solid #ddd;
   gap: 10px;
 }
 
@@ -1407,10 +1426,15 @@ defineExpose({
   width: 200px;
   height: 130px;
   background: #f8f8f8;
-  border: 1px solid #333;
+  border: 1px solid #ddd;
+  border-radius: 4px;
   position: relative;
   overflow: hidden;
   flex-shrink: 0;
+}
+
+.spec-product-img:hover {
+  border-color: #ff6b00;
 }
 
 .product-img-uploaded {
