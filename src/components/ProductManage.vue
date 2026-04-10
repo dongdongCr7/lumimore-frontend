@@ -841,7 +841,7 @@ const saveSpecSettings = () => {
 const downloadSpec = async () => {
   if (!specDocumentRef.value || !currentProduct.value) return
   
-  // 先保存当前设置到 localStorage（不关闭对话框）
+  // 先保存当前设置
   productStore.saveSpecSettingsForProduct(currentProduct.value.id, {
     logoUrl: customSettings.value?.logoUrl,
     productImage: customSettings.value?.productImage,
@@ -852,26 +852,34 @@ const downloadSpec = async () => {
     photometricGroups: photometricGroups.value
   })
   
-  console.log('下载前检查 - editableSpecs:', editableSpecs.value)
-  console.log('下载前检查 - photometricGroups:', photometricGroups.value)
-  
   try {
     ElMessage.info('正在生成规格书...')
+    await new Promise(resolve => setTimeout(resolve, 300))
     
-    // 等待一下确保数据渲染完成
-    await new Promise(resolve => setTimeout(resolve, 200))
+    // 创建一个临时容器来存放处理后的DOM
+    const tempContainer = specDocumentRef.value.cloneNode(true) as HTMLElement
     
-    // 检查DOM中的input值
-    const inputs = specDocumentRef.value.querySelectorAll('input')
-    console.log('DOM中的input数量:', inputs.length)
-    inputs.forEach((input, i) => {
-      console.log(`input[${i}] value:`, input.value)
+    // 将所有input替换为显示其值的span
+    const originalInputs = specDocumentRef.value.querySelectorAll('input')
+    const clonedInputs = tempContainer.querySelectorAll('input')
+    
+    originalInputs.forEach((input, i) => {
+      const clonedInput = clonedInputs[i]
+      if (clonedInput) {
+        const span = document.createElement('span')
+        span.textContent = input.value || input.placeholder || ''
+        span.style.cssText = window.getComputedStyle(input).cssText
+        span.style.position = 'relative'
+        span.className = input.className
+        clonedInput.parentNode?.replaceChild(span, clonedInput)
+      }
     })
     
-    const canvas = await html2canvas(specDocumentRef.value, {
-      scale: 2, // 2倍清晰度
+    // 对克隆的DOM进行截图
+    const canvas = await html2canvas(tempContainer, {
+      scale: 2,
       useCORS: true,
-      allowTaint: false,
+      allowTaint: true,
       backgroundColor: '#ffffff'
     })
     
