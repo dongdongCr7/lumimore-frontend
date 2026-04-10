@@ -5,11 +5,14 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { useUserStore } from './stores/user'
+import { useProductStore } from './stores/product'
 
 const userStore = useUserStore()
+const productStore = useProductStore()
 
 onMounted(() => {
   userStore.loadFromStorage()
+  productStore.initialize()
 })
 </script>
 

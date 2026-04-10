@@ -1,28 +1,18 @@
 import { defineStore } from 'pinia'
-import { ref, computed, watch } from 'vue'
+import { ref, computed } from 'vue'
+import { 
+  categoryApi, 
+  seriesApi, 
+  productApi, 
+  specSettingsApi,
+  type Category,
+  type Series,
+  type Product,
+  type SpecSettings,
+  type PhotometricGroup
+} from '@/storage/database/database'
 
-export interface Category {
-  id: number
-  name: string
-  description: string
-}
-
-export interface Series {
-  id: number
-  categoryId: number
-  name: string
-  description: string
-  keywords: string[]
-}
-
-export interface Product {
-  id: number
-  seriesId: number
-  categoryId: number
-  name: string
-  specs: Record<string, string>
-  image?: string
-}
+export type { Category, Series, Product, SpecSettings, PhotometricGroup }
 
 export interface SpecTemplate {
   id: number
@@ -31,19 +21,6 @@ export interface SpecTemplate {
 }
 
 // 自定义规格书设置
-export interface PhotometricGroup {
-  model: string
-  power: string
-  lumen: string
-  efficacy: string
-  cri2700: string
-  cri3000: string
-  cri3500: string
-  cri4000: string
-  cri5000: string
-  cri5700: string
-}
-
 export interface CustomSpecSettings {
   productId: number
   logoUrl?: string
@@ -55,78 +32,22 @@ export interface CustomSpecSettings {
   photometricGroups?: PhotometricGroup[]
 }
 
-const STORAGE_KEY = 'lumimore_product_data'
-const SPEC_SETTINGS_KEY = 'lumimore_spec_settings'
+// 默认数据
+const defaultCategories: Category[] = [
+  { id: 5, name: 'LUMISTRIP', description: '高显指LED灯带系列' }
+]
 
-// 从localStorage加载数据
-function loadFromStorage() {
-  try {
-    const data = localStorage.getItem(STORAGE_KEY)
-    if (data) {
-      return JSON.parse(data)
-    }
-  } catch (e) {
-    console.error('加载数据失败:', e)
-  }
-  return null
-}
+const defaultSeries: Series[] = [
+  { id: 9, categoryId: 5, name: '2835', description: '2835 SMD 高显指灯带', keywords: ['2835', '高显指', 'Ra98', '灯带'] }
+]
 
-// 保存数据到localStorage
-function saveToStorage(data: any) {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
-  } catch (e) {
-    console.error('保存数据失败:', e)
-  }
-}
-
-// 加载规格书设置
-function loadSpecSettings() {
-  try {
-    const data = localStorage.getItem(SPEC_SETTINGS_KEY)
-    if (data) {
-      return JSON.parse(data)
-    }
-  } catch (e) {
-    console.error('加载规格书设置失败:', e)
-  }
-  return {}
-}
-
-// 保存规格书设置
-function saveSpecSettings(data: Record<number, CustomSpecSettings>) {
-  try {
-    localStorage.setItem(SPEC_SETTINGS_KEY, JSON.stringify(data))
-  } catch (e) {
-    console.error('保存规格书设置失败:', e)
-  }
-}
-
-export const useProductStore = defineStore('product', () => {
-  // 从localStorage加载初始数据
-  const savedData = loadFromStorage()
-  
-  // LED灯产品分类 - 确保至少有默认分类
-  const defaultCategories: Category[] = [
-    { id: 5, name: 'LUMISTRIP', description: '高显指LED灯带系列' }
-  ]
-
-  const categories = ref<Category[]>(
-    savedData?.categories?.length ? savedData.categories : defaultCategories
-  )
-
-  // LED灯系列 - 确保至少有默认系列
-  const defaultSeries: Series[] = [
-    { id: 9, categoryId: 5, name: '2835', description: '2835 SMD 高显指灯带', keywords: ['2835', '高显指', 'Ra98', '灯带'] }
-  ]
-
-  const seriesList = ref<Series[]>(
-    savedData?.seriesList?.length ? savedData.seriesList : defaultSeries
-  )
-
-  // LED灯产品 - 确保至少有默认产品
-  const defaultProducts: Product[] = [
-    { id: 1, seriesId: 9, categoryId: 5, name: 'White 14.4W 2835 120LED 10MM', specs: { 
+const defaultProducts: Product[] = [
+  { 
+    id: 1, 
+    seriesId: 9, 
+    categoryId: 5, 
+    name: 'White 14.4W 2835 120LED 10MM', 
+    specs: { 
       'LED密度': '120LED/M',
       '功率': '14.4W/m',
       'LED类型': '2835 SMD',
@@ -146,54 +67,81 @@ export const useProductStore = defineStore('product', () => {
       '储存温度': '-30°C ~ +70°C',
       '寿命': '>50,000小时',
       '认证': 'CE, RoHS'
-    }}
-  ]
-  
-  const products = ref<Product[]>(
-    savedData?.products?.length ? savedData.products : defaultProducts
-  )
-
-  // 规格书设置（按产品ID存储）
-  const specSettings = ref<Record<number, CustomSpecSettings>>(
-    loadSpecSettings() || {}
-  )
-
-  const specTemplates = ref<SpecTemplate[]>(
-    savedData?.specTemplates || [
-      { id: 1, categoryId: 1, specNames: ['阻值', '精度', '功率', '封装'] },
-      { id: 2, categoryId: 2, specNames: ['类型', '范围', '精度', '接口'] },
-      { id: 3, categoryId: 3, specNames: ['输入', '输出', '效率', '保护'] }
-    ]
-  )
-
-  // 监听数据变化，自动保存
-  watch([categories, seriesList, products], () => {
-    saveToStorage({
-      categories: categories.value,
-      seriesList: seriesList.value,
-      products: products.value,
-      specTemplates: specTemplates.value
-    })
-  }, { deep: true })
-
-  // 监听规格书设置变化，自动保存
-  watch(specSettings, (newSettings) => {
-    saveSpecSettings(newSettings)
-  }, { deep: true })
-
-  // 获取某产品ID的规格书设置
-  function getSpecSettings(productId: number): CustomSpecSettings | undefined {
-    return specSettings.value[productId]
-  }
-
-  // 保存某产品ID的规格书设置
-  function saveSpecSettingsForProduct(productId: number, settings: Omit<CustomSpecSettings, 'productId'>) {
-    specSettings.value[productId] = {
-      productId,
-      ...settings
     }
-    // 手动触发保存
-    saveSpecSettings(specSettings.value)
+  }
+]
+
+export const useProductStore = defineStore('product', () => {
+  const isLoading = ref(false)
+  const isInitialized = ref(false)
+  const error = ref<string | null>(null)
+
+  // 数据状态
+  const categories = ref<Category[]>([])
+  const seriesList = ref<Series[]>([])
+  const products = ref<Product[]>([])
+  
+  // 规格书设置（按产品ID存储）
+  const specSettings = ref<Record<number, CustomSpecSettings>>({})
+
+  // 规格模板
+  const specTemplates = ref<SpecTemplate[]>([
+    { id: 1, categoryId: 1, specNames: ['阻值', '精度', '功率', '封装'] },
+    { id: 2, categoryId: 2, specNames: ['类型', '范围', '精度', '接口'] },
+    { id: 3, categoryId: 3, specNames: ['输入', '输出', '效率', '保护'] }
+  ])
+
+  // 初始化：从数据库加载数据
+  async function initialize() {
+    if (isInitialized.value) return
+    
+    isLoading.value = true
+    error.value = null
+    
+    try {
+      // 并行加载所有数据
+      const [categoriesData, seriesData, productsData] = await Promise.all([
+        categoryApi.getAll(),
+        seriesApi.getAll(),
+        productApi.getAll()
+      ])
+      
+      // 如果数据库为空，使用默认数据
+      if (categoriesData.length === 0) {
+        categories.value = defaultCategories
+        seriesList.value = defaultSeries
+        products.value = defaultProducts
+        // 创建默认数据到数据库
+        await Promise.all([
+          categoryApi.create(defaultCategories[0].name, defaultCategories[0].description),
+          seriesApi.create(defaultSeries[0].categoryId, defaultSeries[0].name, defaultSeries[0].description, defaultSeries[0].keywords),
+          productApi.create(defaultProducts[0].seriesId, defaultProducts[0].categoryId, defaultProducts[0].name, defaultProducts[0].specs)
+        ])
+        // 重新加载
+        const [newSeriesData, newProductsData] = await Promise.all([
+          seriesApi.getAll(),
+          productApi.getAll()
+        ])
+        seriesList.value = newSeriesData
+        products.value = newProductsData
+      } else {
+        categories.value = categoriesData
+        seriesList.value = seriesData
+        products.value = productsData
+      }
+      
+      isInitialized.value = true
+    } catch (e: any) {
+      console.error('初始化数据失败:', e)
+      error.value = e.message
+      // 使用本地默认数据作为降级
+      categories.value = defaultCategories
+      seriesList.value = defaultSeries
+      products.value = defaultProducts
+      isInitialized.value = true
+    } finally {
+      isLoading.value = false
+    }
   }
 
   // 获取某分类下的产品数量
@@ -215,61 +163,153 @@ export const useProductStore = defineStore('product', () => {
   })
 
   // 添加分类
-  function addCategory(name: string, description: string) {
-    const id = Math.max(...categories.value.map(c => c.id), 0) + 1
-    categories.value.push({ id, name, description })
+  async function addCategory(name: string, description: string) {
+    try {
+      const newCategory = await categoryApi.create(name, description)
+      categories.value.push(newCategory)
+    } catch (e: any) {
+      console.error('添加分类失败:', e)
+      throw e
+    }
   }
 
   // 添加系列
-  function addSeries(categoryId: number, name: string, description: string, keywords: string[]) {
-    const id = Math.max(...seriesList.value.map(s => s.id), 0) + 1
-    seriesList.value.push({ id, categoryId, name, description, keywords })
+  async function addSeries(categoryId: number, name: string, description: string, keywords: string[]) {
+    try {
+      const newSeries = await seriesApi.create(categoryId, name, description, keywords)
+      seriesList.value.push(newSeries)
+    } catch (e: any) {
+      console.error('添加系列失败:', e)
+      throw e
+    }
   }
 
   // 添加产品
-  function addProduct(seriesId: number, categoryId: number, name: string, specs: Record<string, string>) {
-    const id = Math.max(...products.value.map(p => p.id), 0) + 1
-    products.value.push({ id, seriesId, categoryId, name, specs })
+  async function addProduct(seriesId: number, categoryId: number, name: string, specs: Record<string, string>) {
+    try {
+      const newProduct = await productApi.create(seriesId, categoryId, name, specs)
+      products.value.push(newProduct)
+    } catch (e: any) {
+      console.error('添加产品失败:', e)
+      throw e
+    }
   }
 
   // 删除分类
-  function deleteCategory(id: number) {
-    const index = categories.value.findIndex(c => c.id === id)
-    if (index > -1) {
-      categories.value.splice(index, 1)
+  async function deleteCategory(id: number) {
+    try {
+      await categoryApi.delete(id)
+      categories.value = categories.value.filter(c => c.id !== id)
       // 同时删除该分类下的系列和产品
       seriesList.value = seriesList.value.filter(s => s.categoryId !== id)
       products.value = products.value.filter(p => p.categoryId !== id)
+    } catch (e: any) {
+      console.error('删除分类失败:', e)
+      throw e
     }
   }
 
   // 删除系列
-  function deleteSeries(id: number) {
-    const index = seriesList.value.findIndex(s => s.id === id)
-    if (index > -1) {
-      seriesList.value.splice(index, 1)
+  async function deleteSeries(id: number) {
+    try {
+      await seriesApi.delete(id)
+      seriesList.value = seriesList.value.filter(s => s.id !== id)
       products.value = products.value.filter(p => p.seriesId !== id)
+    } catch (e: any) {
+      console.error('删除系列失败:', e)
+      throw e
     }
   }
 
   // 删除产品
-  function deleteProduct(id: number) {
-    const index = products.value.findIndex(p => p.id === id)
-    if (index > -1) {
-      products.value.splice(index, 1)
+  async function deleteProduct(id: number) {
+    try {
+      await productApi.delete(id)
+      products.value = products.value.filter(p => p.id !== id)
+      // 删除对应的规格书设置
+      delete specSettings.value[id]
+    } catch (e: any) {
+      console.error('删除产品失败:', e)
+      throw e
     }
   }
 
   // 更新产品
-  function updateProduct(id: number, name: string, specs: Record<string, string>) {
-    const product = products.value.find(p => p.id === id)
-    if (product) {
-      product.name = name
-      product.specs = specs
+  async function updateProduct(id: number, name: string, specs: Record<string, string>) {
+    try {
+      const updated = await productApi.update(id, name, specs)
+      const index = products.value.findIndex(p => p.id === id)
+      if (index !== -1) {
+        products.value[index] = updated
+      }
+    } catch (e: any) {
+      console.error('更新产品失败:', e)
+      throw e
+    }
+  }
+
+  // 获取某产品ID的规格书设置（从数据库加载）
+  async function loadSpecSettings(productId: number): Promise<CustomSpecSettings | undefined> {
+    if (specSettings.value[productId]) {
+      return specSettings.value[productId]
+    }
+    
+    try {
+      const dbSettings = await specSettingsApi.getByProduct(productId)
+      if (dbSettings) {
+        const settings: CustomSpecSettings = {
+          productId: dbSettings.productId,
+          logoUrl: dbSettings.logoUrl,
+          productImage: dbSettings.productImage,
+          dimensionImage: dbSettings.dimensionImage,
+          certifications: dbSettings.certifications,
+          footer: dbSettings.footer,
+          editableSpecs: dbSettings.editableSpecs,
+          photometricGroups: dbSettings.photometricGroups
+        }
+        specSettings.value[productId] = settings
+        return settings
+      }
+    } catch (e: any) {
+      console.error('加载规格书设置失败:', e)
+    }
+    return undefined
+  }
+
+  // 获取本地规格书设置
+  function getSpecSettings(productId: number): CustomSpecSettings | undefined {
+    return specSettings.value[productId]
+  }
+
+  // 保存某产品ID的规格书设置到数据库
+  async function saveSpecSettingsForProduct(productId: number, settings: Omit<CustomSpecSettings, 'productId'>) {
+    try {
+      await specSettingsApi.upsert({
+        product_id: productId,
+        logo_url: settings.logoUrl,
+        product_image: settings.productImage,
+        dimension_image: settings.dimensionImage,
+        certifications: settings.certifications,
+        footer: settings.footer,
+        editable_specs: settings.editableSpecs,
+        photometric_groups: settings.photometricGroups
+      })
+      
+      // 更新本地缓存
+      specSettings.value[productId] = {
+        productId,
+        ...settings
+      }
+    } catch (e: any) {
+      console.error('保存规格书设置失败:', e)
+      throw e
     }
   }
 
   return {
+    isLoading,
+    isInitialized,
+    error,
     categories,
     seriesList,
     products,
@@ -278,6 +318,7 @@ export const useProductStore = defineStore('product', () => {
     getProductCountByCategory,
     getProductCountBySeries,
     chartData,
+    initialize,
     addCategory,
     addSeries,
     addProduct,
@@ -285,6 +326,7 @@ export const useProductStore = defineStore('product', () => {
     deleteSeries,
     deleteProduct,
     updateProduct,
+    loadSpecSettings,
     getSpecSettings,
     saveSpecSettingsForProduct
   }
