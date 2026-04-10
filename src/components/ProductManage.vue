@@ -172,7 +172,7 @@
           <input type="file" ref="logoInputRef" @change="handleLogoFileChange" accept="image/*" style="display:none" />
         </div>
         
-        <!-- 产品图片 + 认证图标 + 产品信息 -->
+        <!-- 产品图片 + 产品信息 + 认证图标 -->
         <div class="spec-row1">
           <div class="spec-product-img" @click="triggerProductImageUpload">
             <img v-if="customSettings?.productImage" :src="customSettings.productImage" class="product-img-uploaded" />
@@ -185,17 +185,17 @@
           <input type="file" ref="productImageInputRef" @change="handleProductImageFileChange" accept="image/*" style="display:none" />
           
           <div class="spec-info">
-            <div class="spec-cert-row">
-              <div v-for="i in 5" :key="i" class="cert-box" @click="triggerCertUpload(i-1)">
-                <img v-if="customSettings?.certifications?.[i-1]?.image" :src="customSettings.certifications[i-1].image" />
-                <el-icon v-else><Plus /></el-icon>
-              </div>
-            </div>
-            <input type="file" ref="certInputRef" @change="handleCertFileChange" accept="image/*" style="display:none" />
-            
             <input type="text" class="spec-title-input borderless" v-model="editableSpecs.title" placeholder="产品名称" />
             <input type="text" class="spec-model-input borderless" v-model="editableSpecs.model" placeholder="Model: LS-XXXX" />
           </div>
+          
+          <div class="spec-cert-row">
+            <div v-for="i in 5" :key="i" class="cert-box" @click="triggerCertUpload(i-1)">
+              <img v-if="customSettings?.certifications?.[i-1]?.image" :src="customSettings.certifications[i-1].image" />
+              <el-icon v-else><Plus /></el-icon>
+            </div>
+          </div>
+          <input type="file" ref="certInputRef" @change="handleCertFileChange" accept="image/*" style="display:none" />
         </div>
         
         <!-- Features + Dimension -->
@@ -1173,14 +1173,37 @@ defineExpose({
   overflow: hidden;
 }
 
-.spec-product-img {
-  width: 200px;
-  height: 120px;
-  background: #f8f8f8;
-  border: 1px solid #333;
-  position: relative;
-  overflow: hidden;
+.spec-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+}
+
+/* 认证图标横排在最右边 */
+.spec-row1 .spec-cert-row {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: flex-end;
+}
+
+.spec-row1 .spec-cert-row .cert-box {
+  width: 35px;
+  height: 25px;
+  border: 1px solid #999;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
+  font-size: 14px;
+  color: #999;
+}
+
+.spec-row1 .spec-cert-row .cert-box:hover {
+  border-color: #ff6b00;
 }
 
 /* ========== 规格书对话框样式 ========== */
