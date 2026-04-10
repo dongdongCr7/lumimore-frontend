@@ -852,11 +852,21 @@ const downloadSpec = async () => {
     photometricGroups: photometricGroups.value
   })
   
+  console.log('下载前检查 - editableSpecs:', editableSpecs.value)
+  console.log('下载前检查 - photometricGroups:', photometricGroups.value)
+  
   try {
     ElMessage.info('正在生成规格书...')
     
     // 等待一下确保数据渲染完成
-    await new Promise(resolve => setTimeout(resolve, 100))
+    await new Promise(resolve => setTimeout(resolve, 200))
+    
+    // 检查DOM中的input值
+    const inputs = specDocumentRef.value.querySelectorAll('input')
+    console.log('DOM中的input数量:', inputs.length)
+    inputs.forEach((input, i) => {
+      console.log(`input[${i}] value:`, input.value)
+    })
     
     const canvas = await html2canvas(specDocumentRef.value, {
       scale: 2, // 2倍清晰度
