@@ -885,7 +885,44 @@ const applyCustomSettings = () => {
   ElMessage.success('自定义设置已应用')
 }
 
-const downloadSpec = () => {
+// 加载图片为Promise
+const loadImage = (src: string): Promise<HTMLImageElement> => {
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    img.crossOrigin = 'anonymous'
+    img.onload = () => resolve(img)
+    img.onerror = reject
+    img.src = src
+  })
+}
+
+// 绘制LED灯带示意图
+const drawLedStrip = (ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) => {
+  ctx.fillStyle = '#e0e0e0'
+  ctx.fillRect(x, y, w, h)
+  ctx.fillStyle = '#ff8c00'
+  for (let i = 0; i < 14; i++) {
+    ctx.fillRect(x + 5 + i * 12, y + 10, 8, h - 20)
+  }
+}
+
+// 绘制尺寸示意图占位
+const drawDimensionPlaceholder = (ctx: CanvasRenderingContext2D, x: number, y: number, w: number) => {
+  ctx.fillStyle = '#000'
+  ctx.fillRect(x, y, w, 3)
+  ctx.fillRect(x, y - 5, w / 2, 3)
+  ctx.fillRect(x + 10, y, 2, 15)
+  ctx.fillRect(x + w - 12, y, 2, 15)
+  
+  ctx.font = '8px Arial'
+  ctx.textAlign = 'center'
+  ctx.fillText('50mm', x + 50, y - 8)
+  ctx.fillText('12mm', x + w / 2, y + 20)
+  ctx.fillText('16.6mm', x + w / 4, y + 33)
+}
+
+// 下载规格书
+const downloadSpec = async () => {
   if (!specDocumentRef.value) return
   
   const canvas = document.createElement('canvas')
@@ -893,8 +930,8 @@ const downloadSpec = () => {
   if (!ctx) return
   
   // A4尺寸比例 210:297 ≈ 1:1.414
-  const pageWidth = 800
-  const pageHeight = 1130 // A4比例
+  const pageWidth = 794
+  const pageHeight = 1123
   
   canvas.width = pageWidth
   canvas.height = pageHeight
@@ -920,24 +957,16 @@ const downloadSpec = () => {
   ctx.fillRect(10, 10, imgW, imgH)
   ctx.strokeRect(10, 10, imgW, imgH)
   
-  // 如果有上传的产品图片
+  // 加载产品图片
   if (customSettings.value?.productImage) {
-    const prodImg = new Image()
-    prodImg.crossOrigin = 'anonymous'
-    prodImg.src = customSettings.value.productImage
-    prodImg.onload = () => {
+    try {
+      const prodImg = await loadImage(customSettings.value.productImage)
       ctx.drawImage(prodImg, 10, 10, imgW, imgH)
+    } catch {
+      drawLedStrip(ctx, 15, 25, 170, 60)
     }
   } else {
-    // LED灯带示意图
-    ctx.fillStyle = '#e0e0e0'
-    ctx.fillRect(15, 25, 170, 60)
-    
-    // LED灯珠
-    ctx.fillStyle = '#ff8c00'
-    for (let i = 0; i < 14; i++) {
-      ctx.fillRect(20 + i * 12, 35, 8, 40)
-    }
+    drawLedStrip(ctx, 15, 25, 170, 60)
   }
   
   // LED密度标签
@@ -948,16 +977,12 @@ const downloadSpec = () => {
   ctx.textAlign = 'center'
   ctx.fillText('120 LED/M', imgW - 30, imgH - 2)
   
-  // Logo（放在产品图片右侧）
+  // 加载Logo
   const logoUrl = customSettings.value?.logoUrl || '/logo.jpg'
   try {
-    const logoImg = new Image()
-    logoImg.crossOrigin = 'anonymous'
-    logoImg.src = logoUrl
-    logoImg.onload = () => {
-      ctx.drawImage(logoImg, imgW + 25, 10, 100, 35)
-    }
-  } catch (e) {
+    const logoImg = await loadImage(logoUrl)
+    ctx.drawImage(logoImg, imgW + 25, 10, 100, 35)
+  } catch {
     ctx.fillStyle = '#ff6b00'
     ctx.font = 'bold 16px Arial'
     ctx.textAlign = 'left'
@@ -996,7 +1021,7 @@ const downloadSpec = () => {
   
   // ========== Features + Dimension ==========
   
-  const cellW = 390
+  const cellW = 387
   const cellH = 75
   
   // Features
@@ -1032,27 +1057,16 @@ const downloadSpec = () => {
   ctx.fillRect(10 + cellW, y + 18, cellW, cellH - 18)
   ctx.strokeRect(10 + cellW, y + 18, cellW, cellH - 18)
   
-  // 如果有尺寸图片
+  // 加载尺寸图片
   if (customSettings.value?.dimensionImage) {
-    const dimImg = new Image()
-    dimImg.crossOrigin = 'anonymous'
-    dimImg.src = customSettings.value.dimensionImage
-    dimImg.onload = () => {
+    try {
+      const dimImg = await loadImage(customSettings.value.dimensionImage)
       ctx.drawImage(dimImg, 10 + cellW + 50, y + 25, cellW - 100, cellH - 35)
+    } catch {
+      drawDimensionPlaceholder(ctx, 10 + cellW + 50, y + 35, 280)
     }
   } else {
-    // 默认尺寸示意图
-    ctx.fillStyle = '#000'
-    ctx.fillRect(10 + cellW + 50, y + 35, 280, 3)
-    ctx.fillRect(10 + cellW + 50, y + 30, 140, 3)
-    ctx.fillRect(10 + cellW + 60, y + 35, 2, 15)
-    ctx.fillRect(10 + cellW + 200, y + 35, 2, 15)
-    
-    ctx.font = '8px Arial'
-    ctx.textAlign = 'center'
-    ctx.fillText('50mm', 10 + cellW + 100, y + 42)
-    ctx.fillText('12mm', 10 + cellW + 160, y + 55)
-    ctx.fillText('16.6mm', 10 + cellW + 130, y + 68)
+    drawDimensionPlaceholder(ctx, 10 + cellW + 50, y + 35, 280)
   }
   
   y += cellH + 5
@@ -1120,7 +1134,7 @@ const downloadSpec = () => {
   
   // ========== 四列参数：Electrical + Photometric + Features + Remark ==========
   
-  const quadW = 195
+  const quadW = 193
   
   // 表头
   ctx.fillStyle = '#f5f5f5'
@@ -1256,33 +1270,7 @@ const downloadSpec = () => {
   ]
   
   // 原图24行数据
-  const dataRows = [
-    { power: '9.6W/m', cct: '2700K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { power: '9.6W/m', cct: '3000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { power: '9.6W/m', cct: '3500K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { power: '9.6W/m', cct: '4000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { power: '9.6W/m', cct: '5000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { power: '9.6W/m', cct: '5700K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { power: '9.6W/m', cct: '2700K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { power: '15W/m', cct: '2700K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { power: '15W/m', cct: '3000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { power: '15W/m', cct: '3500K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { power: '15W/m', cct: '4000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { power: '15W/m', cct: '5000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { power: '15W/m', cct: '5700K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { power: '15W/m', cct: '2700K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { power: '15W/m', cct: '3000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { power: '15W/m', cct: '3500K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { power: '15W/m', cct: '4000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { power: '15W/m', cct: '5000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { power: '15W/m', cct: '5700K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { power: '15W/m', cct: '2700K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { power: '15W/m', cct: '3000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { power: '15W/m', cct: '3500K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { power: '15W/m', cct: '4000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { power: '15W/m', cct: '5000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { power: '15W/m', cct: '5700K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' }
-  ]
+  const dataRows = photometricData.value
   
   dataRows.forEach((row) => {
     ctx.fillStyle = '#fff'
