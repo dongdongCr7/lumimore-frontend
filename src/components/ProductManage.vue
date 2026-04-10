@@ -1320,60 +1320,8 @@ defineExpose({
   padding: 1px 2px !important;
   font-size: 8px !important;
 }
-  background: #fff;
-}
-
-.logo-upload-area:hover {
-  border-color: #ff6b00;
-}
-
-.spec-logo-img {
-  max-width: 100px;
-  max-height: 40px;
-  object-fit: contain;
-}
-
-.logo-upload-placeholder {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  color: #999;
-  font-size: 9px;
-}
 
 /* 认证图标横排 */
-.spec-cert-row {
-  display: flex;
-  gap: 5px;
-  padding: 5px 10px;
-  border-bottom: 1px solid #ddd;
-  background: #fff;
-}
-
-.spec-cert-row .cert-box {
-  width: 35px;
-  height: 25px;
-  border: 1px solid #999;
-  background: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 14px;
-  color: #999;
-}
-
-.spec-cert-row .cert-box:hover {
-  border-color: #ff6b00;
-}
-
-.spec-cert-row .cert-box img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-/* 顶部标题区 */
 .spec-row1 {
   display: flex;
   align-items: flex-start;
