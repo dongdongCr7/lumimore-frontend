@@ -894,11 +894,14 @@ const downloadSpec = async () => {
     if (certRow) {
       const certBoxes = certRow.querySelectorAll('.cert-box')
       if (certBoxes.length === 5) {
-        // 创建两行容器
+        // 创建两行容器，保持flex布局
+        const container = document.createElement('div')
+        container.style.cssText = 'display: flex !important; flex-direction: column !important; gap: 3px !important; width: fit-content !important;'
+        
         const row1 = document.createElement('div')
-        row1.style.cssText = 'display: flex !important; gap: 5px !important;'
+        row1.style.cssText = 'display: flex !important; gap: 3px !important;'
         const row2 = document.createElement('div')
-        row2.style.cssText = 'display: flex !important; gap: 5px !important;'
+        row2.style.cssText = 'display: flex !important; gap: 3px !important; justify-content: flex-start !important;'
         
         // 第一行放3个，第二行放2个
         for (let i = 0; i < 3; i++) {
@@ -908,17 +911,18 @@ const downloadSpec = async () => {
           row2.appendChild(certBoxes[i])
         }
         
-        // 清空原容器并添加两行
+        container.appendChild(row1)
+        container.appendChild(row2)
+        
+        // 清空原容器并添加新容器
         certRow.innerHTML = ''
-        certRow.appendChild(row1)
-        certRow.appendChild(row2)
+        certRow.appendChild(container)
       }
     }
     
     // 添加必要的CSS样式到克隆的DOM
     const style = document.createElement('style')
     style.textContent = `
-      .spec-cert-row { display: block !important; max-width: 100% !important; }
       .cert-box { width: 35px !important; height: 25px !important; display: flex !important; align-items: center !important; justify-content: center !important; flex-shrink: 0 !important; border: 1px solid #999 !important; overflow: hidden !important; }
       .cert-box img { width: 100% !important; height: 100% !important; object-fit: contain !important; display: block !important; margin: 0 !important; padding: 0 !important; }
       .cert-placeholder { font-size: 8px !important; color: #ccc !important; }
