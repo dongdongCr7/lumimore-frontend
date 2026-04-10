@@ -191,8 +191,8 @@
           
           <div class="spec-cert-row">
             <div v-for="i in 5" :key="i" class="cert-box" @click="triggerCertUpload(i-1)">
-              <img v-if="customSettings?.certifications?.[i-1]?.image" :src="customSettings.certifications[i-1].image" />
-              <el-icon v-else><Plus /></el-icon>
+              <img v-if="customSettings?.certifications?.[i-1]?.image" :src="customSettings.certifications[i-1].image" class="cert-img" />
+              <span v-else class="cert-placeholder">Cert {{ i }}</span>
             </div>
           </div>
           <input type="file" ref="certInputRef" @change="handleCertFileChange" accept="image/*" style="display:none" />
@@ -856,18 +856,17 @@ const downloadSpec = async () => {
     ElMessage.info('正在生成规格书...')
     await new Promise(resolve => setTimeout(resolve, 500))
     
-    // 创建一个独立的容器用于截图
-    const container = document.createElement('div')
-    container.style.cssText = `
-      position: fixed;
-      left: -9999px;
-      top: 0;
-      background: white;
-      padding: 20px;
-    `
-    
     // 克隆规格书内容
     const clone = specDocumentRef.value.cloneNode(true) as HTMLElement
+    
+    // 移除编辑相关的按钮和操作行（下载时不需要显示）
+    // 移除 "添加功率" 按钮
+    const addPowerBtn = clone.querySelector('.photometric-title-row .el-button')
+    if (addPowerBtn) addPowerBtn.remove()
+    
+    // 移除所有 "删除此功率" 按钮行
+    const deleteRows = clone.querySelectorAll('.power-group-actions')
+    deleteRows.forEach(row => row.remove())
     
     // 将所有input替换为显示值的span
     const originalInputs = specDocumentRef.value.querySelectorAll('input')
@@ -878,7 +877,6 @@ const downloadSpec = async () => {
       if (clonedInput) {
         const span = document.createElement('span')
         span.textContent = input.value || input.placeholder || ''
-        // 复制样式
         span.style.cssText = `
           display: inline-block;
           min-width: ${input.offsetWidth || 50}px;
@@ -891,6 +889,15 @@ const downloadSpec = async () => {
       }
     })
     
+    // 创建一个独立的容器用于截图
+    const container = document.createElement('div')
+    container.style.cssText = `
+      position: fixed;
+      left: -9999px;
+      top: 0;
+      background: white;
+      padding: 20px;
+    `
     container.appendChild(clone)
     document.body.appendChild(container)
     
@@ -1386,6 +1393,17 @@ defineExpose({
   width: 100%;
   height: 100%;
   object-fit: contain;
+}
+
+.cert-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-size: 8px;
+  color: #ccc;
+  background: #f9f9f9;
 }
 
 /* 两列表格行 - 统一边框 */
