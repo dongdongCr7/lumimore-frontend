@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 
 export interface Category {
   id: number
@@ -30,48 +30,150 @@ export interface SpecTemplate {
   specNames: string[]
 }
 
+// 自定义规格书设置
+export interface CustomSpecSettings {
+  productId: number
+  logoUrl?: string
+  productImage?: string
+  dimensionImage?: string
+  certifications?: Array<{ name: string; image?: string }>
+  footer?: string
+}
+
+const STORAGE_KEY = 'lumimore_product_data'
+const SPEC_SETTINGS_KEY = 'lumimore_spec_settings'
+
+// 从localStorage加载数据
+function loadFromStorage() {
+  try {
+    const data = localStorage.getItem(STORAGE_KEY)
+    if (data) {
+      return JSON.parse(data)
+    }
+  } catch (e) {
+    console.error('加载数据失败:', e)
+  }
+  return null
+}
+
+// 保存数据到localStorage
+function saveToStorage(data: any) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
+  } catch (e) {
+    console.error('保存数据失败:', e)
+  }
+}
+
+// 加载规格书设置
+function loadSpecSettings() {
+  try {
+    const data = localStorage.getItem(SPEC_SETTINGS_KEY)
+    if (data) {
+      return JSON.parse(data)
+    }
+  } catch (e) {
+    console.error('加载规格书设置失败:', e)
+  }
+  return {}
+}
+
+// 保存规格书设置
+function saveSpecSettings(data: Record<number, CustomSpecSettings>) {
+  try {
+    localStorage.setItem(SPEC_SETTINGS_KEY, JSON.stringify(data))
+  } catch (e) {
+    console.error('保存规格书设置失败:', e)
+  }
+}
+
 export const useProductStore = defineStore('product', () => {
+  // 从localStorage加载初始数据
+  const savedData = loadFromStorage()
+  
   // LED灯产品分类
-  const categories = ref<Category[]>([
-    { id: 5, name: 'LUMISTRIP', description: '高显指LED灯带系列' }
-  ])
+  const categories = ref<Category[]>(
+    savedData?.categories || [
+      { id: 5, name: 'LUMISTRIP', description: '高显指LED灯带系列' }
+    ]
+  )
 
   // LED灯系列
-  const seriesList = ref<Series[]>([
-    { id: 9, categoryId: 5, name: '2835', description: '2835 SMD 高显指灯带', keywords: ['2835', '高显指', 'Ra98', '灯带'] }
-  ])
+  const seriesList = ref<Series[]>(
+    savedData?.seriesList || [
+      { id: 9, categoryId: 5, name: '2835', description: '2835 SMD 高显指灯带', keywords: ['2835', '高显指', 'Ra98', '灯带'] }
+    ]
+  )
 
-  // LED灯产品示例数据
-  const products = ref<Product[]>([
-    // LUMISTRIP 2835系列
-    { id: 1, seriesId: 9, categoryId: 5, name: 'White 14.4W 2835 120LED 10MM', specs: { 
-      'LED密度': '120LED/M',
-      '功率': '14.4W/m',
-      'LED类型': '2835 SMD',
-      '显色指数': 'Ra98+',
-      'R9值': '>98',
-      'R12值': '>98',
-      '色温': '2700K-5700K',
-      '光通量': '1200lm/m',
-      '能效': '80lm/W',
-      '输入电压': '24V DC',
-      '裁剪单元': '50mm',
-      '总宽度': '10mm',
-      '基板宽度': '12mm',
-      'IP等级': 'IP20',
-      '发光角度': '120°',
-      '工作温度': '-20°C ~ +45°C',
-      '储存温度': '-30°C ~ +70°C',
-      '寿命': '>50,000小时',
-      '认证': 'CE, RoHS'
-    }}
-  ])
+  // LED灯产品
+  const products = ref<Product[]>(
+    savedData?.products || [
+      { id: 1, seriesId: 9, categoryId: 5, name: 'White 14.4W 2835 120LED 10MM', specs: { 
+        'LED密度': '120LED/M',
+        '功率': '14.4W/m',
+        'LED类型': '2835 SMD',
+        '显色指数': 'Ra98+',
+        'R9值': '>98',
+        'R12值': '>98',
+        '色温': '2700K-5700K',
+        '光通量': '1200lm/m',
+        '能效': '80lm/W',
+        '输入电压': '24V DC',
+        '裁剪单元': '50mm',
+        '总宽度': '10mm',
+        '基板宽度': '12mm',
+        'IP等级': 'IP20',
+        '发光角度': '120°',
+        '工作温度': '-20°C ~ +45°C',
+        '储存温度': '-30°C ~ +70°C',
+        '寿命': '>50,000小时',
+        '认证': 'CE, RoHS'
+      }}
+    ]
+  )
 
-  const specTemplates = ref<SpecTemplate[]>([
-    { id: 1, categoryId: 1, specNames: ['阻值', '精度', '功率', '封装'] },
-    { id: 2, categoryId: 2, specNames: ['类型', '范围', '精度', '接口'] },
-    { id: 3, categoryId: 3, specNames: ['输入', '输出', '效率', '保护'] }
-  ])
+  // 规格书设置（按产品ID存储）
+  const specSettings = ref<Record<number, CustomSpecSettings>>(
+    loadSpecSettings() || {}
+  )
+
+  const specTemplates = ref<SpecTemplate[]>(
+    savedData?.specTemplates || [
+      { id: 1, categoryId: 1, specNames: ['阻值', '精度', '功率', '封装'] },
+      { id: 2, categoryId: 2, specNames: ['类型', '范围', '精度', '接口'] },
+      { id: 3, categoryId: 3, specNames: ['输入', '输出', '效率', '保护'] }
+    ]
+  )
+
+  // 监听数据变化，自动保存
+  watch([categories, seriesList, products], () => {
+    saveToStorage({
+      categories: categories.value,
+      seriesList: seriesList.value,
+      products: products.value,
+      specTemplates: specTemplates.value
+    })
+  }, { deep: true })
+
+  // 监听规格书设置变化，自动保存
+  watch(specSettings, (newSettings) => {
+    saveSpecSettings(newSettings)
+  }, { deep: true })
+
+  // 获取某产品ID的规格书设置
+  function getSpecSettings(productId: number): CustomSpecSettings | undefined {
+    return specSettings.value[productId]
+  }
+
+  // 保存某产品ID的规格书设置
+  function saveSpecSettingsForProduct(productId: number, settings: Omit<CustomSpecSettings, 'productId'>) {
+    specSettings.value[productId] = {
+      productId,
+      ...settings
+    }
+    // 手动触发保存
+    saveSpecSettings(specSettings.value)
+  }
 
   // 获取某分类下的产品数量
   const getProductCountByCategory = computed(() => {
@@ -151,6 +253,7 @@ export const useProductStore = defineStore('product', () => {
     seriesList,
     products,
     specTemplates,
+    specSettings,
     getProductCountByCategory,
     getProductCountBySeries,
     chartData,
@@ -160,6 +263,8 @@ export const useProductStore = defineStore('product', () => {
     deleteCategory,
     deleteSeries,
     deleteProduct,
-    updateProduct
+    updateProduct,
+    getSpecSettings,
+    saveSpecSettingsForProduct
   }
 })

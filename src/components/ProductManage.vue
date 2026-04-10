@@ -736,12 +736,25 @@ const deleteProduct = async (id: number) => {
 // 规格书
 const showSpecDialog = (product: Product) => {
   currentProduct.value = product
-  customSettings.value = {
-    logoUrl: '/logo.jpg',
-    productImage: '',
-    dimensionImage: '',
-    certifications: [],
-    footer: ''
+  
+  // 从store加载保存的设置，如果没有则使用默认值
+  const savedSettings = productStore.getSpecSettings(product.id)
+  if (savedSettings) {
+    customSettings.value = {
+      logoUrl: savedSettings.logoUrl || '/logo.jpg',
+      productImage: savedSettings.productImage || '',
+      dimensionImage: savedSettings.dimensionImage || '',
+      certifications: savedSettings.certifications || [],
+      footer: savedSettings.footer || ''
+    }
+  } else {
+    customSettings.value = {
+      logoUrl: '/logo.jpg',
+      productImage: '',
+      dimensionImage: '',
+      certifications: [],
+      footer: ''
+    }
   }
   specDialogVisible.value = true
 }
@@ -875,6 +888,8 @@ const removeDimensionImage = () => {
 }
 
 const applyCustomSettings = () => {
+  if (!currentProduct.value) return
+  
   customSettings.value = {
     logoUrl: customSettingsForm.logoUrl || '/logo.jpg',
     productImage: customSettingsForm.productImage,
@@ -882,8 +897,18 @@ const applyCustomSettings = () => {
     certifications: customSettingsForm.certifications,
     footer: customSettingsForm.footer
   }
+  
+  // 保存到store（localStorage持久化）
+  productStore.saveSpecSettingsForProduct(currentProduct.value.id, {
+    logoUrl: customSettings.value.logoUrl,
+    productImage: customSettings.value.productImage,
+    dimensionImage: customSettings.value.dimensionImage,
+    certifications: customSettings.value.certifications,
+    footer: customSettings.value.footer
+  })
+  
   customDialogVisible.value = false
-  ElMessage.success('自定义设置已应用')
+  ElMessage.success('设置已保存，下次打开将保留')
 }
 
 // 下载规格书 - 使用html2canvas截取DOM
