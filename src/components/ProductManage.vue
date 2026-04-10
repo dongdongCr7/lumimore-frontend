@@ -1232,6 +1232,7 @@ defineExpose({
   padding: 5px 8px;
   font-weight: bold;
   text-align: center;
+  height: 24px;
 }
 
 .spec-mini-table td {
@@ -1471,6 +1472,7 @@ defineExpose({
   padding: 5px 8px;
   font-weight: bold;
   text-align: center;
+  height: 24px;
 }
 
 .spec-duo-table td {
@@ -1683,6 +1685,7 @@ defineExpose({
   padding: 5px 8px;
   font-weight: bold;
   text-align: center;
+  height: 24px;
 }
 
 .spec-mini-table td {
