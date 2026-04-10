@@ -210,8 +210,9 @@
     </el-dialog>
 
     <!-- 规格书对话框 -->
-    <el-dialog v-model="specDialogVisible" title="产品规格书" width="850px">
-      <div class="spec-document" ref="specDocumentRef">
+    <el-dialog v-model="specDialogVisible" title="产品规格书" width="830px" class="spec-dialog">
+      <div class="spec-dialog-content">
+        <div class="spec-document" ref="specDocumentRef">
         
         <!-- 第1行：Logo + 产品图片 + 产品信息 + 认证图标 -->
         <div class="spec-row1">
@@ -333,6 +334,7 @@
           </table>
         </div>
         
+        </div>
       </div>
       
       <template #footer>
@@ -1483,14 +1485,28 @@ defineExpose({
   align-items: center;
 }
 
+/* ========== 规格书对话框样式 ========== */
+.spec-dialog .el-dialog__body {
+  padding: 0;
+  overflow: hidden;
+}
+
+.spec-dialog-content {
+  max-height: 85vh;
+  overflow-y: auto;
+  display: flex;
+  justify-content: center;
+}
+
 /* ========== 规格书样式 - 按照原图排版 A4比例 ========== */
 .spec-document {
   background: white;
   padding: 0;
   font-family: Arial, sans-serif;
-  width: 800px;
-  min-height: 1130px;
+  width: 794px;
+  min-height: 1123px;
   border: 1px solid #333;
+  flex-shrink: 0;
 }
 
 /* 顶部标题区 */
