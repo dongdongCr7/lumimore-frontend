@@ -304,9 +304,6 @@
         <div class="spec-row5">
           <div class="photometric-title-row">
             <div class="photometric-title">Photometric</div>
-            <el-button size="small" type="primary" text @click="addPhotometricGroup">
-              <el-icon><Plus /></el-icon> 添加功率
-            </el-button>
           </div>
           <table class="photometric-big-table">
             <thead>
@@ -325,9 +322,6 @@
                 <tr class="power-group-start">
                   <td :rowspan="6">
                     <input type="text" class="table-input borderless center" v-model="group.model" />
-                    <el-button v-if="photometricGroups.length > 1" size="small" type="danger" text class="remove-group-btn" @click="removePhotometricGroup(groupIndex)">
-                      <el-icon><Delete /></el-icon>
-                    </el-button>
                   </td>
                   <td :rowspan="6" class="power-cell">
                     <input type="text" class="table-input borderless center" v-model="group.power" />
@@ -355,6 +349,10 @@
       
       <template #footer>
         <div class="dialog-footer">
+          <el-button @click="specDialogVisible = false">取消</el-button>
+          <el-button type="success" @click="saveSpecSettings">
+            <el-icon><Check /></el-icon> 保存
+          </el-button>
           <el-button type="primary" @click="downloadSpec">
             <el-icon><Download /></el-icon> 下载规格书
           </el-button>
@@ -524,29 +522,6 @@ interface PhotometricGroup {
 }
 
 const photometricGroups = ref<PhotometricGroup[]>([])
-
-// 添加功率组
-const addPhotometricGroup = () => {
-  photometricGroups.value.push({
-    model: 'LS-SW28N120-2790-2408-100',
-    power: '10W/m',
-    lumen: '1000lm/m',
-    efficacy: '100lm/W',
-    cri2700: 'Ra98+',
-    cri3000: 'Ra98+',
-    cri3500: 'Ra90+',
-    cri4000: 'Ra90+',
-    cri5000: 'Ra90+',
-    cri5700: 'Ra90+'
-  })
-}
-
-// 删除功率组
-const removePhotometricGroup = (index: number) => {
-  if (photometricGroups.value.length > 1) {
-    photometricGroups.value.splice(index, 1)
-  }
-}
 
 // 压缩图片到指定大小以内
 const compressImage = (file: File, maxSizeMB: number = 2): Promise<string> => {
@@ -811,11 +786,10 @@ const showSpecDialog = (product: Product) => {
   specDialogVisible.value = true
 }
 
-// 下载规格书 - 使用html2canvas截取DOM
-const downloadSpec = async () => {
-  if (!specDocumentRef.value || !currentProduct.value) return
+// 保存规格书设置
+const saveSpecSettings = () => {
+  if (!currentProduct.value) return
   
-  // 先保存当前设置到 localStorage
   productStore.saveSpecSettingsForProduct(currentProduct.value.id, {
     logoUrl: customSettings.value?.logoUrl,
     productImage: customSettings.value?.productImage,
@@ -825,6 +799,17 @@ const downloadSpec = async () => {
     editableSpecs: editableSpecs.value,
     photometricGroups: photometricGroups.value
   })
+  
+  ElMessage.success('规格书已保存')
+  specDialogVisible.value = false
+}
+
+// 下载规格书 - 使用html2canvas截取DOM
+const downloadSpec = async () => {
+  if (!specDocumentRef.value || !currentProduct.value) return
+  
+  // 先保存当前设置到 localStorage
+  saveSpecSettings()
   
   try {
     ElMessage.info('正在生成规格书...')
