@@ -160,8 +160,8 @@
       <div class="spec-dialog-content">
         <div class="spec-document" ref="specDocumentRef">
         
-        <!-- Logo单独一行，小尺寸 -->
-        <div class="spec-logo-row">
+        <!-- Logo + 认证图标 + 产品图片 一行 -->
+        <div class="spec-header-row">
           <div class="logo-upload-area" @click="triggerLogoUpload">
             <img v-if="customSettings?.logoUrl" :src="customSettings.logoUrl" class="spec-logo-img" />
             <div v-else class="logo-upload-placeholder">
@@ -170,32 +170,25 @@
             </div>
           </div>
           <input type="file" ref="logoInputRef" @change="handleLogoFileChange" accept="image/*" style="display:none" />
-        </div>
-        
-        <!-- 认证图标横排 -->
-        <div class="spec-cert-row">
-          <div v-for="i in 5" :key="i" class="cert-box" @click="triggerCertUpload(i-1)">
-            <img v-if="customSettings?.certifications?.[i-1]?.image" :src="customSettings.certifications[i-1].image" />
-            <el-icon v-else><Plus /></el-icon>
-          </div>
-        </div>
-        <input type="file" ref="certInputRef" @change="handleCertFileChange" accept="image/*" style="display:none" />
-        
-        <!-- 产品图片 + 产品信息 -->
-        <div class="spec-row1">
-          <div class="spec-product-img" @click="triggerProductImageUpload">
-            <img v-if="customSettings?.productImage" :src="customSettings.productImage" class="product-img-uploaded" />
-            <div v-else class="product-img-placeholder">
-              <div class="led-strip-visual"></div>
-              <div class="led-badge">{{ editableSpecs.power || '14.4W/m' }}</div>
-              <div class="upload-hint">点击上传产品图</div>
-            </div>
-          </div>
-          <input type="file" ref="productImageInputRef" @change="handleProductImageFileChange" accept="image/*" style="display:none" />
           
-          <div class="spec-info">
-            <input type="text" class="spec-title-input borderless" v-model="editableSpecs.title" placeholder="产品名称" />
-            <input type="text" class="spec-model-input borderless" v-model="editableSpecs.model" placeholder="Model: LS-XXXX" />
+          <div class="spec-header-right">
+            <div class="spec-cert-row">
+              <div v-for="i in 5" :key="i" class="cert-box" @click="triggerCertUpload(i-1)">
+                <img v-if="customSettings?.certifications?.[i-1]?.image" :src="customSettings.certifications[i-1].image" />
+                <el-icon v-else><Plus /></el-icon>
+              </div>
+            </div>
+            <input type="file" ref="certInputRef" @change="handleCertFileChange" accept="image/*" style="display:none" />
+            
+            <div class="spec-product-img" @click="triggerProductImageUpload">
+              <img v-if="customSettings?.productImage" :src="customSettings.productImage" class="product-img-uploaded" />
+              <div v-else class="product-img-placeholder">
+                <div class="led-strip-visual"></div>
+                <div class="led-badge">{{ editableSpecs.power || '14.4W/m' }}</div>
+                <div class="upload-hint">点击上传</div>
+              </div>
+            </div>
+            <input type="file" ref="productImageInputRef" @change="handleProductImageFileChange" accept="image/*" style="display:none" />
           </div>
         </div>
         
@@ -1145,24 +1138,14 @@ defineExpose({
   gap: 10px;
 }
 
-.spec-row1 .spec-product-img {
+.spec-header-right .spec-product-img {
   width: 180px;
-  height: 110px;
-  background: #f8f8f8;
-  border: 1px solid #333;
-  flex-shrink: 0;
-  position: relative;
-  overflow: hidden;
-}
-
-.spec-product-img {
-  width: 200px;
-  height: 130px;
+  height: 80px;
   background: #f8f8f8;
   border: 1px solid #333;
   position: relative;
   overflow: hidden;
-  flex-shrink: 0;
+  cursor: pointer;
 }
 
 /* ========== 规格书对话框样式 ========== */
@@ -1190,9 +1173,9 @@ defineExpose({
 }
 
 /* Logo单独一行 - 小尺寸 */
-.spec-logo-row {
+.spec-header-row {
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
   padding: 8px 10px;
   border-bottom: 1px solid #ddd;
@@ -1202,7 +1185,7 @@ defineExpose({
 .logo-upload-area {
   width: 100px;
   height: 40px;
-  border: 1px dashed #999;
+  border: none;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1211,7 +1194,14 @@ defineExpose({
 }
 
 .logo-upload-area:hover {
-  border-color: #ff6b00;
+  opacity: 0.8;
+}
+
+.spec-header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
 }
 
 .spec-logo-img {
@@ -1232,8 +1222,6 @@ defineExpose({
 .spec-cert-row {
   display: flex;
   gap: 5px;
-  padding: 5px 10px;
-  border-bottom: 1px solid #ddd;
   background: #fff;
 }
 
