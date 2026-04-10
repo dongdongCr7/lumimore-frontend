@@ -923,6 +923,7 @@ const downloadSpec = async () => {
     // 添加必要的CSS样式到克隆的DOM
     const style = document.createElement('style')
     style.textContent = `
+      .spec-cert-row { width: auto !important; justify-content: flex-start !important; }
       .cert-box { width: 35px !important; height: 25px !important; display: flex !important; align-items: center !important; justify-content: center !important; flex-shrink: 0 !important; border: 1px solid #999 !important; overflow: hidden !important; }
       .cert-box img { width: 100% !important; height: 100% !important; object-fit: contain !important; display: block !important; margin: 0 !important; padding: 0 !important; }
       .cert-placeholder { font-size: 8px !important; color: #ccc !important; }
