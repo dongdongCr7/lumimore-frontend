@@ -222,6 +222,41 @@
         </div>
         <input type="file" ref="dimensionInputRef" @change="handleDimensionFileChange" accept="image/*" style="display:none" />
         
+        <!-- 自定义模块区域 -->
+        <div class="spec-custom-modules">
+          <div class="custom-modules-header">
+            <span class="custom-modules-title">Custom Modules</span>
+            <el-button size="small" type="primary" text @click="addCustomModule" :disabled="customModules.length >= 7">
+              <el-icon><Plus /></el-icon> 添加模块
+            </el-button>
+          </div>
+          <div class="custom-modules-row" v-if="customModules.length > 0">
+            <div v-for="(module, moduleIndex) in customModules" :key="module.id" class="custom-module-box">
+              <div class="custom-module-header">
+                <input type="text" class="custom-module-name-input borderless" v-model="module.name" />
+                <el-button size="small" type="danger" text @click="removeCustomModule(moduleIndex)">
+                  <el-icon><Delete /></el-icon>
+                </el-button>
+              </div>
+              <div class="custom-module-items">
+                <div v-for="(item, itemIndex) in module.items" :key="itemIndex" class="custom-module-item">
+                  <input type="text" class="custom-item-label-input borderless" v-model="item.label" placeholder="规格名" />
+                  <input type="text" class="custom-item-value-input borderless" v-model="item.value" placeholder="规格值" />
+                  <el-button size="small" type="danger" text @click="removeModuleItem(moduleIndex, itemIndex)" v-if="module.items.length > 1">
+                    <el-icon><Delete /></el-icon>
+                  </el-button>
+                </div>
+                <el-button size="small" type="primary" text @click="addModuleItem(moduleIndex)">
+                  <el-icon><Plus /></el-icon> 添加项
+                </el-button>
+              </div>
+            </div>
+          </div>
+          <div v-else class="custom-modules-empty">
+            <span>点击"添加模块"创建自定义模块</span>
+          </div>
+        </div>
+        
         <!-- 第1行：Product Setup + Light Engine -->
         <div class="spec-row-duo">
           <table class="spec-duo-table">
@@ -533,6 +568,56 @@ interface PhotometricGroup {
 
 const photometricGroups = ref<PhotometricGroup[]>([])
 
+// 自定义模块
+interface CustomModuleItem {
+  label: string
+  value: string
+}
+interface CustomModule {
+  id: number
+  name: string
+  items: CustomModuleItem[]
+}
+const customModules = ref<CustomModule[]>([])
+let moduleIdCounter = 0
+
+// 添加自定义模块
+const addCustomModule = () => {
+  if (customModules.value.length >= 7) {
+    ElMessage.warning('最多只能添加7个自定义模块')
+    return
+  }
+  customModules.value.push({
+    id: ++moduleIdCounter,
+    name: 'Custom Module',
+    items: [
+      { label: 'Item 1', value: '' },
+      { label: 'Item 2', value: '' }
+    ]
+  })
+}
+
+// 删除自定义模块
+const removeCustomModule = (index: number) => {
+  customModules.value.splice(index, 1)
+}
+
+// 添加模块项
+const addModuleItem = (moduleIndex: number) => {
+  const module = customModules.value[moduleIndex]
+  module.items.push({
+    label: `Item ${module.items.length + 1}`,
+    value: ''
+  })
+}
+
+// 删除模块项
+const removeModuleItem = (moduleIndex: number, itemIndex: number) => {
+  if (customModules.value[moduleIndex].items.length > 1) {
+    customModules.value[moduleIndex].items.splice(itemIndex, 1)
+  }
+}
+
 // 添加功率组
 const addPhotometricGroup = () => {
   photometricGroups.value.push({
@@ -819,6 +904,15 @@ const showSpecDialog = (product: Product) => {
     ]
   }
   
+  // 初始化自定义模块 - 从保存的数据加载
+  if (savedSettings?.customModules && savedSettings.customModules.length > 0) {
+    customModules.value = savedSettings.customModules
+    // 更新ID计数器
+    moduleIdCounter = Math.max(...savedSettings.customModules.map(m => m.id))
+  } else {
+    customModules.value = []
+  }
+  
   specDialogVisible.value = true
 }
 
@@ -833,7 +927,8 @@ const saveSpecSettings = () => {
     certifications: customSettings.value?.certifications,
     footer: customSettings.value?.footer,
     editableSpecs: editableSpecs.value,
-    photometricGroups: photometricGroups.value
+    photometricGroups: photometricGroups.value,
+    customModules: customModules.value
   })
 }
 
@@ -849,7 +944,8 @@ const downloadSpec = async () => {
     certifications: customSettings.value?.certifications,
     footer: customSettings.value?.footer,
     editableSpecs: editableSpecs.value,
-    photometricGroups: photometricGroups.value
+    photometricGroups: photometricGroups.value,
+    customModules: customModules.value
   })
   
   try {
@@ -867,6 +963,16 @@ const downloadSpec = async () => {
     // 移除所有 "删除此功率" 按钮行
     const deleteRows = clone.querySelectorAll('.power-group-actions')
     deleteRows.forEach(row => row.remove())
+    
+    // 移除自定义模块区域的编辑按钮
+    const customModulesHeader = clone.querySelector('.custom-modules-header .el-button')
+    if (customModulesHeader) customModulesHeader.remove()
+    
+    const customModuleDeleteButtons = clone.querySelectorAll('.custom-module-header .el-button')
+    customModuleDeleteButtons.forEach(btn => btn.remove())
+    
+    const addModuleItemButtons = clone.querySelectorAll('.custom-module-items .el-button')
+    addModuleItemButtons.forEach(btn => btn.remove())
     
     // 将所有input替换为显示值的span
     const originalInputs = specDocumentRef.value.querySelectorAll('input')
@@ -1640,6 +1746,91 @@ defineExpose({
 .spec-info {
   flex: 1;
   padding: 0 10px;
+}
+
+/* 自定义模块区域样式 */
+.spec-custom-modules {
+  border-top: 1px solid #ddd;
+  padding: 10px;
+  background: #fff;
+}
+
+.custom-modules-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.custom-modules-title {
+  font-weight: bold;
+  color: #333;
+}
+
+.custom-modules-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.custom-module-box {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  min-width: 150px;
+  max-width: 200px;
+  background: #fafafa;
+}
+
+.custom-module-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 8px;
+  background: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+}
+
+.custom-module-name-input {
+  font-weight: bold;
+  font-size: 11px;
+  flex: 1;
+  background: transparent;
+  color: #333;
+}
+
+.custom-module-items {
+  padding: 5px 8px;
+}
+
+.custom-module-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 5px;
+}
+
+.custom-item-label-input {
+  width: 50px;
+  font-size: 9px;
+  padding: 2px 4px;
+  background: transparent;
+}
+
+.custom-item-value-input {
+  flex: 1;
+  font-size: 9px;
+  padding: 2px 4px;
+  background: transparent;
+}
+
+.custom-modules-empty {
+  text-align: center;
+  color: #999;
+  font-size: 12px;
+  padding: 20px;
+  background: #f9f9f9;
+  border: 1px dashed #ddd;
+  border-radius: 4px;
 }
 
 .spec-title {

@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref, computed, watch } from 'vue'
-import type { Category, Series, Product, PhotometricGroup } from '@/types/models'
+import type { Category, Series, Product, PhotometricGroup, CustomModule } from '@/types/models'
 
-export type { Category, Series, Product, PhotometricGroup }
+export type { Category, Series, Product, PhotometricGroup, CustomModule, CustomModuleItem } from '@/types/models'
 
 export interface SpecTemplate {
   id: number
@@ -19,6 +19,7 @@ export interface CustomSpecSettings {
   footer?: string
   editableSpecs?: Record<string, string>
   photometricGroups?: PhotometricGroup[]
+  customModules?: CustomModule[]
 }
 
 // ============ 默认数据 ============

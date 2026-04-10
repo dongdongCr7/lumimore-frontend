@@ -33,3 +33,16 @@ export interface PhotometricGroup {
   cri5000: string
   cri5700: string
 }
+
+// 自定义模块项
+export interface CustomModuleItem {
+  label: string  // 规格名，如 "Voltage", "Power" 等
+  value: string  // 规格值
+}
+
+// 自定义模块
+export interface CustomModule {
+  id: number
+  name: string  // 模块名，如 "Electrical", "Optical" 等
+  items: CustomModuleItem[]  // 模块内的规格项
+}
