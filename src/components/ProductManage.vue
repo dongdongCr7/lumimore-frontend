@@ -160,7 +160,7 @@
       <div class="spec-dialog-content">
         <div class="spec-document" ref="specDocumentRef">
         
-        <!-- Logo单独一行 -->
+        <!-- Logo单独一行，小尺寸 -->
         <div class="spec-logo-row">
           <div class="logo-upload-area" @click="triggerLogoUpload">
             <img v-if="customSettings?.logoUrl" :src="customSettings.logoUrl" class="spec-logo-img" />
@@ -172,7 +172,16 @@
           <input type="file" ref="logoInputRef" @change="handleLogoFileChange" accept="image/*" style="display:none" />
         </div>
         
-        <!-- 第2行：产品图片 + 产品信息 -->
+        <!-- 认证图标横排 -->
+        <div class="spec-cert-row">
+          <div v-for="i in 5" :key="i" class="cert-box" @click="triggerCertUpload(i-1)">
+            <img v-if="customSettings?.certifications?.[i-1]?.image" :src="customSettings.certifications[i-1].image" />
+            <el-icon v-else><Plus /></el-icon>
+          </div>
+        </div>
+        <input type="file" ref="certInputRef" @change="handleCertFileChange" accept="image/*" style="display:none" />
+        
+        <!-- 产品图片 + 产品信息 -->
         <div class="spec-row1">
           <div class="spec-product-img" @click="triggerProductImageUpload">
             <img v-if="customSettings?.productImage" :src="customSettings.productImage" class="product-img-uploaded" />
@@ -187,17 +196,10 @@
           <div class="spec-info">
             <input type="text" class="spec-title-input borderless" v-model="editableSpecs.title" placeholder="产品名称" />
             <input type="text" class="spec-model-input borderless" v-model="editableSpecs.model" placeholder="Model: LS-XXXX" />
-            <div class="spec-cert-row">
-              <div v-for="i in 5" :key="i" class="cert-box" @click="triggerCertUpload(i-1)">
-                <img v-if="customSettings?.certifications?.[i-1]?.image" :src="customSettings.certifications[i-1].image" />
-                <el-icon v-else><Plus /></el-icon>
-              </div>
-            </div>
           </div>
         </div>
-        <input type="file" ref="certInputRef" @change="handleCertFileChange" accept="image/*" style="display:none" />
         
-        <!-- 第3行：Features + Dimension -->
+        <!-- Features + Dimension -->
         <div class="spec-row2">
           <table class="spec-mini-table">
             <tr><th>Features</th></tr>
@@ -221,9 +223,9 @@
         </div>
         <input type="file" ref="dimensionInputRef" @change="handleDimensionFileChange" accept="image/*" style="display:none" />
         
-        <!-- 第4行：Product Setup + Light Engine + Electrical + Photometric + Features + Remark 六列对齐 -->
-        <div class="spec-row-hex">
-          <table class="spec-hex-table">
+        <!-- 第1行：Product Setup + Light Engine -->
+        <div class="spec-row-duo">
+          <table class="spec-duo-table">
             <tr><th>Product Setup</th></tr>
             <tr><td>
               <div class="hex-cell">
@@ -241,7 +243,7 @@
             </td></tr>
           </table>
           
-          <table class="spec-hex-table">
+          <table class="spec-duo-table">
             <tr><th>Light Engine</th></tr>
             <tr><td>
               <div class="hex-cell">
@@ -254,8 +256,11 @@
               </div>
             </td></tr>
           </table>
-          
-          <table class="spec-hex-table">
+        </div>
+        
+        <!-- 第2行：Electrical + Photometric -->
+        <div class="spec-row-duo">
+          <table class="spec-duo-table">
             <tr><th>Electrical</th></tr>
             <tr><td>
               <div class="hex-cell">
@@ -277,7 +282,7 @@
             </td></tr>
           </table>
           
-          <table class="spec-hex-table">
+          <table class="spec-duo-table">
             <tr><th>Photometric</th></tr>
             <tr><td>
               <div class="hex-cell">
@@ -292,27 +297,6 @@
                 <span class="hex-label">Efficacy</span>
                 <input type="text" class="hex-input borderless" v-model="editableSpecs.efficacy" />
               </div>
-            </td></tr>
-          </table>
-          
-          <table class="spec-hex-table">
-            <tr><th>Features</th></tr>
-            <tr><td>
-              <div class="hex-cell">
-                <span class="hex-label">LED Brand</span>
-                <input type="text" class="hex-input borderless" v-model="editableSpecs.ledBrand" />
-              </div>
-              <div class="hex-cell">
-                <span class="hex-label">Lifetime</span>
-                <input type="text" class="hex-input borderless" v-model="editableSpecs.lifetime" />
-              </div>
-            </td></tr>
-          </table>
-          
-          <table class="spec-hex-table">
-            <tr><th>Remark</th></tr>
-            <tr><td class="remark-cell">
-              <input type="text" class="hex-input borderless" v-model="editableSpecs.remark" placeholder="备注..." />
             </td></tr>
           </table>
         </div>
@@ -1080,17 +1064,105 @@ defineExpose({
   border-bottom: 1px solid #e4e7ed;
 }
 
-/* 认证图标列表 */
-.cert-list {
+/* 两列表格行 */
+.spec-row-duo {
   display: flex;
-  flex-direction: column;
+  border-bottom: 1px solid #999;
+}
+
+.spec-duo-table {
+  flex: 1;
+  border-collapse: collapse;
+  font-size: 9px;
+}
+
+.spec-duo-table:first-child {
+  border-right: 1px solid #999;
+}
+
+.spec-duo-table th {
+  background: #f5f5f5;
+  border: 1px solid #333;
+  border-top: none;
+  padding: 5px 8px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.spec-duo-table td {
+  border: 1px solid #333;
+  border-top: none;
+  border-left: none;
+  padding: 5px 8px;
+  background: #fff;
+  vertical-align: top;
+}
+
+.spec-duo-table:last-child th,
+.spec-duo-table:last-child td {
+  border-right: none;
+}
+
+/* Hex单元格样式 */
+.hex-cell {
+  margin: 2px 0;
+  color: #000;
+  line-height: 1.4;
+}
+
+.hex-label {
+  font-weight: bold;
+  color: #333;
+}
+
+.hex-input {
+  display: block;
+  width: 100%;
+}
+
+.hex-input.borderless {
+  padding: 1px 2px !important;
+  font-size: 8px !important;
+}
+
+/* Features + Dimension 行 */
+.spec-row2 {
+  display: flex;
+  border-bottom: 1px solid #999;
+}
+
+.spec-row2 .spec-mini-table {
+  flex: 1;
+  min-width: 0;
+}
+
+/* 产品信息行 */
+.spec-row1 {
+  display: flex;
+  align-items: flex-start;
+  padding: 10px;
+  border-bottom: 1px solid #999;
   gap: 10px;
 }
 
-.cert-item {
-  display: flex;
-  gap: 10px;
-  align-items: center;
+.spec-row1 .spec-product-img {
+  width: 180px;
+  height: 110px;
+  background: #f8f8f8;
+  border: 1px solid #333;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.spec-product-img {
+  width: 200px;
+  height: 130px;
+  background: #f8f8f8;
+  border: 1px solid #333;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
 }
 
 /* ========== 规格书对话框样式 ========== */
@@ -1115,6 +1187,190 @@ defineExpose({
   min-height: 1123px;
   border: 1px solid #333;
   flex-shrink: 0;
+}
+
+/* Logo单独一行 - 小尺寸 */
+.spec-logo-row {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 8px 10px;
+  border-bottom: 1px solid #ddd;
+  background: #fafafa;
+}
+
+.logo-upload-area {
+  width: 100px;
+  height: 40px;
+  border: 1px dashed #999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: #fff;
+}
+
+.logo-upload-area:hover {
+  border-color: #ff6b00;
+}
+
+.spec-logo-img {
+  max-width: 100px;
+  max-height: 40px;
+  object-fit: contain;
+}
+
+.logo-upload-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #999;
+  font-size: 9px;
+}
+
+/* 认证图标横排 */
+.spec-cert-row {
+  display: flex;
+  gap: 5px;
+  padding: 5px 10px;
+  border-bottom: 1px solid #ddd;
+  background: #fff;
+}
+
+.spec-cert-row .cert-box {
+  width: 35px;
+  height: 25px;
+  border: 1px solid #999;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  color: #999;
+}
+
+.spec-cert-row .cert-box:hover {
+  border-color: #ff6b00;
+}
+
+.spec-cert-row .cert-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* 两列表格行 */
+.spec-row-duo {
+  display: flex;
+  border-bottom: 1px solid #999;
+}
+
+.spec-duo-table {
+  flex: 1;
+  border-collapse: collapse;
+  font-size: 9px;
+}
+
+.spec-duo-table:first-child {
+  border-right: 1px solid #999;
+}
+
+.spec-duo-table th {
+  background: #f5f5f5;
+  border: 1px solid #333;
+  border-top: none;
+  padding: 5px 8px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.spec-duo-table td {
+  border: 1px solid #333;
+  border-top: none;
+  border-left: none;
+  padding: 5px 8px;
+  background: #fff;
+  vertical-align: top;
+}
+
+.spec-duo-table:last-child th,
+.spec-duo-table:last-child td {
+  border-right: none;
+}
+
+/* Hex单元格样式 */
+.hex-cell {
+  margin: 2px 0;
+  color: #000;
+  line-height: 1.4;
+}
+
+.hex-label {
+  font-weight: bold;
+  color: #333;
+}
+
+.hex-input {
+  display: block;
+  width: 100%;
+}
+
+.hex-input.borderless {
+  padding: 1px 2px !important;
+  font-size: 8px !important;
+}
+  background: #fff;
+}
+
+.logo-upload-area:hover {
+  border-color: #ff6b00;
+}
+
+.spec-logo-img {
+  max-width: 100px;
+  max-height: 40px;
+  object-fit: contain;
+}
+
+.logo-upload-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #999;
+  font-size: 9px;
+}
+
+/* 认证图标横排 */
+.spec-cert-row {
+  display: flex;
+  gap: 5px;
+  padding: 5px 10px;
+  border-bottom: 1px solid #ddd;
+  background: #fff;
+}
+
+.spec-cert-row .cert-box {
+  width: 35px;
+  height: 25px;
+  border: 1px solid #999;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  color: #999;
+}
+
+.spec-cert-row .cert-box:hover {
+  border-color: #ff6b00;
+}
+
+.spec-cert-row .cert-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 /* 顶部标题区 */
@@ -1245,19 +1501,10 @@ defineExpose({
   line-height: 1.4;
 }
 
-/* 第2行：产品图片 + Features + Dimension + Product Setup + Light Engine */
+/* Features + Dimension 行 */
 .spec-row2 {
   display: flex;
   border-bottom: 1px solid #999;
-}
-
-.spec-row2 .spec-product-img {
-  width: 180px;
-  height: 110px;
-  background: #f8f8f8;
-  border: 1px solid #333;
-  border-top: none;
-  flex-shrink: 0;
 }
 
 .spec-row2 .spec-mini-table {
