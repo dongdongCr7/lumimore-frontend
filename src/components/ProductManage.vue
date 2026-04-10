@@ -234,15 +234,8 @@
           </div>
         </div>
         
-        <!-- 第2行：产品图片 + Features + Dimension + Product Setup + Light Engine 并排 -->
+        <!-- 第2行：Features + Dimension + Product Setup + Light Engine 并排 -->
         <div class="spec-row2">
-          <div class="spec-product-img">
-            <img v-if="customSettings?.productImage" :src="customSettings.productImage" class="product-img-uploaded" />
-            <div v-else class="product-img-placeholder">
-              <div class="led-strip-visual"></div>
-              <div class="led-badge">120 LED/M</div>
-            </div>
-          </div>
           <table class="spec-mini-table">
             <tr><th>Features</th></tr>
             <tr><td>
