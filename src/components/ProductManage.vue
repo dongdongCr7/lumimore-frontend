@@ -762,55 +762,103 @@ const removeCert = (index: number) => {
   customSettingsForm.certifications.splice(index, 1)
 }
 
+// 压缩图片到指定大小以内
+const compressImage = (file: File, maxSizeMB: number = 2): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      const img = new Image()
+      img.onload = () => {
+        const canvas = document.createElement('canvas')
+        const ctx = canvas.getContext('2d')!
+        
+        // 初始质量
+        let quality = 0.9
+        const maxSize = maxSizeMB * 1024 * 1024
+        
+        // 如果文件已经小于限制，直接返回
+        if (file.size <= maxSize) {
+          resolve(e.target?.result as string)
+          return
+        }
+        
+        // 压缩直到小于限制
+        const compress = () => {
+          canvas.width = img.width
+          canvas.height = img.height
+          ctx.drawImage(img, 0, 0)
+          
+          const dataUrl = canvas.toDataURL('image/jpeg', quality)
+          const size = atob(dataUrl.split(',')[1]).length
+          
+          if (size <= maxSize || quality <= 0.1) {
+            resolve(dataUrl)
+          } else {
+            quality -= 0.1
+            compress()
+          }
+        }
+        
+        compress()
+      }
+      img.onerror = reject
+      img.src = e.target?.result as string
+    }
+    reader.onerror = reject
+    reader.readAsDataURL(file)
+  })
+}
+
 // Logo 上传相关
 const beforeLogoUpload = (file: File) => {
   const isImage = file.type.startsWith('image/')
-  const isLt2M = file.size / 1024 / 1024 < 2
   if (!isImage) {
     ElMessage.error('只能上传图片文件!')
-    return false
-  }
-  if (!isLt2M) {
-    ElMessage.error('图片大小不能超过 2MB!')
     return false
   }
   return true
 }
 
-const handleLogoUpload = (options: { file: File }) => {
-  const file = options.file
-  const reader = new FileReader()
-  reader.onload = (e) => {
-    customSettingsForm.logoUrl = e.target?.result as string
+const handleLogoUpload = async (options: { file: File }) => {
+  try {
+    const dataUrl = await compressImage(options.file)
+    customSettingsForm.logoUrl = dataUrl
+    ElMessage.success('Logo上传成功')
+  } catch {
+    ElMessage.error('Logo上传失败')
   }
-  reader.readAsDataURL(file)
 }
 
-const handleProductImageUpload = (options: { file: File }) => {
-  const file = options.file
-  const reader = new FileReader()
-  reader.onload = (e) => {
-    customSettingsForm.productImage = e.target?.result as string
+const handleProductImageUpload = async (options: { file: File }) => {
+  try {
+    const dataUrl = await compressImage(options.file)
+    customSettingsForm.productImage = dataUrl
+    ElMessage.success('产品图片上传成功')
+  } catch {
+    ElMessage.error('产品图片上传失败')
   }
-  reader.readAsDataURL(file)
 }
 
-const handleDimensionImageUpload = (options: { file: File }) => {
-  const file = options.file
-  const reader = new FileReader()
-  reader.onload = (e) => {
-    customSettingsForm.dimensionImage = e.target?.result as string
+const handleDimensionImageUpload = async (options: { file: File }) => {
+  try {
+    const dataUrl = await compressImage(options.file)
+    customSettingsForm.dimensionImage = dataUrl
+    ElMessage.success('尺寸图片上传成功')
+  } catch {
+    ElMessage.error('尺寸图片上传失败')
   }
-  reader.readAsDataURL(file)
 }
 
-const handleCertUpload = (options: { file: File }, index: number) => {
-  const file = options.file
-  const reader = new FileReader()
-  reader.onload = (e) => {
-    customSettingsForm.certifications[index].image = e.target?.result as string
+const handleCertUpload = async (options: { file: File }, index: number) => {
+  try {
+    const dataUrl = await compressImage(options.file)
+    if (customSettingsForm.certifications[index]) {
+      customSettingsForm.certifications[index].image = dataUrl
+    }
+    ElMessage.success('认证图标上传成功')
+  } catch {
+    ElMessage.error('认证图标上传失败')
   }
-  reader.readAsDataURL(file)
 }
 
 const removeLogo = () => {
