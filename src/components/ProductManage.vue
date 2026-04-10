@@ -84,9 +84,6 @@
           >
             <template #prefix><el-icon><Search /></el-icon></template>
           </el-input>
-          <el-button type="primary" size="small" @click="showAddProductDialog" v-if="userStore.canManageProducts()">
-            <el-icon><Plus /></el-icon> 添加产品
-          </el-button>
         </div>
       </div>
       
@@ -100,28 +97,10 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="200">
+        <el-table-column label="操作" width="120">
           <template #default="{ row }">
             <el-button type="primary" size="small" text @click="showSpecDialog(row)">
               <el-icon><Document /></el-icon> 规格书
-            </el-button>
-            <el-button 
-              type="warning" 
-              size="small" 
-              text 
-              @click="showEditProductDialog(row)"
-              v-if="userStore.canManageProducts()"
-            >
-              <el-icon><Edit /></el-icon>
-            </el-button>
-            <el-button 
-              type="danger" 
-              size="small" 
-              text 
-              @click="deleteProduct(row.id)"
-              v-if="userStore.canManageProducts()"
-            >
-              <el-icon><Delete /></el-icon>
             </el-button>
           </template>
         </el-table-column>
@@ -173,110 +152,6 @@
       <template #footer>
         <el-button @click="seriesDialogVisible = false">取消</el-button>
         <el-button type="primary" @click="addSeries">确定</el-button>
-      </template>
-    </el-dialog>
-
-    <!-- 添加/编辑产品对话框 -->
-    <el-dialog v-model="productDialogVisible" :title="editProduct ? '编辑产品' : '添加产品'" width="800px">
-      <el-form :model="productForm" label-width="120px">
-        <el-form-item label="所属分类">
-          <span>{{ selectedCategoryId ? getCategoryName(selectedCategoryId) : '-' }}</span>
-        </el-form-item>
-        <el-form-item label="所属系列">
-          <span>{{ selectedSeriesId ? getSeriesName(selectedSeriesId) : '-' }}</span>
-        </el-form-item>
-        <el-form-item label="产品名称" required>
-          <el-input v-model="productForm.name" placeholder="如: White 14.4W 2835 120LED 10MM" />
-        </el-form-item>
-        
-        <!-- 规格书对应参数 -->
-        <div class="spec-form-section">
-          <div class="spec-form-title">规格书参数</div>
-          
-          <el-form-item label="型号">
-            <el-input v-model="productForm.specs['型号']" placeholder="如: LS-SW28N120-10" />
-          </el-form-item>
-          
-          <el-form-item label="LED密度">
-            <el-input v-model="productForm.specs['LED密度']" placeholder="如: 120LED/M" style="width: 150px" />
-          </el-form-item>
-          
-          <el-form-item label="功率">
-            <el-input v-model="productForm.specs['功率']" placeholder="如: 14.4W/m" style="width: 150px" />
-          </el-form-item>
-          
-          <el-form-item label="LED类型">
-            <el-input v-model="productForm.specs['LED类型']" placeholder="如: 2835 SMD" style="width: 150px" />
-          </el-form-item>
-          
-          <el-form-item label="显色指数">
-            <el-input v-model="productForm.specs['显色指数']" placeholder="如: Ra98+" style="width: 150px" />
-          </el-form-item>
-          
-          <el-form-item label="R9值">
-            <el-input v-model="productForm.specs['R9值']" placeholder="如: >98" style="width: 150px" />
-          </el-form-item>
-          
-          <el-form-item label="R12值">
-            <el-input v-model="productForm.specs['R12值']" placeholder="如: >98" style="width: 150px" />
-          </el-form-item>
-          
-          <el-form-item label="总宽度">
-            <el-input v-model="productForm.specs['总宽度']" placeholder="如: 10mm" style="width: 150px" />
-          </el-form-item>
-          
-          <el-form-item label="基板宽度">
-            <el-input v-model="productForm.specs['基板宽度']" placeholder="如: 12mm" style="width: 150px" />
-          </el-form-item>
-          
-          <el-form-item label="裁剪单元">
-            <el-input v-model="productForm.specs['裁剪单元']" placeholder="如: 50mm" style="width: 150px" />
-          </el-form-item>
-          
-          <el-form-item label="输入电压">
-            <el-input v-model="productForm.specs['输入电压']" placeholder="如: 24V DC" style="width: 150px" />
-          </el-form-item>
-          
-          <el-form-item label="IP等级">
-            <el-input v-model="productForm.specs['IP等级']" placeholder="如: IP20" style="width: 150px" />
-          </el-form-item>
-          
-          <el-form-item label="发光角度">
-            <el-input v-model="productForm.specs['发光角度']" placeholder="如: 120°" style="width: 150px" />
-          </el-form-item>
-          
-          <el-form-item label="光通量">
-            <el-input v-model="productForm.specs['光通量']" placeholder="如: 1200lm/m" style="width: 150px" />
-          </el-form-item>
-          
-          <el-form-item label="能效">
-            <el-input v-model="productForm.specs['能效']" placeholder="如: 80lm/W" style="width: 150px" />
-          </el-form-item>
-          
-          <el-form-item label="色温范围">
-            <el-input v-model="productForm.specs['色温']" placeholder="如: 2700K-5700K" style="width: 150px" />
-          </el-form-item>
-          
-          <el-form-item label="认证">
-            <el-input v-model="productForm.specs['认证']" placeholder="如: CE, RoHS" style="width: 200px" />
-          </el-form-item>
-          
-          <el-form-item label="工作温度">
-            <el-input v-model="productForm.specs['工作温度']" placeholder="如: -20°C ~ +45°C" style="width: 200px" />
-          </el-form-item>
-          
-          <el-form-item label="储存温度">
-            <el-input v-model="productForm.specs['储存温度']" placeholder="如: -30°C ~ +70°C" style="width: 200px" />
-          </el-form-item>
-          
-          <el-form-item label="寿命">
-            <el-input v-model="productForm.specs['寿命']" placeholder="如: >50,000小时" style="width: 200px" />
-          </el-form-item>
-        </div>
-      </el-form>
-      <template #footer>
-        <el-button @click="productDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="saveProduct">{{ editProduct ? '保存' : '添加' }}</el-button>
       </template>
     </el-dialog>
 
@@ -442,9 +317,14 @@
           </table>
         </div>
         
-        <!-- 第5行：Photometric大表格 - 按功率分组，可编辑 -->
+        <!-- 第5行：Photometric大表格 - 按功率分组，可编辑，可添加删除 -->
         <div class="spec-row5">
-          <div class="photometric-title">Photometric</div>
+          <div class="photometric-title-row">
+            <div class="photometric-title">Photometric</div>
+            <el-button size="small" type="primary" text @click="addPhotometricGroup">
+              <el-icon><Plus /></el-icon> 添加功率
+            </el-button>
+          </div>
           <table class="photometric-big-table">
             <thead>
               <tr>
@@ -457,38 +337,32 @@
               </tr>
             </thead>
             <tbody>
-              <!-- 9.6W/m 组 -->
-              <tr class="power-group-start">
-                <td :rowspan="6"><input type="text" class="table-input borderless center" v-model="editableSpecs.model9_6_1" /></td>
-                <td :rowspan="6" class="power-cell"><input type="text" class="table-input borderless center" v-model="editableSpecs.power9_6" /></td>
-                <td>2700K</td>
-                <td><input type="text" class="table-input borderless center small" v-model="editableSpecs.cri9_6_2700" /></td>
-                <td :rowspan="6"><input type="text" class="table-input borderless center" v-model="editableSpecs.lumen9_6" /></td>
-                <td :rowspan="6"><input type="text" class="table-input borderless center" v-model="editableSpecs.efficacy9_6" /></td>
-              </tr>
-              <tr><td>3000K</td><td><input type="text" class="table-input borderless center small" v-model="editableSpecs.cri9_6_3000" /></td></tr>
-              <tr><td>3500K</td><td><input type="text" class="table-input borderless center small" v-model="editableSpecs.cri9_6_3500" /></td></tr>
-              <tr><td>4000K</td><td><input type="text" class="table-input borderless center small" v-model="editableSpecs.cri9_6_4000" /></td></tr>
-              <tr><td>5000K</td><td><input type="text" class="table-input borderless center small" v-model="editableSpecs.cri9_6_5000" /></td></tr>
-              <tr><td>5700K</td><td><input type="text" class="table-input borderless center small" v-model="editableSpecs.cri9_6_5700" /></td></tr>
-              
-              <!-- 分隔线 -->
-              <tr class="power-separator"><td colspan="6"></td></tr>
-              
-              <!-- 15W/m 组 -->
-              <tr class="power-group-start">
-                <td :rowspan="6"><input type="text" class="table-input borderless center" v-model="editableSpecs.model15_1" /></td>
-                <td :rowspan="6" class="power-cell"><input type="text" class="table-input borderless center" v-model="editableSpecs.power15" /></td>
-                <td>2700K</td>
-                <td><input type="text" class="table-input borderless center small" v-model="editableSpecs.cri15_2700" /></td>
-                <td :rowspan="6"><input type="text" class="table-input borderless center" v-model="editableSpecs.lumen15" /></td>
-                <td :rowspan="6"><input type="text" class="table-input borderless center" v-model="editableSpecs.efficacy15" /></td>
-              </tr>
-              <tr><td>3000K</td><td><input type="text" class="table-input borderless center small" v-model="editableSpecs.cri15_3000" /></td></tr>
-              <tr><td>3500K</td><td><input type="text" class="table-input borderless center small" v-model="editableSpecs.cri15_3500" /></td></tr>
-              <tr><td>4000K</td><td><input type="text" class="table-input borderless center small" v-model="editableSpecs.cri15_4000" /></td></tr>
-              <tr><td>5000K</td><td><input type="text" class="table-input borderless center small" v-model="editableSpecs.cri15_5000" /></td></tr>
-              <tr><td>5700K</td><td><input type="text" class="table-input borderless center small" v-model="editableSpecs.cri15_5700" /></td></tr>
+              <template v-for="(group, groupIndex) in photometricGroups" :key="groupIndex">
+                <!-- 每个功率组的第一行 -->
+                <tr class="power-group-start">
+                  <td :rowspan="6">
+                    <input type="text" class="table-input borderless center" v-model="group.model" />
+                    <el-button v-if="photometricGroups.length > 1" size="small" type="danger" text class="remove-group-btn" @click="removePhotometricGroup(groupIndex)">
+                      <el-icon><Delete /></el-icon>
+                    </el-button>
+                  </td>
+                  <td :rowspan="6" class="power-cell">
+                    <input type="text" class="table-input borderless center" v-model="group.power" />
+                  </td>
+                  <td>2700K</td>
+                  <td><input type="text" class="table-input borderless center small" v-model="group.cri2700" /></td>
+                  <td :rowspan="6"><input type="text" class="table-input borderless center" v-model="group.lumen" /></td>
+                  <td :rowspan="6"><input type="text" class="table-input borderless center" v-model="group.efficacy" /></td>
+                </tr>
+                <tr><td>3000K</td><td><input type="text" class="table-input borderless center small" v-model="group.cri3000" /></td></tr>
+                <tr><td>3500K</td><td><input type="text" class="table-input borderless center small" v-model="group.cri3500" /></td></tr>
+                <tr><td>4000K</td><td><input type="text" class="table-input borderless center small" v-model="group.cri4000" /></td></tr>
+                <tr><td>5000K</td><td><input type="text" class="table-input borderless center small" v-model="group.cri5000" /></td></tr>
+                <tr><td>5700K</td><td><input type="text" class="table-input borderless center small" v-model="group.cri5700" /></td></tr>
+                
+                <!-- 分隔线（除了最后一个） -->
+                <tr v-if="groupIndex < photometricGroups.length - 1" class="power-separator"><td colspan="6"></td></tr>
+              </template>
             </tbody>
           </table>
         </div>
@@ -502,91 +376,6 @@
             <el-icon><Download /></el-icon> 下载规格书
           </el-button>
         </div>
-      </template>
-    </el-dialog>
-
-    <!-- 自定义规格书设置对话框 -->
-    <el-dialog v-model="customDialogVisible" title="自定义规格书" width="700px">
-      <el-form :model="customSettingsForm" label-width="100px">
-        <el-form-item label="Logo上传">
-          <div class="logo-upload">
-            <el-upload
-              class="logo-uploader"
-              :show-file-list="false"
-              :before-upload="beforeLogoUpload"
-              :http-request="handleLogoUpload"
-              accept="image/*"
-            >
-              <img v-if="customSettingsForm.logoUrl" :src="customSettingsForm.logoUrl" class="logo-preview" />
-              <el-icon v-else class="logo-uploader-icon"><Plus /></el-icon>
-            </el-upload>
-            <div class="logo-tip">
-              <span>点击上传 Logo</span>
-              <el-button v-if="customSettingsForm.logoUrl" type="danger" size="small" text @click="removeLogo">移除</el-button>
-            </div>
-          </div>
-        </el-form-item>
-        
-        <el-form-item label="产品图片">
-          <div class="logo-upload">
-            <el-upload
-              class="logo-uploader"
-              :show-file-list="false"
-              :before-upload="beforeLogoUpload"
-              :http-request="handleProductImageUpload"
-              accept="image/*"
-            >
-              <img v-if="customSettingsForm.productImage" :src="customSettingsForm.productImage" class="logo-preview" />
-              <el-icon v-else class="logo-uploader-icon"><Plus /></el-icon>
-            </el-upload>
-            <div class="logo-tip">
-              <span>点击上传产品图片</span>
-              <el-button v-if="customSettingsForm.productImage" type="danger" size="small" text @click="removeProductImage">移除</el-button>
-            </div>
-          </div>
-        </el-form-item>
-        
-        <el-form-item label="尺寸图片">
-          <div class="logo-upload">
-            <el-upload
-              class="logo-uploader"
-              :show-file-list="false"
-              :before-upload="beforeLogoUpload"
-              :http-request="handleDimensionImageUpload"
-              accept="image/*"
-            >
-              <img v-if="customSettingsForm.dimensionImage" :src="customSettingsForm.dimensionImage" class="logo-preview" />
-              <el-icon v-else class="logo-uploader-icon"><Plus /></el-icon>
-            </el-upload>
-            <div class="logo-tip">
-              <span>点击上传尺寸图片</span>
-              <el-button v-if="customSettingsForm.dimensionImage" type="danger" size="small" text @click="removeDimensionImage">移除</el-button>
-            </div>
-          </div>
-        </el-form-item>
-        
-        <el-form-item label="认证图标">
-          <div class="cert-list">
-            <div v-for="(cert, index) in customSettingsForm.certifications" :key="index" class="cert-item">
-              <el-input v-model="cert.name" placeholder="认证名称" style="width: 120px" />
-              <el-upload
-                :show-file-list="false"
-                :before-upload="beforeLogoUpload"
-                :http-request="(opt: any) => handleCertUpload(opt, index)"
-                accept="image/*"
-                style="display: inline-block"
-              >
-                <el-button size="small">上传图标</el-button>
-              </el-upload>
-              <el-button type="danger" size="small" @click="removeCert(index)">删除</el-button>
-            </div>
-            <el-button type="primary" size="small" @click="addCert">添加认证</el-button>
-          </div>
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <el-button @click="customDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="applyCustomSettings">应用设置</el-button>
       </template>
     </el-dialog>
   </div>
@@ -624,16 +413,6 @@ const seriesForm = reactive({
 
 const suggestedKeywords = ['LED', '筒灯', '射灯', '灯带', '面板灯', '智能', 'RGB', 'COB']
 
-// 产品对话框
-const productDialogVisible = ref(false)
-const editProduct = ref<Product | null>(null)
-const productForm = reactive<{
-  name: string
-  specs: Record<string, string>
-}>({
-  name: '',
-  specs: {}
-})
 // 规格书对话框
 const specDialogVisible = ref(false)
 const currentProduct = ref<Product | null>(null)
@@ -747,15 +526,91 @@ const handleDimensionFileChange = async (event: Event) => {
   }
 }
 
-// 自定义对话框
-const customDialogVisible = ref(false)
-const customSettingsForm = reactive({
-  logoUrl: '',
-  productImage: '',
-  dimensionImage: '',
-  certifications: [] as Array<{ name: string; image?: string }>,
-  footer: ''
-})
+// Photometric表格 - 动态功率组
+interface PhotometricGroup {
+  model: string
+  power: string
+  lumen: string
+  efficacy: string
+  cri2700: string
+  cri3000: string
+  cri3500: string
+  cri4000: string
+  cri5000: string
+  cri5700: string
+}
+
+const photometricGroups = ref<PhotometricGroup[]>([])
+
+// 添加功率组
+const addPhotometricGroup = () => {
+  photometricGroups.value.push({
+    model: 'LS-SW28N120-2790-2408-100',
+    power: '10W/m',
+    lumen: '1000lm/m',
+    efficacy: '100lm/W',
+    cri2700: 'Ra98+',
+    cri3000: 'Ra98+',
+    cri3500: 'Ra90+',
+    cri4000: 'Ra90+',
+    cri5000: 'Ra90+',
+    cri5700: 'Ra90+'
+  })
+}
+
+// 删除功率组
+const removePhotometricGroup = (index: number) => {
+  if (photometricGroups.value.length > 1) {
+    photometricGroups.value.splice(index, 1)
+  }
+}
+
+// 压缩图片到指定大小以内
+const compressImage = (file: File, maxSizeMB: number = 2): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      const img = new Image()
+      img.onload = () => {
+        const canvas = document.createElement('canvas')
+        const ctx = canvas.getContext('2d')!
+        
+        // 初始质量
+        let quality = 0.9
+        const maxSize = maxSizeMB * 1024 * 1024
+        
+        // 如果文件已经小于限制，直接返回
+        if (file.size <= maxSize) {
+          resolve(e.target?.result as string)
+          return
+        }
+        
+        // 压缩直到小于限制
+        const compress = () => {
+          canvas.width = img.width
+          canvas.height = img.height
+          ctx.drawImage(img, 0, 0)
+          
+          const dataUrl = canvas.toDataURL('image/jpeg', quality)
+          const size = atob(dataUrl.split(',')[1]).length
+          
+          if (size <= maxSize || quality <= 0.1) {
+            resolve(dataUrl)
+          } else {
+            quality -= 0.1
+            compress()
+          }
+        }
+        
+        compress()
+      }
+      img.onerror = reject
+      img.src = e.target?.result as string
+    }
+    reader.onerror = reject
+    reader.readAsDataURL(file)
+  })
+}
 
 // 计算属性
 const categorySeries = computed(() => {
@@ -868,106 +723,6 @@ const deleteSeries = async (id: number) => {
   }
 }
 
-// 产品操作
-const showEditProductDialog = (product: Product) => {
-  editProduct.value = product
-  productForm.name = product.name
-  // 初始化规格表单
-  productForm.specs = {
-    '型号': '',
-    'LED密度': '',
-    '功率': '',
-    'LED类型': '',
-    '显色指数': '',
-    'R9值': '',
-    'R12值': '',
-    '总宽度': '',
-    '基板宽度': '',
-    '裁剪单元': '',
-    '输入电压': '',
-    'IP等级': '',
-    '发光角度': '',
-    '光通量': '',
-    '能效': '',
-    '色温': '',
-    '认证': '',
-    '工作温度': '',
-    '储存温度': '',
-    '寿命': ''
-  }
-  // 填充现有数据
-  for (const [key, value] of Object.entries(product.specs)) {
-    productForm.specs[key] = value
-  }
-  productDialogVisible.value = true
-}
-
-const showAddProductDialog = () => {
-  editProduct.value = null
-  productForm.name = ''
-  // 初始化规格表单
-  productForm.specs = {
-    '型号': '',
-    'LED密度': '',
-    '功率': '',
-    'LED类型': '',
-    '显色指数': '',
-    'R9值': '',
-    'R12值': '',
-    '总宽度': '',
-    '基板宽度': '',
-    '裁剪单元': '',
-    '输入电压': '',
-    'IP等级': '',
-    '发光角度': '',
-    '光通量': '',
-    '能效': '',
-    '色温': '',
-    '认证': '',
-    '工作温度': '',
-    '储存温度': '',
-    '寿命': ''
-  }
-  productDialogVisible.value = true
-}
-
-const saveProduct = () => {
-  if (!productForm.name) {
-    ElMessage.warning('请输入产品名称')
-    return
-  }
-  
-  // 从productForm.specs中获取非空的规格参数
-  const specs: Record<string, string> = {}
-  for (const [key, value] of Object.entries(productForm.specs)) {
-    if (value && value.trim()) {
-      specs[key] = value.trim()
-    }
-  }
-  
-  if (editProduct.value) {
-    productStore.updateProduct(editProduct.value.id, productForm.name, specs)
-    ElMessage.success('修改成功')
-  } else {
-    productStore.addProduct(selectedSeriesId.value!, selectedCategoryId.value!, productForm.name, specs)
-    ElMessage.success('添加成功')
-  }
-  
-  productDialogVisible.value = false
-}
-
-const deleteProduct = async (id: number) => {
-  try {
-    await ElMessageBox.confirm('确定删除该产品吗？', '提示', {
-      type: 'warning'
-    })
-    productStore.deleteProduct(id)
-    ElMessage.success('删除成功')
-  } catch {
-    // 取消
-  }
-}
-
 // 规格书
 const showSpecDialog = (product: Product) => {
   currentProduct.value = product
@@ -1025,34 +780,10 @@ const showSpecDialog = (product: Product) => {
     ipRating: savedEditableSpecs?.['ipRating'] || specs['IP等级'] || 'IP20',
     beamAngle: savedEditableSpecs?.['beamAngle'] || specs['发光角度'] || '120°',
     
-    // Photometric
+    // Photometric Summary
     cct: savedEditableSpecs?.['cct'] || specs['色温'] || '2700K-5700K',
     lumen: savedEditableSpecs?.['lumen'] || specs['光通量'] || '1200lm/m',
     efficacy: savedEditableSpecs?.['efficacy'] || specs['能效'] || '80lm/W',
-    
-    // 9.6W/m 组
-    model9_6_1: savedEditableSpecs?.['model9_6_1'] || defaultModel,
-    power9_6: savedEditableSpecs?.['power9_6'] || '9.6W/m',
-    lumen9_6: savedEditableSpecs?.['lumen9_6'] || '960lm/m',
-    efficacy9_6: savedEditableSpecs?.['efficacy9_6'] || '100lm/W',
-    cri9_6_2700: savedEditableSpecs?.['cri9_6_2700'] || 'Ra90+',
-    cri9_6_3000: savedEditableSpecs?.['cri9_6_3000'] || 'Ra90+',
-    cri9_6_3500: savedEditableSpecs?.['cri9_6_3500'] || 'Ra90+',
-    cri9_6_4000: savedEditableSpecs?.['cri9_6_4000'] || 'Ra90+',
-    cri9_6_5000: savedEditableSpecs?.['cri9_6_5000'] || 'Ra90+',
-    cri9_6_5700: savedEditableSpecs?.['cri9_6_5700'] || 'Ra90+',
-    
-    // 15W/m 组
-    model15_1: savedEditableSpecs?.['model15_1'] || defaultModel,
-    power15: savedEditableSpecs?.['power15'] || '15W/m',
-    lumen15: savedEditableSpecs?.['lumen15'] || '1500lm/m',
-    efficacy15: savedEditableSpecs?.['efficacy15'] || '100lm/W',
-    cri15_2700: savedEditableSpecs?.['cri15_2700'] || 'Ra98+',
-    cri15_3000: savedEditableSpecs?.['cri15_3000'] || 'Ra98+',
-    cri15_3500: savedEditableSpecs?.['cri15_3500'] || 'Ra90+',
-    cri15_4000: savedEditableSpecs?.['cri15_4000'] || 'Ra90+',
-    cri15_5000: savedEditableSpecs?.['cri15_5000'] || 'Ra90+',
-    cri15_5700: savedEditableSpecs?.['cri15_5700'] || 'Ra90+',
     
     // LED Brand & Lifetime
     ledBrand: savedEditableSpecs?.['ledBrand'] || specs['LED品牌'] || 'Lumileds',
@@ -1062,156 +793,55 @@ const showSpecDialog = (product: Product) => {
     remark: savedEditableSpecs?.['remark'] || '',
   }
   
-  specDialogVisible.value = true
-}
-
-const addCert = () => {
-  customSettingsForm.certifications.push({ name: '', image: '' })
-}
-
-const removeCert = (index: number) => {
-  customSettingsForm.certifications.splice(index, 1)
-}
-
-// 压缩图片到指定大小以内
-const compressImage = (file: File, maxSizeMB: number = 2): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      const img = new Image()
-      img.onload = () => {
-        const canvas = document.createElement('canvas')
-        const ctx = canvas.getContext('2d')!
-        
-        // 初始质量
-        let quality = 0.9
-        const maxSize = maxSizeMB * 1024 * 1024
-        
-        // 如果文件已经小于限制，直接返回
-        if (file.size <= maxSize) {
-          resolve(e.target?.result as string)
-          return
-        }
-        
-        // 压缩直到小于限制
-        const compress = () => {
-          canvas.width = img.width
-          canvas.height = img.height
-          ctx.drawImage(img, 0, 0)
-          
-          const dataUrl = canvas.toDataURL('image/jpeg', quality)
-          const size = atob(dataUrl.split(',')[1]).length
-          
-          if (size <= maxSize || quality <= 0.1) {
-            resolve(dataUrl)
-          } else {
-            quality -= 0.1
-            compress()
-          }
-        }
-        
-        compress()
+  // 初始化 Photometric 功率组 - 从保存的数据加载，否则使用默认
+  if (savedSettings?.photometricGroups && savedSettings.photometricGroups.length > 0) {
+    photometricGroups.value = savedSettings.photometricGroups
+  } else {
+    photometricGroups.value = [
+      {
+        model: defaultModel,
+        power: '9.6W/m',
+        lumen: '960lm/m',
+        efficacy: '100lm/W',
+        cri2700: 'Ra90+',
+        cri3000: 'Ra90+',
+        cri3500: 'Ra90+',
+        cri4000: 'Ra90+',
+        cri5000: 'Ra90+',
+        cri5700: 'Ra90+'
+      },
+      {
+        model: defaultModel,
+        power: '15W/m',
+        lumen: '1500lm/m',
+        efficacy: '100lm/W',
+        cri2700: 'Ra98+',
+        cri3000: 'Ra98+',
+        cri3500: 'Ra90+',
+        cri4000: 'Ra90+',
+        cri5000: 'Ra90+',
+        cri5700: 'Ra90+'
       }
-      img.onerror = reject
-      img.src = e.target?.result as string
-    }
-    reader.onerror = reject
-    reader.readAsDataURL(file)
-  })
-}
-
-// Logo 上传相关
-const beforeLogoUpload = (file: File) => {
-  const isImage = file.type.startsWith('image/')
-  if (!isImage) {
-    ElMessage.error('只能上传图片文件!')
-    return false
-  }
-  return true
-}
-
-const handleLogoUpload = async (options: { file: File }) => {
-  try {
-    const dataUrl = await compressImage(options.file)
-    customSettingsForm.logoUrl = dataUrl
-    ElMessage.success('Logo上传成功')
-  } catch {
-    ElMessage.error('Logo上传失败')
-  }
-}
-
-const handleProductImageUpload = async (options: { file: File }) => {
-  try {
-    const dataUrl = await compressImage(options.file)
-    customSettingsForm.productImage = dataUrl
-    ElMessage.success('产品图片上传成功')
-  } catch {
-    ElMessage.error('产品图片上传失败')
-  }
-}
-
-const handleDimensionImageUpload = async (options: { file: File }) => {
-  try {
-    const dataUrl = await compressImage(options.file)
-    customSettingsForm.dimensionImage = dataUrl
-    ElMessage.success('尺寸图片上传成功')
-  } catch {
-    ElMessage.error('尺寸图片上传失败')
-  }
-}
-
-const handleCertUpload = async (options: { file: File }, index: number) => {
-  try {
-    const dataUrl = await compressImage(options.file)
-    if (customSettingsForm.certifications[index]) {
-      customSettingsForm.certifications[index].image = dataUrl
-    }
-    ElMessage.success('认证图标上传成功')
-  } catch {
-    ElMessage.error('认证图标上传失败')
-  }
-}
-
-const removeLogo = () => {
-  customSettingsForm.logoUrl = ''
-}
-
-const removeProductImage = () => {
-  customSettingsForm.productImage = ''
-}
-
-const removeDimensionImage = () => {
-  customSettingsForm.dimensionImage = ''
-}
-
-const applyCustomSettings = () => {
-  if (!currentProduct.value) return
-  
-  customSettings.value = {
-    logoUrl: customSettingsForm.logoUrl || '/logo.jpg',
-    productImage: customSettingsForm.productImage,
-    dimensionImage: customSettingsForm.dimensionImage,
-    certifications: customSettingsForm.certifications,
-    footer: customSettingsForm.footer
+    ]
   }
   
-  // 保存到store（localStorage持久化）
-  productStore.saveSpecSettingsForProduct(currentProduct.value.id, {
-    logoUrl: customSettings.value.logoUrl,
-    productImage: customSettings.value.productImage,
-    dimensionImage: customSettings.value.dimensionImage,
-    certifications: customSettings.value.certifications,
-    footer: customSettings.value.footer,
-    editableSpecs: editableSpecs.value
-  })
-  
-  customDialogVisible.value = false
-  ElMessage.success('设置已保存，下次打开将保留')
+  specDialogVisible.value = true
 }
 
 // 下载规格书 - 使用html2canvas截取DOM
 const downloadSpec = async () => {
-  if (!specDocumentRef.value) return
+  if (!specDocumentRef.value || !currentProduct.value) return
+  
+  // 先保存当前设置到 localStorage
+  productStore.saveSpecSettingsForProduct(currentProduct.value.id, {
+    logoUrl: customSettings.value?.logoUrl,
+    productImage: customSettings.value?.productImage,
+    dimensionImage: customSettings.value?.dimensionImage,
+    certifications: customSettings.value?.certifications,
+    footer: customSettings.value?.footer,
+    editableSpecs: editableSpecs.value,
+    photometricGroups: photometricGroups.value
+  })
   
   try {
     ElMessage.info('正在生成规格书...')
@@ -1700,9 +1330,23 @@ defineExpose({
   padding: 5px 8px;
   font-weight: bold;
   font-size: 10px;
-  color: #000;
+  display: inline-block;
+}
+
+.photometric-title-row {
+  background: #f5f5f5;
   border: 1px solid #333;
   border-bottom: none;
+  padding: 5px 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.remove-group-btn {
+  margin-left: 5px;
+  padding: 2px !important;
+  font-size: 10px !important;
 }
 
 .photometric-big-table {

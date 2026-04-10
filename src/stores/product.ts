@@ -31,6 +31,19 @@ export interface SpecTemplate {
 }
 
 // 自定义规格书设置
+export interface PhotometricGroup {
+  model: string
+  power: string
+  lumen: string
+  efficacy: string
+  cri2700: string
+  cri3000: string
+  cri3500: string
+  cri4000: string
+  cri5000: string
+  cri5700: string
+}
+
 export interface CustomSpecSettings {
   productId: number
   logoUrl?: string
@@ -39,6 +52,7 @@ export interface CustomSpecSettings {
   certifications?: Array<{ name: string; image?: string }>
   footer?: string
   editableSpecs?: Record<string, string>
+  photometricGroups?: PhotometricGroup[]
 }
 
 const STORAGE_KEY = 'lumimore_product_data'
