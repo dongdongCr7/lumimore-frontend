@@ -1317,43 +1317,69 @@ defineExpose({
   object-fit: contain;
 }
 
-/* 两列表格行 */
+/* 两列表格行 - 统一边框 */
 .spec-row-duo {
   display: flex;
-  border-bottom: 1px solid #999;
 }
 
 .spec-duo-table {
   flex: 1;
   border-collapse: collapse;
   font-size: 9px;
+  border-right: 1px solid #ddd;
 }
 
-.spec-duo-table:first-child {
-  border-right: 1px solid #999;
+.spec-duo-table:last-child {
+  border-right: none;
 }
 
 .spec-duo-table th {
   background: #f5f5f5;
-  border: 1px solid #333;
-  border-top: none;
+  border: 1px solid #ddd;
   padding: 5px 8px;
   font-weight: bold;
   text-align: center;
 }
 
 .spec-duo-table td {
-  border: 1px solid #333;
+  border: 1px solid #ddd;
   border-top: none;
-  border-left: none;
   padding: 5px 8px;
   background: #fff;
   vertical-align: top;
 }
 
-.spec-duo-table:last-child th,
-.spec-duo-table:last-child td {
+/* Features + Dimension 行 */
+.spec-row2 {
+  display: flex;
+  border-top: 1px solid #ddd;
+}
+
+.spec-row2 .spec-mini-table {
+  flex: 1;
+  border-collapse: collapse;
+  font-size: 9px;
+  border-right: 1px solid #ddd;
+}
+
+.spec-row2 .spec-mini-table:last-child {
   border-right: none;
+}
+
+.spec-row2 .spec-mini-table th {
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  padding: 5px 8px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.spec-row2 .spec-mini-table td {
+  border: 1px solid #ddd;
+  border-top: none;
+  padding: 5px 8px;
+  background: #fff;
+  vertical-align: top;
 }
 
 /* Hex单元格样式 */
