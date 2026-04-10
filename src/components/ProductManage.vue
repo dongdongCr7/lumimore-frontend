@@ -949,61 +949,66 @@ const downloadSpec = async () => {
   
   // ========== 顶部标题区 ==========
   
-  // 产品图片区域
+  // Logo区域 - 左上角
+  const logoW = 120
+  const logoH = 45
+  
+  const logoUrl = customSettings.value?.logoUrl || '/logo.jpg'
+  try {
+    const logoImg = await loadImage(logoUrl)
+    ctx.drawImage(logoImg, 10, 10, logoW, logoH)
+  } catch {
+    ctx.fillStyle = '#ff6b00'
+    ctx.font = 'bold 20px Arial'
+    ctx.textAlign = 'left'
+    ctx.fillText('LUMIMORE', 10, 35)
+  }
+  
+  // 产品图片区域 - 右侧
   const imgW = 180
   const imgH = 100
+  const imgX = pageWidth - imgW - 10
   
   ctx.fillStyle = '#f8f8f8'
-  ctx.fillRect(10, 10, imgW, imgH)
-  ctx.strokeRect(10, 10, imgW, imgH)
+  ctx.fillRect(imgX, 10, imgW, imgH)
+  ctx.strokeRect(imgX, 10, imgW, imgH)
   
   // 加载产品图片
   if (customSettings.value?.productImage) {
     try {
       const prodImg = await loadImage(customSettings.value.productImage)
-      ctx.drawImage(prodImg, 10, 10, imgW, imgH)
+      ctx.drawImage(prodImg, imgX, 10, imgW, imgH)
     } catch {
-      drawLedStrip(ctx, 15, 25, 170, 60)
+      drawLedStrip(ctx, imgX + 5, 25, 170, 60)
     }
   } else {
-    drawLedStrip(ctx, 15, 25, 170, 60)
+    drawLedStrip(ctx, imgX + 5, 25, 170, 60)
   }
   
   // LED密度标签
   ctx.fillStyle = '#333'
-  ctx.fillRect(imgW - 55, imgH - 15, 50, 18)
+  ctx.fillRect(imgX + imgW - 55, imgH - 5, 50, 18)
   ctx.fillStyle = '#fff'
   ctx.font = 'bold 8px Arial'
   ctx.textAlign = 'center'
-  ctx.fillText('120 LED/M', imgW - 30, imgH - 2)
+  ctx.fillText('120 LED/M', imgX + imgW - 30, imgH + 8)
   
-  // 加载Logo
-  const logoUrl = customSettings.value?.logoUrl || '/logo.jpg'
-  try {
-    const logoImg = await loadImage(logoUrl)
-    ctx.drawImage(logoImg, imgW + 25, 10, 100, 35)
-  } catch {
-    ctx.fillStyle = '#ff6b00'
-    ctx.font = 'bold 16px Arial'
-    ctx.textAlign = 'left'
-    ctx.fillText('LUMIMORE', imgW + 25, 32)
-  }
-  
-  // 标题文字
+  // 标题文字 - Logo下方
   ctx.fillStyle = '#000'
-  ctx.font = 'bold 16px Arial'
+  ctx.font = 'bold 14px Arial'
   ctx.textAlign = 'left'
-  ctx.fillText('White 14.4W 2835 120LED 10MM', imgW + 25, 55)
+  ctx.fillText('White 14.4W 2835 120LED 10MM', 10, logoH + 35)
   
-  ctx.font = '11px Arial'
-  ctx.fillText('Model: LS-SW28N120-10', imgW + 25, 72)
+  ctx.font = '10px Arial'
+  ctx.fillText('Model: LS-SW28N120-10', 10, logoH + 52)
   
-  // 5个认证图标框
+  // 认证图标 - 标题右侧
+  const certStartX = 320
   for (let i = 0; i < 5; i++) {
     const row = Math.floor(i / 3)
     const col = i % 3
-    const certX = 620 + col * 35
-    const certY = 15 + row * 40
+    const certX = certStartX + col * 35
+    const certY = logoH + 25 + row * 35
     ctx.strokeStyle = '#999'
     ctx.strokeRect(certX, certY, 30, 30)
   }
