@@ -281,97 +281,172 @@
     </el-dialog>
 
     <!-- 规格书对话框 -->
-    <el-dialog v-model="specDialogVisible" title="产品规格书" width="830px" class="spec-dialog">
+    <el-dialog v-model="specDialogVisible" title="产品规格书" width="850px" class="spec-dialog">
       <div class="spec-dialog-content">
         <div class="spec-document" ref="specDocumentRef">
         
-        <!-- 第1行：Logo + 产品图片 + 产品信息 + 认证图标 -->
+        <!-- Logo单独一行 -->
+        <div class="spec-logo-row">
+          <div class="logo-upload-area" @click="triggerLogoUpload">
+            <img v-if="customSettings?.logoUrl" :src="customSettings.logoUrl" class="spec-logo-img" />
+            <div v-else class="logo-upload-placeholder">
+              <el-icon><Plus /></el-icon>
+              <span>上传Logo</span>
+            </div>
+          </div>
+          <input type="file" ref="logoInputRef" @change="handleLogoFileChange" accept="image/*" style="display:none" />
+        </div>
+        
+        <!-- 第2行：产品图片 + 产品信息 -->
         <div class="spec-row1">
-          <img :src="customSettings?.logoUrl || '/logo.jpg'" alt="Logo" class="spec-logo" />
-          <div class="spec-product-img">
+          <div class="spec-product-img" @click="triggerProductImageUpload">
             <img v-if="customSettings?.productImage" :src="customSettings.productImage" class="product-img-uploaded" />
             <div v-else class="product-img-placeholder">
               <div class="led-strip-visual"></div>
-              <div class="led-badge">{{ specData?.electrical.power || '14.4W/m' }}</div>
+              <div class="led-badge">{{ editableSpecs.power || '14.4W/m' }}</div>
+              <div class="upload-hint">点击上传产品图</div>
             </div>
           </div>
+          <input type="file" ref="productImageInputRef" @change="handleProductImageFileChange" accept="image/*" style="display:none" />
+          
           <div class="spec-info">
-            <div class="spec-title">{{ specData?.title || 'Product Name' }}</div>
-            <div class="spec-model">{{ specData?.model || 'Model: LS-XXNXXX-XX-XX' }}</div>
-          </div>
-          <div class="spec-certs">
-            <div v-for="i in 5" :key="i" class="cert-box">
-              <img v-if="customSettings?.certifications?.[i-1]?.image" :src="customSettings.certifications[i-1].image" />
+            <input type="text" class="spec-title-input" v-model="editableSpecs.title" placeholder="产品名称" />
+            <input type="text" class="spec-model-input" v-model="editableSpecs.model" placeholder="Model: LS-XXXX" />
+            <div class="spec-cert-row">
+              <div v-for="i in 5" :key="i" class="cert-box" @click="triggerCertUpload(i-1)">
+                <img v-if="customSettings?.certifications?.[i-1]?.image" :src="customSettings.certifications[i-1].image" />
+                <el-icon v-else><Plus /></el-icon>
+              </div>
             </div>
           </div>
         </div>
+        <input type="file" ref="certInputRef" @change="handleCertFileChange" accept="image/*" style="display:none" />
         
-        <!-- 第2行：Features + Dimension -->
+        <!-- 第3行：Features + Dimension -->
         <div class="spec-row2">
           <table class="spec-mini-table">
             <tr><th>Features</th></tr>
             <tr><td>
-              <div v-for="(feature, idx) in specData?.features || []" :key="idx">{{ feature }}</div>
+              <input type="text" class="spec-cell-input" v-model="editableSpecs.feature1" placeholder="Super High CRI Ra98" />
+              <input type="text" class="spec-cell-input" v-model="editableSpecs.feature2" placeholder="Ra9>98, Rg12>98" />
+              <input type="text" class="spec-cell-input" v-model="editableSpecs.feature3" placeholder="120LED/M | 15W/m" />
+              <input type="text" class="spec-cell-input" v-model="editableSpecs.feature4" placeholder="2835" />
             </td></tr>
           </table>
           <table class="spec-mini-table">
             <tr><th>Dimension</th></tr>
-            <tr><td class="dimension-cell">
+            <tr><td class="dimension-cell" @click="triggerDimensionUpload">
               <img v-if="customSettings?.dimensionImage" :src="customSettings.dimensionImage" class="dimension-img" />
-              <div v-else class="dimension-placeholder">No Image</div>
+              <div v-else class="dimension-placeholder">
+                <el-icon><Plus /></el-icon>
+                <span>上传尺寸图</span>
+              </div>
             </td></tr>
           </table>
         </div>
+        <input type="file" ref="dimensionInputRef" @change="handleDimensionFileChange" accept="image/*" style="display:none" />
         
-        <!-- 第3行：Product Setup + Light Engine -->
-        <div class="spec-row2">
-          <table class="spec-mini-table">
+        <!-- 第4行：Product Setup + Light Engine + Electrical + Photometric + Features + Remark 六列对齐 -->
+        <div class="spec-row-hex">
+          <table class="spec-hex-table">
             <tr><th>Product Setup</th></tr>
             <tr><td>
-              <div>Category&nbsp;&nbsp;{{ specData?.category || 'LumStrip' }}</div>
-              <div>Level&nbsp;&nbsp;&nbsp;&nbsp;{{ specData?.series || 'Core' }}</div>
-              <div>Spectrum&nbsp;{{ specData?.spectrum || 'White' }}</div>
+              <div class="hex-cell">
+                <span class="hex-label">Category</span>
+                <input type="text" class="hex-input" v-model="editableSpecs.category" />
+              </div>
+              <div class="hex-cell">
+                <span class="hex-label">Level</span>
+                <input type="text" class="hex-input" v-model="editableSpecs.level" />
+              </div>
+              <div class="hex-cell">
+                <span class="hex-label">Spectrum</span>
+                <input type="text" class="hex-input" v-model="editableSpecs.spectrum" />
+              </div>
             </td></tr>
           </table>
-          <table class="spec-mini-table">
+          
+          <table class="spec-hex-table">
             <tr><th>Light Engine</th></tr>
             <tr><td>
-              <div>Category&nbsp;&nbsp;{{ specData?.category || 'LumStrip' }}</div>
-              <div>Level&nbsp;&nbsp;&nbsp;&nbsp;{{ specData?.series || 'Core' }}</div>
-              <div>Spectrum&nbsp;{{ specData?.spectrum || 'White' }}</div>
+              <div class="hex-cell">
+                <span class="hex-label">Category</span>
+                <input type="text" class="hex-input" v-model="editableSpecs.category" />
+              </div>
+              <div class="hex-cell">
+                <span class="hex-label">Level</span>
+                <input type="text" class="hex-input" v-model="editableSpecs.level" />
+              </div>
+              <div class="hex-cell">
+                <span class="hex-label">Spectrum</span>
+                <input type="text" class="hex-input" v-model="editableSpecs.spectrum" />
+              </div>
+            </td></tr>
+          </table>
+          
+          <table class="spec-hex-table">
+            <tr><th>Electrical</th></tr>
+            <tr><td>
+              <div class="hex-cell">
+                <span class="hex-label">Voltage</span>
+                <input type="text" class="hex-input" v-model="editableSpecs.voltage" />
+              </div>
+              <div class="hex-cell">
+                <span class="hex-label">Power</span>
+                <input type="text" class="hex-input" v-model="editableSpecs.power" />
+              </div>
+              <div class="hex-cell">
+                <span class="hex-label">IP Rating</span>
+                <input type="text" class="hex-input" v-model="editableSpecs.ipRating" />
+              </div>
+              <div class="hex-cell">
+                <span class="hex-label">Beam Angle</span>
+                <input type="text" class="hex-input" v-model="editableSpecs.beamAngle" />
+              </div>
+            </td></tr>
+          </table>
+          
+          <table class="spec-hex-table">
+            <tr><th>Photometric</th></tr>
+            <tr><td>
+              <div class="hex-cell">
+                <span class="hex-label">CCT</span>
+                <input type="text" class="hex-input" v-model="editableSpecs.cct" />
+              </div>
+              <div class="hex-cell">
+                <span class="hex-label">Lumen</span>
+                <input type="text" class="hex-input" v-model="editableSpecs.lumen" />
+              </div>
+              <div class="hex-cell">
+                <span class="hex-label">Efficacy</span>
+                <input type="text" class="hex-input" v-model="editableSpecs.efficacy" />
+              </div>
+            </td></tr>
+          </table>
+          
+          <table class="spec-hex-table">
+            <tr><th>Features</th></tr>
+            <tr><td>
+              <div class="hex-cell">
+                <span class="hex-label">LED Type</span>
+                <input type="text" class="hex-input" v-model="editableSpecs.ledType" />
+              </div>
+              <div class="hex-cell">
+                <span class="hex-label">LED Density</span>
+                <input type="text" class="hex-input" v-model="editableSpecs.ledDensity" />
+              </div>
+            </td></tr>
+          </table>
+          
+          <table class="spec-hex-table">
+            <tr><th>Remark</th></tr>
+            <tr><td class="remark-cell">
+              <input type="text" class="hex-input" v-model="editableSpecs.remark" placeholder="备注..." />
             </td></tr>
           </table>
         </div>
         
-        <!-- 第4行：Electrical + Photometric + Features + Remark 四列 -->
-        <div class="spec-row4">
-          <table class="spec-quad-table">
-            <tr>
-              <th>Electrical</th>
-              <th>Photometric</th>
-              <th>Features</th>
-              <th>Remark</th>
-            </tr>
-            <tr>
-              <td>
-                <div>Voltage&nbsp;&nbsp;{{ specData?.electrical.voltage || '24V DC' }}</div>
-                <div>Power&nbsp;&nbsp;&nbsp;{{ specData?.electrical.power || '14.4W/m' }}</div>
-              </td>
-              <td>
-                <div>CCT&nbsp;&nbsp;&nbsp;&nbsp;{{ specData?.photometric.cct || '2700K-5700K' }}</div>
-                <div>Lumen&nbsp;&nbsp;{{ specData?.photometric.lumen || '1200lm/m' }}</div>
-                <div>Efficacy&nbsp;{{ specData?.photometric.efficacy || '80lm/W' }}</div>
-              </td>
-              <td>
-                <div>IP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ specData?.electrical.ipRating || 'IP20' }}</div>
-                <div>Beam&nbsp;&nbsp;&nbsp;&nbsp;{{ specData?.electrical.beamAngle || '120°' }}</div>
-              </td>
-              <td></td>
-            </tr>
-          </table>
-        </div>
-        
-        <!-- 第5行：Photometric大表格 -->
+        <!-- 第5行：Photometric大表格 - 按功率分组 -->
         <div class="spec-row5">
           <div class="photometric-title">Photometric</div>
           <table class="photometric-big-table">
@@ -386,14 +461,38 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(row, idx) in photometricData" :key="idx">
-                <td>{{ row.model }}</td>
-                <td>{{ row.power }}</td>
-                <td>{{ row.cct }}</td>
-                <td>{{ row.cri }}</td>
-                <td>{{ row.lumen }}</td>
-                <td>{{ row.efficacy }}</td>
+              <!-- 9.6W/m 组 -->
+              <tr class="power-group-start">
+                <td :rowspan="6">{{ editableSpecs.model || 'LS-SW28N120-2790-2408-100' }}</td>
+                <td :rowspan="6" class="power-cell">9.6W/m</td>
+                <td>2700K</td>
+                <td>Ra90+</td>
+                <td :rowspan="6">{{ editableSpecs.lumen9_6 || '960lm/m' }}</td>
+                <td :rowspan="6">{{ editableSpecs.efficacy9_6 || '100lm/W' }}</td>
               </tr>
+              <tr><td>3000K</td><td>Ra90+</td></tr>
+              <tr><td>3500K</td><td>Ra90+</td></tr>
+              <tr><td>4000K</td><td>Ra90+</td></tr>
+              <tr><td>5000K</td><td>Ra90+</td></tr>
+              <tr><td>5700K</td><td>Ra90+</td></tr>
+              
+              <!-- 分隔线 -->
+              <tr class="power-separator"><td colspan="6"></td></tr>
+              
+              <!-- 15W/m 组 -->
+              <tr class="power-group-start">
+                <td :rowspan="6">{{ editableSpecs.model || 'LS-SW28N120-2790-2408-100' }}</td>
+                <td :rowspan="6" class="power-cell">15W/m</td>
+                <td>2700K</td>
+                <td>Ra98+</td>
+                <td :rowspan="6">{{ editableSpecs.lumen15 || '1500lm/m' }}</td>
+                <td :rowspan="6">{{ editableSpecs.efficacy15 || '100lm/W' }}</td>
+              </tr>
+              <tr><td>3000K</td><td>Ra98+</td></tr>
+              <tr><td>3500K</td><td>Ra90+</td></tr>
+              <tr><td>4000K</td><td>Ra90+</td></tr>
+              <tr><td>5000K</td><td>Ra90+</td></tr>
+              <tr><td>5700K</td><td>Ra90+</td></tr>
             </tbody>
           </table>
         </div>
@@ -403,9 +502,8 @@
       
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="showCustomDialog" v-if="userStore.canCustomizeSpec()">
-            <el-icon><Setting /></el-icon> 自定义设置
-          </el-button>
+          <el-button @click="showCustomDialog">自定义设置</el-button>
+          <el-button @click="applyEdits">保存修改</el-button>
           <el-button type="primary" @click="downloadSpec">
             <el-icon><Download /></el-icon> 下载规格书
           </el-button>
@@ -554,6 +652,107 @@ const customSettings = ref<{
   footer?: string
 } | null>(null)
 
+// 规格书内联编辑相关
+const editableSpecs = ref<Record<string, string>>({})
+
+// 规格书内联上传相关 refs
+const logoInputRef = ref<HTMLInputElement | null>(null)
+const productImageInputRef = ref<HTMLInputElement | null>(null)
+const dimensionInputRef = ref<HTMLInputElement | null>(null)
+const certInputRef = ref<HTMLInputElement | null>(null)
+const currentCertIndex = ref<number>(0)
+
+// 规格书内联上传相关方法
+const triggerLogoUpload = () => {
+  logoInputRef.value?.click()
+}
+
+const handleLogoFileChange = async (event: Event) => {
+  const target = event.target as HTMLInputElement
+  const file = target.files?.[0]
+  if (file) {
+    try {
+      const dataUrl = await compressImage(file)
+      if (customSettings.value) {
+        customSettings.value.logoUrl = dataUrl
+      }
+      ElMessage.success('Logo上传成功')
+    } catch {
+      ElMessage.error('Logo上传失败')
+    }
+    target.value = ''
+  }
+}
+
+const triggerProductImageUpload = () => {
+  productImageInputRef.value?.click()
+}
+
+const handleProductImageFileChange = async (event: Event) => {
+  const target = event.target as HTMLInputElement
+  const file = target.files?.[0]
+  if (file) {
+    try {
+      const dataUrl = await compressImage(file)
+      if (customSettings.value) {
+        customSettings.value.productImage = dataUrl
+      }
+      ElMessage.success('产品图片上传成功')
+    } catch {
+      ElMessage.error('产品图片上传失败')
+    }
+    target.value = ''
+  }
+}
+
+const triggerCertUpload = (index: number) => {
+  currentCertIndex.value = index
+  certInputRef.value?.click()
+}
+
+const handleCertFileChange = async (event: Event) => {
+  const target = event.target as HTMLInputElement
+  const file = target.files?.[0]
+  if (file && customSettings.value) {
+    try {
+      const dataUrl = await compressImage(file)
+      if (!customSettings.value.certifications) {
+        customSettings.value.certifications = []
+      }
+      // 确保有足够的认证项
+      while (customSettings.value.certifications.length <= currentCertIndex.value) {
+        customSettings.value.certifications.push({ name: '', image: '' })
+      }
+      customSettings.value.certifications[currentCertIndex.value].image = dataUrl
+      ElMessage.success('认证图标上传成功')
+    } catch {
+      ElMessage.error('认证图标上传失败')
+    }
+    target.value = ''
+  }
+}
+
+const triggerDimensionUpload = () => {
+  dimensionInputRef.value?.click()
+}
+
+const handleDimensionFileChange = async (event: Event) => {
+  const target = event.target as HTMLInputElement
+  const file = target.files?.[0]
+  if (file) {
+    try {
+      const dataUrl = await compressImage(file)
+      if (customSettings.value) {
+        customSettings.value.dimensionImage = dataUrl
+      }
+      ElMessage.success('尺寸图片上传成功')
+    } catch {
+      ElMessage.error('尺寸图片上传失败')
+    }
+    target.value = ''
+  }
+}
+
 // 自定义对话框
 const customDialogVisible = ref(false)
 const customSettingsForm = reactive({
@@ -582,28 +781,6 @@ const filteredProducts = computed(() => {
   return products
 })
 
-// Photometric表格数据 - 12行（6个色温 × 2种功率）
-const photometricData = computed(() => {
-  const CCTs = ['2700K', '3000K', '3500K', '4000K', '5000K', '5700K']
-  const powers = ['9.6W/m', '15W/m']
-  const rows: Array<{model: string, power: string, cct: string, cri: string, lumen: string, efficacy: string}> = []
-  
-  powers.forEach(power => {
-    CCTs.forEach(cct => {
-      rows.push({
-        model: 'LS-SW28N120-2790-2408-100',
-        power,
-        cct,
-        cri: cct === '2700K' || cct === '3000K' ? 'Ra98+' : 'Ra90+',
-        lumen: power === '9.6W/m' ? '960lm/m' : '1500lm/m',
-        efficacy: '100lm/W'
-      })
-    })
-  })
-  
-  return rows
-})
-
 // 方法
 const getCategoryName = (id: number | null) => {
   if (!id) return '-'
@@ -614,53 +791,6 @@ const getSeriesName = (id: number | null) => {
   if (!id) return '-'
   return productStore.seriesList.find(s => s.id === id)?.name || '-'
 }
-
-// 根据产品生成规格书数据
-const specData = computed(() => {
-  if (!currentProduct.value) return null
-  
-  const product = currentProduct.value
-  const specs = product.specs
-  const series = productStore.seriesList.find(s => s.id === product.seriesId)
-  const category = productStore.categories.find(c => c.id === product.categoryId)
-  
-  // 生成Model名称
-  const modelName = `LS-${series?.name || 'XX'}N${(specs['LED密度'] || '120').replace('LED/M', '')}-${(specs['功率'] || '14.4').replace('W/m', '')}-${(specs['总宽度'] || '10').replace('mm', '')}`
-  
-  return {
-    title: product.name,
-    model: `Model: ${modelName}`,
-    category: category?.name || 'LumStrip',
-    series: series?.name || 'Core',
-    spectrum: 'White',
-    // Features
-    features: [
-      specs['显色指数'] ? `Super High CRI ${specs['显色指数']}` : 'Super High CRI Ra98+',
-      specs['R9值'] && specs['R12值'] ? `Ra9 ${specs['R9值']}, Rg12 ${specs['R12值']}` : 'Ra9 >98, Rg12 >98',
-      specs['LED密度'] || '120LED/M',
-      specs['LED类型'] || '2835 SMD'
-    ],
-    // Dimension数据
-    dimension: {
-      totalWidth: specs['总宽度'] || '10mm',
-      baseWidth: specs['基板宽度'] || '12mm',
-      cutLength: specs['裁剪单元'] || '50mm'
-    },
-    // 电气参数
-    electrical: {
-      voltage: specs['输入电压'] || '24V DC',
-      power: specs['功率'] || '14.4W/m',
-      ipRating: specs['IP等级'] || 'IP20',
-      beamAngle: specs['发光角度'] || '120°'
-    },
-    // 光度参数
-    photometric: {
-      cct: specs['色温'] || '2700K-5700K',
-      lumen: specs['光通量'] || '1200lm/m',
-      efficacy: specs['能效'] || '80lm/W'
-    }
-  }
-})
 
 // 选择分类
 const selectCategory = (categoryId: number) => {
@@ -867,6 +997,57 @@ const showSpecDialog = (product: Product) => {
       footer: ''
     }
   }
+  
+  // 初始化可编辑规格数据 - 优先使用保存的设置，否则从产品规格中提取
+  const specs = product.specs
+  const savedEditableSpecs = savedSettings?.editableSpecs
+  
+  // 生成默认型号
+  const series = productStore.seriesList.find(s => s.id === product.seriesId)
+  const category = productStore.categories.find(c => c.id === product.categoryId)
+  const defaultModel = `LS-${series?.name || 'XX'}N${(specs['LED密度'] || '120').replace('LED/M', '')}-${(specs['功率'] || '14.4').replace('W/m', '')}-${(specs['总宽度'] || '10').replace('mm', '')}`
+  
+  editableSpecs.value = {
+    // 基础信息
+    title: savedEditableSpecs?.['title'] || product.name,
+    model: savedEditableSpecs?.['model'] || defaultModel,
+    category: savedEditableSpecs?.['category'] || category?.name || 'LumStrip',
+    level: savedEditableSpecs?.['level'] || 'Core',
+    spectrum: savedEditableSpecs?.['spectrum'] || 'White',
+    
+    // Features
+    feature1: savedEditableSpecs?.['feature1'] || (specs['显色指数'] ? `Super High CRI ${specs['显色指数']}` : 'Super High CRI Ra98+'),
+    feature2: savedEditableSpecs?.['feature2'] || (specs['R9值'] && specs['R12值'] ? `Ra9 ${specs['R9值']}, Rg12 ${specs['R12值']}` : 'Ra9 >98, Rg12 >98'),
+    feature3: savedEditableSpecs?.['feature3'] || (specs['LED密度'] || '120LED/M') + ' | ' + (specs['功率'] || '14.4W/m'),
+    feature4: savedEditableSpecs?.['feature4'] || specs['LED类型'] || '2835 SMD',
+    
+    // Light Engine
+    ledType: savedEditableSpecs?.['ledType'] || specs['LED类型'] || '2835 SMD',
+    ledDensity: savedEditableSpecs?.['ledDensity'] || specs['LED密度'] || '120LED/M',
+    
+    // Electrical
+    voltage: savedEditableSpecs?.['voltage'] || specs['输入电压'] || '24V DC',
+    power: savedEditableSpecs?.['power'] || specs['功率'] || '14.4W/m',
+    ipRating: savedEditableSpecs?.['ipRating'] || specs['IP等级'] || 'IP20',
+    beamAngle: savedEditableSpecs?.['beamAngle'] || specs['发光角度'] || '120°',
+    
+    // Photometric
+    cct: savedEditableSpecs?.['cct'] || specs['色温'] || '2700K-5700K',
+    lumen: savedEditableSpecs?.['lumen'] || specs['光通量'] || '1200lm/m',
+    efficacy: savedEditableSpecs?.['efficacy'] || specs['能效'] || '80lm/W',
+    
+    // 9.6W/m 组
+    lumen9_6: savedEditableSpecs?.['lumen9_6'] || '960lm/m',
+    efficacy9_6: savedEditableSpecs?.['efficacy9_6'] || '100lm/W',
+    
+    // 15W/m 组
+    lumen15: savedEditableSpecs?.['lumen15'] || '1500lm/m',
+    efficacy15: savedEditableSpecs?.['efficacy15'] || '100lm/W',
+    
+    // Remark
+    remark: savedEditableSpecs?.['remark'] || '',
+  }
+  
   specDialogVisible.value = true
 }
 
@@ -1015,11 +1196,29 @@ const applyCustomSettings = () => {
     productImage: customSettings.value.productImage,
     dimensionImage: customSettings.value.dimensionImage,
     certifications: customSettings.value.certifications,
-    footer: customSettings.value.footer
+    footer: customSettings.value.footer,
+    editableSpecs: editableSpecs.value
   })
   
   customDialogVisible.value = false
   ElMessage.success('设置已保存，下次打开将保留')
+}
+
+// 应用规格书编辑
+const applyEdits = () => {
+  if (!currentProduct.value) return
+  
+  // 保存到store（localStorage持久化）
+  productStore.saveSpecSettingsForProduct(currentProduct.value.id, {
+    logoUrl: customSettings.value?.logoUrl,
+    productImage: customSettings.value?.productImage,
+    dimensionImage: customSettings.value?.dimensionImage,
+    certifications: customSettings.value?.certifications,
+    footer: customSettings.value?.footer,
+    editableSpecs: editableSpecs.value
+  })
+  
+  ElMessage.success('规格已保存')
 }
 
 // 下载规格书 - 使用html2canvas截取DOM

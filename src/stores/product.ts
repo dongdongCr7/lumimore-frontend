@@ -38,6 +38,7 @@ export interface CustomSpecSettings {
   dimensionImage?: string
   certifications?: Array<{ name: string; image?: string }>
   footer?: string
+  editableSpecs?: Record<string, string>
 }
 
 const STORAGE_KEY = 'lumimore_product_data'
