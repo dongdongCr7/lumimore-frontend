@@ -854,34 +854,58 @@ const downloadSpec = async () => {
   
   try {
     ElMessage.info('正在生成规格书...')
-    await new Promise(resolve => setTimeout(resolve, 300))
+    await new Promise(resolve => setTimeout(resolve, 500))
     
-    // 创建一个临时容器来存放处理后的DOM
-    const tempContainer = specDocumentRef.value.cloneNode(true) as HTMLElement
+    // 创建一个独立的容器用于截图
+    const container = document.createElement('div')
+    container.style.cssText = `
+      position: fixed;
+      left: -9999px;
+      top: 0;
+      background: white;
+      padding: 20px;
+    `
     
-    // 将所有input替换为显示其值的span
+    // 克隆规格书内容
+    const clone = specDocumentRef.value.cloneNode(true) as HTMLElement
+    
+    // 将所有input替换为显示值的span
     const originalInputs = specDocumentRef.value.querySelectorAll('input')
-    const clonedInputs = tempContainer.querySelectorAll('input')
+    const clonedInputs = clone.querySelectorAll('input')
     
     originalInputs.forEach((input, i) => {
       const clonedInput = clonedInputs[i]
       if (clonedInput) {
         const span = document.createElement('span')
         span.textContent = input.value || input.placeholder || ''
-        span.style.cssText = window.getComputedStyle(input).cssText
-        span.style.position = 'relative'
-        span.className = input.className
+        // 复制样式
+        span.style.cssText = `
+          display: inline-block;
+          min-width: ${input.offsetWidth || 50}px;
+          padding: ${input.style.padding || '2px 4px'};
+          font-size: ${input.style.fontSize || '12px'};
+          color: ${input.style.color || '#333'};
+          background: transparent;
+        `
         clonedInput.parentNode?.replaceChild(span, clonedInput)
       }
     })
     
-    // 对克隆的DOM进行截图
-    const canvas = await html2canvas(tempContainer, {
+    container.appendChild(clone)
+    document.body.appendChild(container)
+    
+    // 截图
+    const canvas = await html2canvas(container, {
       scale: 2,
       useCORS: true,
       allowTaint: true,
-      backgroundColor: '#ffffff'
+      backgroundColor: '#ffffff',
+      width: container.offsetWidth,
+      height: container.offsetHeight
     })
+    
+    // 清理
+    document.body.removeChild(container)
     
     const link = document.createElement('a')
     link.download = `${currentProduct.value?.name || 'spec'}.png`
