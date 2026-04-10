@@ -234,7 +234,7 @@
           </div>
         </div>
         
-        <!-- 第2行：Features + Dimension + Product Setup + Light Engine 并排 -->
+        <!-- 第2行：Features + Dimension -->
         <div class="spec-row2">
           <table class="spec-mini-table">
             <tr><th>Features</th></tr>
@@ -249,9 +249,13 @@
             <tr><th>Dimension</th></tr>
             <tr><td class="dimension-cell">
               <img v-if="customSettings?.dimensionImage" :src="customSettings.dimensionImage" class="dimension-img" />
-              <div v-else class="dimension-placeholder">点击上传尺寸图</div>
+              <div v-else class="dimension-placeholder">No Image</div>
             </td></tr>
           </table>
+        </div>
+        
+        <!-- 第3行：Product Setup + Light Engine -->
+        <div class="spec-row2">
           <table class="spec-mini-table">
             <tr><th>Product Setup</th></tr>
             <tr><td>
@@ -270,7 +274,7 @@
           </table>
         </div>
         
-        <!-- 第3行：Electrical + Photometric + Features + Remark 四列 -->
+        <!-- 第4行：Electrical + Photometric + Features + Remark 四列 -->
         <div class="spec-row4">
           <table class="spec-quad-table">
             <tr>
@@ -302,7 +306,7 @@
           </table>
         </div>
         
-        <!-- 第4行：Photometric大表格 -->
+        <!-- 第5行：Photometric大表格 -->
         <div class="spec-row5">
           <div class="photometric-title">Photometric</div>
           <table class="photometric-big-table">
