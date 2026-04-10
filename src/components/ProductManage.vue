@@ -227,32 +227,32 @@
         <div class="spec-row-duo">
           <table class="spec-duo-table">
             <tr><th>Product Setup</th></tr>
-            <tr><td>
-              <div class="hex-cell">
-                <span class="hex-label">Category</span>
-                <input type="text" class="hex-input borderless" v-model="editableSpecs.category" />
+            <tr><td class="spec-fields">
+              <div class="spec-field-row">
+                <span class="field-label">Category</span>
+                <input type="text" class="field-input borderless" v-model="editableSpecs.category" />
               </div>
-              <div class="hex-cell">
-                <span class="hex-label">Level</span>
-                <input type="text" class="hex-input borderless" v-model="editableSpecs.level" />
+              <div class="spec-field-row">
+                <span class="field-label">Level</span>
+                <input type="text" class="field-input borderless" v-model="editableSpecs.level" />
               </div>
-              <div class="hex-cell">
-                <span class="hex-label">Spectrum</span>
-                <input type="text" class="hex-input borderless" v-model="editableSpecs.spectrum" />
+              <div class="spec-field-row">
+                <span class="field-label">Spectrum</span>
+                <input type="text" class="field-input borderless" v-model="editableSpecs.spectrum" />
               </div>
             </td></tr>
           </table>
           
           <table class="spec-duo-table">
             <tr><th>Light Engine</th></tr>
-            <tr><td>
-              <div class="hex-cell">
-                <span class="hex-label">LED Type</span>
-                <input type="text" class="hex-input borderless" v-model="editableSpecs.ledType" />
+            <tr><td class="spec-fields">
+              <div class="spec-field-row">
+                <span class="field-label">LED Type</span>
+                <input type="text" class="field-input borderless" v-model="editableSpecs.ledType" />
               </div>
-              <div class="hex-cell">
-                <span class="hex-label">LED Density</span>
-                <input type="text" class="hex-input borderless" v-model="editableSpecs.ledDensity" />
+              <div class="spec-field-row">
+                <span class="field-label">LED Density</span>
+                <input type="text" class="field-input borderless" v-model="editableSpecs.ledDensity" />
               </div>
             </td></tr>
           </table>
@@ -262,40 +262,40 @@
         <div class="spec-row-duo">
           <table class="spec-duo-table">
             <tr><th>Electrical</th></tr>
-            <tr><td>
-              <div class="hex-cell">
-                <span class="hex-label">Voltage</span>
-                <input type="text" class="hex-input borderless" v-model="editableSpecs.voltage" />
+            <tr><td class="spec-fields">
+              <div class="spec-field-row">
+                <span class="field-label">Voltage</span>
+                <input type="text" class="field-input borderless" v-model="editableSpecs.voltage" />
               </div>
-              <div class="hex-cell">
-                <span class="hex-label">Power</span>
-                <input type="text" class="hex-input borderless" v-model="editableSpecs.power" />
+              <div class="spec-field-row">
+                <span class="field-label">Power</span>
+                <input type="text" class="field-input borderless" v-model="editableSpecs.power" />
               </div>
-              <div class="hex-cell">
-                <span class="hex-label">IP Rating</span>
-                <input type="text" class="hex-input borderless" v-model="editableSpecs.ipRating" />
+              <div class="spec-field-row">
+                <span class="field-label">IP Rating</span>
+                <input type="text" class="field-input borderless" v-model="editableSpecs.ipRating" />
               </div>
-              <div class="hex-cell">
-                <span class="hex-label">Beam Angle</span>
-                <input type="text" class="hex-input borderless" v-model="editableSpecs.beamAngle" />
+              <div class="spec-field-row">
+                <span class="field-label">Beam Angle</span>
+                <input type="text" class="field-input borderless" v-model="editableSpecs.beamAngle" />
               </div>
             </td></tr>
           </table>
           
           <table class="spec-duo-table">
             <tr><th>Photometric</th></tr>
-            <tr><td>
-              <div class="hex-cell">
-                <span class="hex-label">CCT</span>
-                <input type="text" class="hex-input borderless" v-model="editableSpecs.cct" />
+            <tr><td class="spec-fields">
+              <div class="spec-field-row">
+                <span class="field-label">CCT</span>
+                <input type="text" class="field-input borderless" v-model="editableSpecs.cct" />
               </div>
-              <div class="hex-cell">
-                <span class="hex-label">Lumen</span>
-                <input type="text" class="hex-input borderless" v-model="editableSpecs.lumen" />
+              <div class="spec-field-row">
+                <span class="field-label">Lumen</span>
+                <input type="text" class="field-input borderless" v-model="editableSpecs.lumen" />
               </div>
-              <div class="hex-cell">
-                <span class="hex-label">Efficacy</span>
-                <input type="text" class="hex-input borderless" v-model="editableSpecs.efficacy" />
+              <div class="spec-field-row">
+                <span class="field-label">Efficacy</span>
+                <input type="text" class="field-input borderless" v-model="editableSpecs.efficacy" />
               </div>
             </td></tr>
           </table>
@@ -1318,6 +1318,35 @@ defineExpose({
 
 .hex-input.borderless {
   padding: 1px 2px !important;
+  font-size: 8px !important;
+}
+
+/* 左右排列的字段样式 */
+.spec-fields {
+  padding: 8px !important;
+}
+
+.spec-field-row {
+  display: flex;
+  align-items: center;
+  margin: 3px 0;
+  line-height: 1.4;
+}
+
+.field-label {
+  min-width: 80px;
+  font-weight: bold;
+  color: #333;
+  font-size: 8px;
+}
+
+.field-input {
+  flex: 1;
+  min-width: 0;
+}
+
+.field-input.borderless {
+  padding: 1px 4px !important;
   font-size: 8px !important;
 }
 
