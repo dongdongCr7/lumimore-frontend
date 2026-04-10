@@ -739,8 +739,11 @@ const showSpecDialog = (product: Product) => {
   }
   
   // 初始化可编辑规格数据 - 优先使用保存的设置，否则从产品规格中提取
-  const specs = product.specs
+  const specs = product.specs || {}
   const savedEditableSpecs = savedSettings?.editableSpecs
+  
+  console.log('product.specs:', specs)
+  console.log('savedEditableSpecs:', savedEditableSpecs)
   
   // 生成默认型号
   const series = productStore.seriesList.find(s => s.id === product.seriesId)

@@ -106,45 +106,51 @@ export const useProductStore = defineStore('product', () => {
   // 从localStorage加载初始数据
   const savedData = loadFromStorage()
   
-  // LED灯产品分类
+  // LED灯产品分类 - 确保至少有默认分类
+  const defaultCategories: Category[] = [
+    { id: 5, name: 'LUMISTRIP', description: '高显指LED灯带系列' }
+  ]
+
   const categories = ref<Category[]>(
-    savedData?.categories || [
-      { id: 5, name: 'LUMISTRIP', description: '高显指LED灯带系列' }
-    ]
+    savedData?.categories?.length ? savedData.categories : defaultCategories
   )
 
-  // LED灯系列
+  // LED灯系列 - 确保至少有默认系列
+  const defaultSeries: Series[] = [
+    { id: 9, categoryId: 5, name: '2835', description: '2835 SMD 高显指灯带', keywords: ['2835', '高显指', 'Ra98', '灯带'] }
+  ]
+
   const seriesList = ref<Series[]>(
-    savedData?.seriesList || [
-      { id: 9, categoryId: 5, name: '2835', description: '2835 SMD 高显指灯带', keywords: ['2835', '高显指', 'Ra98', '灯带'] }
-    ]
+    savedData?.seriesList?.length ? savedData.seriesList : defaultSeries
   )
 
-  // LED灯产品
+  // LED灯产品 - 确保至少有默认产品
+  const defaultProducts: Product[] = [
+    { id: 1, seriesId: 9, categoryId: 5, name: 'White 14.4W 2835 120LED 10MM', specs: { 
+      'LED密度': '120LED/M',
+      '功率': '14.4W/m',
+      'LED类型': '2835 SMD',
+      '显色指数': 'Ra98+',
+      'R9值': '>98',
+      'R12值': '>98',
+      '色温': '2700K-5700K',
+      '光通量': '1200lm/m',
+      '能效': '80lm/W',
+      '输入电压': '24V DC',
+      '裁剪单元': '50mm',
+      '总宽度': '10mm',
+      '基板宽度': '12mm',
+      'IP等级': 'IP20',
+      '发光角度': '120°',
+      '工作温度': '-20°C ~ +45°C',
+      '储存温度': '-30°C ~ +70°C',
+      '寿命': '>50,000小时',
+      '认证': 'CE, RoHS'
+    }}
+  ]
+  
   const products = ref<Product[]>(
-    savedData?.products || [
-      { id: 1, seriesId: 9, categoryId: 5, name: 'White 14.4W 2835 120LED 10MM', specs: { 
-        'LED密度': '120LED/M',
-        '功率': '14.4W/m',
-        'LED类型': '2835 SMD',
-        '显色指数': 'Ra98+',
-        'R9值': '>98',
-        'R12值': '>98',
-        '色温': '2700K-5700K',
-        '光通量': '1200lm/m',
-        '能效': '80lm/W',
-        '输入电压': '24V DC',
-        '裁剪单元': '50mm',
-        '总宽度': '10mm',
-        '基板宽度': '12mm',
-        'IP等级': 'IP20',
-        '发光角度': '120°',
-        '工作温度': '-20°C ~ +45°C',
-        '储存温度': '-30°C ~ +70°C',
-        '寿命': '>50,000小时',
-        '认证': 'CE, RoHS'
-      }}
-    ]
+    savedData?.products?.length ? savedData.products : defaultProducts
   )
 
   // 规格书设置（按产品ID存储）
