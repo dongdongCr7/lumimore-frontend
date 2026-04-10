@@ -524,36 +524,26 @@ const filteredProducts = computed(() => {
   return products
 })
 
-// Photometric表格数据 - 按照原图24行数据
+// Photometric表格数据 - 12行（6个色温 × 2种功率）
 const photometricData = computed(() => {
-  // 原图24行数据
-  return [
-    { model: 'LS-SW28N120-2790-2408-100', power: '9.6W/m', cct: '2700K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { model: 'LS-SW28N120-2790-2408-100', power: '9.6W/m', cct: '3000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { model: 'LS-SW28N120-2790-2408-100', power: '9.6W/m', cct: '3500K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { model: 'LS-SW28N120-2790-2408-100', power: '9.6W/m', cct: '4000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { model: 'LS-SW28N120-2790-2408-100', power: '9.6W/m', cct: '5000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { model: 'LS-SW28N120-2790-2408-100', power: '9.6W/m', cct: '5700K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { model: 'LS-SW28N120-2790-2408-100', power: '9.6W/m', cct: '2700K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { model: 'LS-SW28N120-2790-2408-100', power: '15W/m', cct: '2700K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { model: 'LS-SW28N120-2790-2408-100', power: '15W/m', cct: '3000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { model: 'LS-SW28N120-2790-2408-100', power: '15W/m', cct: '3500K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { model: 'LS-SW28N120-2790-2408-100', power: '15W/m', cct: '4000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { model: 'LS-SW28N120-2790-2408-100', power: '15W/m', cct: '5000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { model: 'LS-SW28N120-2790-2408-100', power: '15W/m', cct: '5700K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { model: 'LS-SW28N120-2790-2408-100', power: '15W/m', cct: '2700K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { model: 'LS-SW28N120-2790-2408-100', power: '15W/m', cct: '3000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { model: 'LS-SW28N120-2790-2408-100', power: '15W/m', cct: '3500K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { model: 'LS-SW28N120-2790-2408-100', power: '15W/m', cct: '4000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { model: 'LS-SW28N120-2790-2408-100', power: '15W/m', cct: '5000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { model: 'LS-SW28N120-2790-2408-100', power: '15W/m', cct: '5700K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { model: 'LS-SW28N120-2790-2408-100', power: '15W/m', cct: '2700K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { model: 'LS-SW28N120-2790-2408-100', power: '15W/m', cct: '3000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { model: 'LS-SW28N120-2790-2408-100', power: '15W/m', cct: '3500K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { model: 'LS-SW28N120-2790-2408-100', power: '15W/m', cct: '4000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { model: 'LS-SW28N120-2790-2408-100', power: '15W/m', cct: '5000K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' },
-    { model: 'LS-SW28N120-2790-2408-100', power: '15W/m', cct: '5700K', cri: 'Ra90+', lumen: '1200lm/m', efficacy: '80lm/W' }
-  ]
+  const CCTs = ['2700K', '3000K', '3500K', '4000K', '5000K', '5700K']
+  const powers = ['9.6W/m', '15W/m']
+  const rows: Array<{model: string, power: string, cct: string, cri: string, lumen: string, efficacy: string}> = []
+  
+  powers.forEach(power => {
+    CCTs.forEach(cct => {
+      rows.push({
+        model: 'LS-SW28N120-2790-2408-100',
+        power,
+        cct,
+        cri: cct === '2700K' || cct === '3000K' ? 'Ra98+' : 'Ra90+',
+        lumen: power === '9.6W/m' ? '960lm/m' : '1500lm/m',
+        efficacy: '100lm/W'
+      })
+    })
+  })
+  
+  return rows
 })
 
 // 方法
