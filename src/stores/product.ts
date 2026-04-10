@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref, computed, watch } from 'vue'
-import type { Category, Series, Product, PhotometricGroup } from '@/types/models'
+import type { Category, Series, Product } from '@/types/models'
 
-export type { Category, Series, Product, PhotometricGroup } from '@/types/models'
+export type { Category, Series, Product } from '@/types/models'
 
 export interface SpecTemplate {
   id: number
@@ -18,7 +18,14 @@ export interface CustomSpecSettings {
   certifications?: Array<{ name: string; image?: string }>
   footer?: string
   editableSpecs?: Record<string, string>
-  photometricGroups?: PhotometricGroup[]
+  photometricRows?: Array<{
+    model: string
+    power: string
+    cct: string
+    cri: string
+    lumen: string
+    efficacy: string
+  }>
   selectedTopModules?: string[]
 }
 
