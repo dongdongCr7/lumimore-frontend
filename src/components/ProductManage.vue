@@ -889,11 +889,37 @@ const downloadSpec = async () => {
       }
     })
     
+    // 重新排列证书为一行3个+一行2个
+    const certRow = clone.querySelector('.spec-cert-row')
+    if (certRow) {
+      const certBoxes = certRow.querySelectorAll('.cert-box')
+      if (certBoxes.length === 5) {
+        // 创建两行容器
+        const row1 = document.createElement('div')
+        row1.style.cssText = 'display: flex !important; gap: 5px !important;'
+        const row2 = document.createElement('div')
+        row2.style.cssText = 'display: flex !important; gap: 5px !important;'
+        
+        // 第一行放3个，第二行放2个
+        for (let i = 0; i < 3; i++) {
+          row1.appendChild(certBoxes[i])
+        }
+        for (let i = 3; i < 5; i++) {
+          row2.appendChild(certBoxes[i])
+        }
+        
+        // 清空原容器并添加两行
+        certRow.innerHTML = ''
+        certRow.appendChild(row1)
+        certRow.appendChild(row2)
+      }
+    }
+    
     // 添加必要的CSS样式到克隆的DOM
     const style = document.createElement('style')
     style.textContent = `
-      .spec-cert-row { display: flex !important; flex-wrap: wrap !important; gap: 5px !important; }
-      .cert-box { width: 35px !important; height: 25px !important; display: flex !important; align-items: center !important; justify-content: center !important; }
+      .spec-cert-row { display: block !important; }
+      .cert-box { width: 35px !important; height: 25px !important; display: flex !important; align-items: center !important; justify-content: center !important; flex-shrink: 0 !important; }
       .cert-placeholder { font-size: 8px !important; color: #ccc !important; }
       * { box-sizing: border-box !important; }
     `
