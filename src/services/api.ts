@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-// API 基础配置
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
+// API 基础配置 - 使用 Railway 后端
+const API_BASE_URL = 'https://lumimore-server-production.up.railway.app/api'
 
 const api = axios.create({
   baseURL: API_BASE_URL,
