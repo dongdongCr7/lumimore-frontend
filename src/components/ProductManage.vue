@@ -906,31 +906,27 @@ const showSpecDialog = (product: Product) => {
     }
   }
   
-  // 初始化可编辑规格数据 - 优先使用保存的设置，否则从产品规格中提取
+  // 初始化可编辑规格数据 - 优先使用保存的设置，否则所有值置空
   const specs = product.specs || {}
   const savedEditableSpecs = savedSettings?.editableSpecs
+  const hasSavedSettings = !!savedSettings?.editableSpecs
   
   console.log('product.specs:', specs)
   console.log('savedEditableSpecs:', savedEditableSpecs)
   
-  // 生成默认型号
-  const series = productStore.seriesList.find(s => s.id === product.seriesId)
-  const category = productStore.categories.find(c => c.id === product.categoryId)
-  const defaultModel = `LS-${series?.name || 'XX'}N${(specs['LED密度'] || '120').replace('LED/M', '')}-${(specs['功率'] || '14.4').replace('W/m', '')}-${(specs['总宽度'] || '10').replace('mm', '')}`
-  
   editableSpecs.value = {
-    // 基础信息
-    title: savedEditableSpecs?.['title'] || product.name,
-    model: savedEditableSpecs?.['model'] || defaultModel,
-    category: savedEditableSpecs?.['category'] || category?.name || 'LumStrip',
-    level: savedEditableSpecs?.['level'] || 'Core',
-    spectrum: savedEditableSpecs?.['spectrum'] || 'White',
+    // 基础信息 - 规格名为默认，值为空（新产品）或从保存数据加载
+    title: hasSavedSettings ? (savedEditableSpecs?.['title'] || product.name) : '',
+    model: hasSavedSettings ? (savedEditableSpecs?.['model'] || '') : '',
+    category: hasSavedSettings ? (savedEditableSpecs?.['category'] || '') : '',
+    level: hasSavedSettings ? (savedEditableSpecs?.['level'] || '') : '',
+    spectrum: hasSavedSettings ? (savedEditableSpecs?.['spectrum'] || '') : '',
     
-    // Features
-    feature1: savedEditableSpecs?.['feature1'] || (specs['显色指数'] ? `Super High CRI ${specs['显色指数']}` : 'Super High CRI Ra98+'),
-    feature2: savedEditableSpecs?.['feature2'] || (specs['R9值'] && specs['R12值'] ? `Ra9 ${specs['R9值']}, Rg12 ${specs['R12值']}` : 'Ra9 >98, Rg12 >98'),
-    feature3: savedEditableSpecs?.['feature3'] || (specs['LED密度'] || '120LED/M') + ' | ' + (specs['功率'] || '14.4W/m'),
-    feature4: savedEditableSpecs?.['feature4'] || specs['LED类型'] || '2835 SMD',
+    // Features - 规格名为默认，值都为空
+    feature1: hasSavedSettings ? (savedEditableSpecs?.['feature1'] || '') : '',
+    feature2: hasSavedSettings ? (savedEditableSpecs?.['feature2'] || '') : '',
+    feature3: hasSavedSettings ? (savedEditableSpecs?.['feature3'] || '') : '',
+    feature4: hasSavedSettings ? (savedEditableSpecs?.['feature4'] || '') : '',
     
     // Product Setup 规格名
     categoryName: savedEditableSpecs?.['categoryName'] || 'Category',
@@ -938,65 +934,48 @@ const showSpecDialog = (product: Product) => {
     spectrumName: savedEditableSpecs?.['spectrumName'] || 'Spectrum',
     
     // Light Engine
-    ledType: savedEditableSpecs?.['ledType'] || specs['LED类型'] || '2835 SMD',
-    ledDensity: savedEditableSpecs?.['ledDensity'] || specs['LED密度'] || '120LED/M',
+    ledType: hasSavedSettings ? (savedEditableSpecs?.['ledType'] || '') : '',
+    ledDensity: hasSavedSettings ? (savedEditableSpecs?.['ledDensity'] || '') : '',
     ledTypeName: savedEditableSpecs?.['ledTypeName'] || 'LED Type',
     ledDensityName: savedEditableSpecs?.['ledDensityName'] || 'LED Density',
     
     // Control System 规格名
     controlProtocolName: savedEditableSpecs?.['controlProtocolName'] || 'Protocol',
-    controlProtocol: savedEditableSpecs?.['controlProtocol'] || '',
+    controlProtocol: hasSavedSettings ? (savedEditableSpecs?.['controlProtocol'] || '') : '',
     controlDimmingName: savedEditableSpecs?.['controlDimmingName'] || 'Dimming',
-    controlDimming: savedEditableSpecs?.['controlDimming'] || '',
+    controlDimming: hasSavedSettings ? (savedEditableSpecs?.['controlDimming'] || '') : '',
     
     // Electrical
-    voltage: savedEditableSpecs?.['voltage'] || specs['输入电压'] || '24V DC',
-    power: savedEditableSpecs?.['power'] || specs['功率'] || '14.4W/m',
-    ipRating: savedEditableSpecs?.['ipRating'] || specs['IP等级'] || 'IP20',
-    beamAngle: savedEditableSpecs?.['beamAngle'] || specs['发光角度'] || '120°',
+    voltage: hasSavedSettings ? (savedEditableSpecs?.['voltage'] || '') : '',
+    power: hasSavedSettings ? (savedEditableSpecs?.['power'] || '') : '',
+    ipRating: hasSavedSettings ? (savedEditableSpecs?.['ipRating'] || '') : '',
+    beamAngle: hasSavedSettings ? (savedEditableSpecs?.['beamAngle'] || '') : '',
     voltageName: savedEditableSpecs?.['voltageName'] || 'Voltage',
     powerName: savedEditableSpecs?.['powerName'] || 'Power',
     ipRatingName: savedEditableSpecs?.['ipRatingName'] || 'IP Rating',
     beamAngleName: savedEditableSpecs?.['beamAngleName'] || 'Beam Angle',
     
     // Photometric Summary
-    cct: savedEditableSpecs?.['cct'] || specs['色温'] || '2700K-5700K',
-    lumen: savedEditableSpecs?.['lumen'] || specs['光通量'] || '1200lm/m',
-    efficacy: savedEditableSpecs?.['efficacy'] || specs['能效'] || '80lm/W',
+    cct: hasSavedSettings ? (savedEditableSpecs?.['cct'] || '') : '',
+    lumen: hasSavedSettings ? (savedEditableSpecs?.['lumen'] || '') : '',
+    efficacy: hasSavedSettings ? (savedEditableSpecs?.['efficacy'] || '') : '',
     cctName: savedEditableSpecs?.['cctName'] || 'CCT',
     lumenName: savedEditableSpecs?.['lumenName'] || 'Lumen',
     efficacyName: savedEditableSpecs?.['efficacyName'] || 'Efficacy',
     
     // LED Brand & Lifetime
-    ledBrand: savedEditableSpecs?.['ledBrand'] || specs['LED品牌'] || 'Lumileds',
-    lifetime: savedEditableSpecs?.['lifetime'] || specs['寿命'] || '50,000Hrs',
+    ledBrand: hasSavedSettings ? (savedEditableSpecs?.['ledBrand'] || '') : '',
+    lifetime: hasSavedSettings ? (savedEditableSpecs?.['lifetime'] || '') : '',
     
     // Remark
-    remark: savedEditableSpecs?.['remark'] || '',
+    remark: hasSavedSettings ? (savedEditableSpecs?.['remark'] || '') : '',
   }
   
-  // 初始化 Photometric 行 - 从保存的数据加载，否则使用默认
+  // 初始化 Photometric 行 - 从保存的数据加载，否则为空数组（新产品）
   if (savedSettings?.photometricRows && savedSettings.photometricRows.length > 0) {
     photometricRows.value = savedSettings.photometricRows
   } else {
-    photometricRows.value = [
-      {
-        model: defaultModel,
-        power: '9.6W/m',
-        cct: '',
-        cri: '',
-        lumen: '960lm/m',
-        efficacy: '100lm/W'
-      },
-      {
-        model: defaultModel,
-        power: '15W/m',
-        cct: '',
-        cri: '',
-        lumen: '1500lm/m',
-        efficacy: '100lm/W'
-      }
-    ]
+    photometricRows.value = []
   }
   
   // 初始化 Control System 模块 - 从保存的数据加载
