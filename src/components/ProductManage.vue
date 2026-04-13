@@ -370,8 +370,6 @@
             <table class="spec-quad-table">
               <tr><th>Features <el-button size="small" type="primary" text @click="addCustomSpec('features')"><el-icon><Plus /></el-icon></el-button></th></tr>
               <tr><td>
-                <input type="text" class="spec-cell-input borderless" v-model="editableSpecs.feature5" placeholder="Feature 5" />
-                <input type="text" class="spec-cell-input borderless" v-model="editableSpecs.feature6" placeholder="Feature 6" />
                 <template v-for="(item, idx) in moduleCustomSpecs.features" :key="'ft-' + idx">
                   <div class="spec-field-row">
                     <input type="text" class="field-label-input borderless" v-model="item.name" placeholder="规格名" />
