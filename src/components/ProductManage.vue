@@ -1139,6 +1139,14 @@ const downloadSpec = async () => {
     const deleteRows = clone.querySelectorAll('.photometric-actions-row')
     deleteRows.forEach(row => row.remove())
     
+    // 移除模块标题旁的+按钮和删除按钮
+    const addBtns = clone.querySelectorAll('.spec-duo-table th .el-button, .spec-quad-table th .el-button')
+    addBtns.forEach(btn => btn.remove())
+    
+    // 移除模块内的删除按钮
+    const removeBtns = clone.querySelectorAll('.spec-field-row .el-button')
+    removeBtns.forEach(btn => btn.remove())
+    
     // 移除模块选择区域的复选框
     const modulesSelector = clone.querySelector('.modules-selector')
     if (modulesSelector) modulesSelector.remove()
