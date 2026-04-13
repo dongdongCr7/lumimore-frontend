@@ -1502,6 +1502,7 @@ defineExpose({
   min-height: 1123px;
   border: 1px solid #333;
   flex-shrink: 0;
+  overflow: hidden;
 }
 
 /* Logo单独一行 */
@@ -2054,6 +2055,31 @@ defineExpose({
   padding: 10px;
   border-bottom: 1px solid #ddd;
   gap: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* 产品图片固定宽度 */
+.spec-row2 .spec-product-img {
+  width: 180px;
+  min-width: 180px;
+  height: 100px;
+  flex-shrink: 0;
+}
+
+/* 标题信息区域 */
+.spec-row2 .spec-info {
+  flex: 1;
+  min-width: 150px;
+  max-width: 300px;
+}
+
+/* 认证区域固定宽度 */
+.spec-row2 .spec-cert-section {
+  width: 125px;
+  min-width: 125px;
+  flex-shrink: 0;
 }
 
 /* 认证区域样式 - 第一行3个，第二行2个 */
@@ -2145,10 +2171,13 @@ defineExpose({
 .spec-row-quad {
   display: flex;
   border-bottom: 1px solid #ddd;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .spec-quad-table {
   flex: 1;
+  min-width: 0;
   border-collapse: collapse;
   font-size: 9px;
   border-right: 1px solid #ddd;
@@ -2177,6 +2206,18 @@ defineExpose({
 }
 
 /* 第六行：Photometric大表格 */
+.spec-row-photometric {
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: auto;
+}
+
+.photometric-big-table {
+  width: 100%;
+  min-width: 500px;
+  border-collapse: collapse;
+  font-size: 8px;
+}
 .spec-row-photometric {
   padding: 0;
 }
