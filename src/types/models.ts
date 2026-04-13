@@ -33,3 +33,9 @@ export interface CustomModule {
   name: string  // 模块名，如 "Electrical", "Optical" 等
   items: CustomModuleItem[]  // 模块内的规格项
 }
+
+// 可编辑的规格项（包含规格名和值）
+export interface EditableSpecItem {
+  name: string   // 规格名，可编辑
+  value: string  // 规格值
+}

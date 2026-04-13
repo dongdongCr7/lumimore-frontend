@@ -251,15 +251,15 @@
               <tr><th>Product Setup <el-button size="small" type="primary" text @click="addCustomSpec('productSetup')"><el-icon><Plus /></el-icon></el-button></th></tr>
               <tr><td class="spec-fields">
                 <div class="spec-field-row">
-                  <span class="field-label">Category</span>
+                  <input type="text" class="field-label-input borderless" v-model="editableSpecs.categoryName" placeholder="Category" />
                   <input type="text" class="field-input borderless" v-model="editableSpecs.category" />
                 </div>
                 <div class="spec-field-row">
-                  <span class="field-label">Level</span>
+                  <input type="text" class="field-label-input borderless" v-model="editableSpecs.levelName" placeholder="Level" />
                   <input type="text" class="field-input borderless" v-model="editableSpecs.level" />
                 </div>
                 <div class="spec-field-row">
-                  <span class="field-label">Spectrum</span>
+                  <input type="text" class="field-label-input borderless" v-model="editableSpecs.spectrumName" placeholder="Spectrum" />
                   <input type="text" class="field-input borderless" v-model="editableSpecs.spectrum" />
                 </div>
                 <template v-for="(item, idx) in moduleCustomSpecs.productSetup" :key="'ps-' + idx">
@@ -275,11 +275,11 @@
               <tr><th>Light Engine <el-button size="small" type="primary" text @click="addCustomSpec('lightEngine')"><el-icon><Plus /></el-icon></el-button></th></tr>
               <tr><td class="spec-fields">
                 <div class="spec-field-row">
-                  <span class="field-label">LED Type</span>
+                  <input type="text" class="field-label-input borderless" v-model="editableSpecs.ledTypeName" placeholder="LED Type" />
                   <input type="text" class="field-input borderless" v-model="editableSpecs.ledType" />
                 </div>
                 <div class="spec-field-row">
-                  <span class="field-label">LED Density</span>
+                  <input type="text" class="field-label-input borderless" v-model="editableSpecs.ledDensityName" placeholder="LED Density" />
                   <input type="text" class="field-input borderless" v-model="editableSpecs.ledDensity" />
                 </div>
                 <template v-for="(item, idx) in moduleCustomSpecs.lightEngine" :key="'le-' + idx">
@@ -295,11 +295,11 @@
               <tr><th>Control System <el-button size="small" type="primary" text @click="addCustomSpec('controlSystem')"><el-icon><Plus /></el-icon></el-button></th></tr>
               <tr><td class="spec-fields">
                 <div class="spec-field-row">
-                  <span class="field-label">Protocol</span>
+                  <input type="text" class="field-label-input borderless" v-model="editableSpecs.controlProtocolName" placeholder="Protocol" />
                   <input type="text" class="field-input borderless" v-model="editableSpecs.controlProtocol" placeholder="DMX512 / DALI / 0-10V" />
                 </div>
                 <div class="spec-field-row">
-                  <span class="field-label">Dimming</span>
+                  <input type="text" class="field-label-input borderless" v-model="editableSpecs.controlDimmingName" placeholder="Dimming" />
                   <input type="text" class="field-input borderless" v-model="editableSpecs.controlDimming" placeholder="0-100%" />
                 </div>
                 <template v-for="(item, idx) in moduleCustomSpecs.controlSystem" :key="'cs-' + idx">
@@ -319,19 +319,19 @@
               <tr><th>Electrical <el-button size="small" type="primary" text @click="addCustomSpec('electrical')"><el-icon><Plus /></el-icon></el-button></th></tr>
               <tr><td class="spec-fields">
                 <div class="spec-field-row">
-                  <span class="field-label">Voltage</span>
+                  <input type="text" class="field-label-input borderless" v-model="editableSpecs.voltageName" placeholder="Voltage" />
                   <input type="text" class="field-input borderless" v-model="editableSpecs.voltage" />
                 </div>
                 <div class="spec-field-row">
-                  <span class="field-label">Power</span>
+                  <input type="text" class="field-label-input borderless" v-model="editableSpecs.powerName" placeholder="Power" />
                   <input type="text" class="field-input borderless" v-model="editableSpecs.power" />
                 </div>
                 <div class="spec-field-row">
-                  <span class="field-label">IP Rating</span>
+                  <input type="text" class="field-label-input borderless" v-model="editableSpecs.ipRatingName" placeholder="IP Rating" />
                   <input type="text" class="field-input borderless" v-model="editableSpecs.ipRating" />
                 </div>
                 <div class="spec-field-row">
-                  <span class="field-label">Beam Angle</span>
+                  <input type="text" class="field-label-input borderless" v-model="editableSpecs.beamAngleName" placeholder="Beam Angle" />
                   <input type="text" class="field-input borderless" v-model="editableSpecs.beamAngle" />
                 </div>
                 <template v-for="(item, idx) in moduleCustomSpecs.electrical" :key="'el-' + idx">
@@ -347,15 +347,15 @@
               <tr><th>Photometric <el-button size="small" type="primary" text @click="addCustomSpec('photometric')"><el-icon><Plus /></el-icon></el-button></th></tr>
               <tr><td class="spec-fields">
                 <div class="spec-field-row">
-                  <span class="field-label">CCT</span>
+                  <input type="text" class="field-label-input borderless" v-model="editableSpecs.cctName" placeholder="CCT" />
                   <input type="text" class="field-input borderless" v-model="editableSpecs.cct" />
                 </div>
                 <div class="spec-field-row">
-                  <span class="field-label">Lumen</span>
+                  <input type="text" class="field-label-input borderless" v-model="editableSpecs.lumenName" placeholder="Lumen" />
                   <input type="text" class="field-input borderless" v-model="editableSpecs.lumen" />
                 </div>
                 <div class="spec-field-row">
-                  <span class="field-label">Efficacy</span>
+                  <input type="text" class="field-label-input borderless" v-model="editableSpecs.efficacyName" placeholder="Efficacy" />
                   <input type="text" class="field-input borderless" v-model="editableSpecs.efficacy" />
                 </div>
                 <template v-for="(item, idx) in moduleCustomSpecs.photometric" :key="'ph-' + idx">
@@ -932,20 +932,40 @@ const showSpecDialog = (product: Product) => {
     feature3: savedEditableSpecs?.['feature3'] || (specs['LED密度'] || '120LED/M') + ' | ' + (specs['功率'] || '14.4W/m'),
     feature4: savedEditableSpecs?.['feature4'] || specs['LED类型'] || '2835 SMD',
     
+    // Product Setup 规格名
+    categoryName: savedEditableSpecs?.['categoryName'] || 'Category',
+    levelName: savedEditableSpecs?.['levelName'] || 'Level',
+    spectrumName: savedEditableSpecs?.['spectrumName'] || 'Spectrum',
+    
     // Light Engine
     ledType: savedEditableSpecs?.['ledType'] || specs['LED类型'] || '2835 SMD',
     ledDensity: savedEditableSpecs?.['ledDensity'] || specs['LED密度'] || '120LED/M',
+    ledTypeName: savedEditableSpecs?.['ledTypeName'] || 'LED Type',
+    ledDensityName: savedEditableSpecs?.['ledDensityName'] || 'LED Density',
+    
+    // Control System 规格名
+    controlProtocolName: savedEditableSpecs?.['controlProtocolName'] || 'Protocol',
+    controlProtocol: savedEditableSpecs?.['controlProtocol'] || '',
+    controlDimmingName: savedEditableSpecs?.['controlDimmingName'] || 'Dimming',
+    controlDimming: savedEditableSpecs?.['controlDimming'] || '',
     
     // Electrical
     voltage: savedEditableSpecs?.['voltage'] || specs['输入电压'] || '24V DC',
     power: savedEditableSpecs?.['power'] || specs['功率'] || '14.4W/m',
     ipRating: savedEditableSpecs?.['ipRating'] || specs['IP等级'] || 'IP20',
     beamAngle: savedEditableSpecs?.['beamAngle'] || specs['发光角度'] || '120°',
+    voltageName: savedEditableSpecs?.['voltageName'] || 'Voltage',
+    powerName: savedEditableSpecs?.['powerName'] || 'Power',
+    ipRatingName: savedEditableSpecs?.['ipRatingName'] || 'IP Rating',
+    beamAngleName: savedEditableSpecs?.['beamAngleName'] || 'Beam Angle',
     
     // Photometric Summary
     cct: savedEditableSpecs?.['cct'] || specs['色温'] || '2700K-5700K',
     lumen: savedEditableSpecs?.['lumen'] || specs['光通量'] || '1200lm/m',
     efficacy: savedEditableSpecs?.['efficacy'] || specs['能效'] || '80lm/W',
+    cctName: savedEditableSpecs?.['cctName'] || 'CCT',
+    lumenName: savedEditableSpecs?.['lumenName'] || 'Lumen',
+    efficacyName: savedEditableSpecs?.['efficacyName'] || 'Efficacy',
     
     // LED Brand & Lifetime
     ledBrand: savedEditableSpecs?.['ledBrand'] || specs['LED品牌'] || 'Lumileds',
