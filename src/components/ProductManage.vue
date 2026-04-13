@@ -215,15 +215,6 @@
         <!-- 第三行：Features | Dimension -->
         <div class="spec-row3">
           <table class="spec-mini-table">
-            <tr><th>Features</th></tr>
-            <tr><td>
-              <input type="text" class="spec-cell-input borderless" v-model="editableSpecs.feature1" placeholder="Super High CRI Ra98" />
-              <input type="text" class="spec-cell-input borderless" v-model="editableSpecs.feature2" placeholder="Ra9>98, Rg12>98" />
-              <input type="text" class="spec-cell-input borderless" v-model="editableSpecs.feature3" placeholder="120LED/M | 15W/m" />
-              <input type="text" class="spec-cell-input borderless" v-model="editableSpecs.feature4" placeholder="2835" />
-            </td></tr>
-          </table>
-          <table class="spec-mini-table">
             <tr><th>Dimension</th></tr>
             <tr><td class="dimension-cell" @click="triggerDimensionUpload">
               <img v-if="customSettings?.dimensionImage" :src="customSettings.dimensionImage" class="dimension-img" />
@@ -250,18 +241,6 @@
             <table class="spec-duo-table">
               <tr><th>Product Setup <el-button size="small" type="primary" text @click="addCustomSpec('productSetup')"><el-icon><Plus /></el-icon></el-button></th></tr>
               <tr><td class="spec-fields">
-                <div class="spec-field-row">
-                  <input type="text" class="field-label-input borderless" v-model="editableSpecs.categoryName" placeholder="Category" />
-                  <input type="text" class="field-input borderless" v-model="editableSpecs.category" />
-                </div>
-                <div class="spec-field-row">
-                  <input type="text" class="field-label-input borderless" v-model="editableSpecs.levelName" placeholder="Level" />
-                  <input type="text" class="field-input borderless" v-model="editableSpecs.level" />
-                </div>
-                <div class="spec-field-row">
-                  <input type="text" class="field-label-input borderless" v-model="editableSpecs.spectrumName" placeholder="Spectrum" />
-                  <input type="text" class="field-input borderless" v-model="editableSpecs.spectrum" />
-                </div>
                 <template v-for="(item, idx) in moduleCustomSpecs.productSetup" :key="'ps-' + idx">
                   <div class="spec-field-row">
                     <input type="text" class="field-label-input borderless" v-model="item.name" placeholder="规格名" />
@@ -840,9 +819,6 @@ const showAddProductSpecDialog = () => {
   editableSpecs.value = {
     title: '',
     model: '',
-    category: 'LumStrip',
-    level: 'Core',
-    spectrum: 'White',
     ledType: '',
     ledDensity: '',
     voltage: '',
@@ -854,10 +830,6 @@ const showAddProductSpecDialog = () => {
     efficacy: '',
     ledBrand: '',
     lifetime: '',
-    feature1: '',
-    feature2: '',
-    feature3: '',
-    feature4: '',
     controlProtocol: '',
     controlDimming: '',
     remark: '',
@@ -915,23 +887,9 @@ const showSpecDialog = (product: Product) => {
   console.log('savedEditableSpecs:', savedEditableSpecs)
   
   editableSpecs.value = {
-    // 基础信息 - 规格名为默认，值为空（新产品）或从保存数据加载
-    title: hasSavedSettings ? (savedEditableSpecs?.['title'] || product.name) : '',
+    // 基础信息
+    title: hasSavedSettings ? (savedEditableSpecs?.['title'] || '') : '',
     model: hasSavedSettings ? (savedEditableSpecs?.['model'] || '') : '',
-    category: hasSavedSettings ? (savedEditableSpecs?.['category'] || '') : '',
-    level: hasSavedSettings ? (savedEditableSpecs?.['level'] || '') : '',
-    spectrum: hasSavedSettings ? (savedEditableSpecs?.['spectrum'] || '') : '',
-    
-    // Features - 规格名为默认，值都为空
-    feature1: hasSavedSettings ? (savedEditableSpecs?.['feature1'] || '') : '',
-    feature2: hasSavedSettings ? (savedEditableSpecs?.['feature2'] || '') : '',
-    feature3: hasSavedSettings ? (savedEditableSpecs?.['feature3'] || '') : '',
-    feature4: hasSavedSettings ? (savedEditableSpecs?.['feature4'] || '') : '',
-    
-    // Product Setup 规格名
-    categoryName: savedEditableSpecs?.['categoryName'] || 'Category',
-    levelName: savedEditableSpecs?.['levelName'] || 'Level',
-    spectrumName: savedEditableSpecs?.['spectrumName'] || 'Spectrum',
     
     // Light Engine
     ledType: hasSavedSettings ? (savedEditableSpecs?.['ledType'] || '') : '',
