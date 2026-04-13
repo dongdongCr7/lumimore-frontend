@@ -1022,35 +1022,17 @@ const downloadSpec = async () => {
       }
     })
     
-    // 重新排列证书为一行3个+一行2个
-    const certRow = clone.querySelector('.spec-cert-row')
-    if (certRow) {
-      const certBoxes = certRow.querySelectorAll('.cert-box')
-      if (certBoxes.length === 5) {
-        // 创建两行容器，保持flex布局
-        const container = document.createElement('div')
-        container.style.cssText = 'display: flex !important; flex-direction: column !important; gap: 3px !important; width: fit-content !important;'
-        
-        const row1 = document.createElement('div')
-        row1.style.cssText = 'display: flex !important; gap: 3px !important;'
-        const row2 = document.createElement('div')
-        row2.style.cssText = 'display: flex !important; gap: 3px !important; justify-content: flex-start !important;'
-        
-        // 第一行放3个，第二行放2个
-        for (let i = 0; i < 3; i++) {
-          row1.appendChild(certBoxes[i])
-        }
-        for (let i = 3; i < 5; i++) {
-          row2.appendChild(certBoxes[i])
-        }
-        
-        container.appendChild(row1)
-        container.appendChild(row2)
-        
-        // 清空原容器并添加新容器
-        certRow.innerHTML = ''
-        certRow.appendChild(container)
-      }
+    // 重新排列证书为一行3个+一行2个（下载时保持原样，由CSS控制布局）
+    // 由于HTML结构已经是一行3个+一行2个，不需要重新排列
+    // 只需要确保cert-section样式正确
+    const certSection = clone.querySelector('.spec-cert-section')
+    if (certSection) {
+      (certSection as HTMLElement).style.cssText = 'display: flex !important; flex-direction: column !important; gap: 5px !important; flex-shrink: 0 !important;'
+      
+      const certRows = certSection.querySelectorAll('.cert-row-3, .cert-row-2')
+      certRows.forEach(row => {
+        (row as HTMLElement).style.cssText = 'display: flex !important; gap: 5px !important;'
+      })
     }
     
     // 添加必要的CSS样式到克隆的DOM
@@ -2224,8 +2206,51 @@ defineExpose({
   text-align: right;
   padding: 5px 10px;
   background: #f5f5f5;
-  border: 1px solid #333;
+  border: 1px solid #ddd;
   border-top: none;
+}
+
+/* Photometric大表格样式 */
+.photometric-big-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  table-layout: fixed;
+  font-size: 8px;
+}
+
+.photometric-big-table thead tr {
+  background: #f5f5f5;
+}
+
+.photometric-big-table th {
+  background: #f5f5f5;
+  color: #333;
+  border: 1px solid #ddd;
+  padding: 5px 4px;
+  font-weight: bold;
+  text-align: center;
+  width: auto;
+}
+
+.photometric-big-table td {
+  border: 1px solid #ddd;
+  padding: 4px;
+  text-align: center;
+  background: #fff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.photometric-big-table td input {
+  width: 100%;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.photometric-big-table tbody tr:nth-child(even) td {
+  background: #fafafa;
 }
 
 /* 移除spec-row1和spec-row4的旧样式（已不再使用） */
