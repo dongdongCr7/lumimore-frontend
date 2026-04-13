@@ -5,9 +5,14 @@ import { supabase } from './supabase.js';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// 中间件
-app.use(cors());
-app.use(express.json());
+// CORS 配置 - 允许前端访问
+const corsOptions = {
+  origin: '*', // 允许所有域名（开发环境）
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+app.use(cors(corsOptions));
+app.use(express.json({ limit: '50mb' })); // 支持大文件上传
 
 // 健康检查
 app.get('/api/health', (_, res) => {
