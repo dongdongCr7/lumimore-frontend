@@ -1972,31 +1972,7 @@ defineExpose({
   font-size: 10px !important;
 }
 
-.photometric-big-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 8px;
-}
-
-.photometric-big-table th {
-  background: #333;
-  color: #fff;
-  border: 1px solid #555;
-  padding: 5px;
-  font-weight: bold;
-  text-align: center;
-}
-
-.photometric-big-table td {
-  border: 1px solid #555;
-  padding: 4px;
-  text-align: center;
-  background: #fff;
-}
-
-.photometric-big-table tr:nth-child(even) td {
-  background: #fafafa;
-}
+/* Photometric表格样式 - 已合并到下方 */
 
 .dialog-footer {
   display: flex;
@@ -2212,14 +2188,36 @@ defineExpose({
   overflow-x: auto;
 }
 
-.photometric-big-table {
-  width: 100%;
-  min-width: 500px;
-  border-collapse: collapse;
-  font-size: 8px;
-}
 .spec-row-photometric {
   padding: 0;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: auto;
+}
+
+.photometric-big-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  table-layout: fixed;
+  font-size: 8px;
+}
+
+.photometric-big-table th,
+.photometric-big-table td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.photometric-title-row {
+  background: #f5f5f5;
+  border: 1px solid #333;
+  border-bottom: none;
+  padding: 5px 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .photometric-actions-row {
