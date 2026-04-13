@@ -248,7 +248,7 @@
           <!-- 第四行：Product Setup | Light Engine | (可选)Control System -->
           <div class="spec-row-duo">
             <table class="spec-duo-table">
-              <tr><th>Product Setup</th></tr>
+              <tr><th>Product Setup <el-button size="small" type="primary" text @click="addCustomSpec('productSetup')"><el-icon><Plus /></el-icon></el-button></th></tr>
               <tr><td class="spec-fields">
                 <div class="spec-field-row">
                   <span class="field-label">Category</span>
@@ -262,10 +262,17 @@
                   <span class="field-label">Spectrum</span>
                   <input type="text" class="field-input borderless" v-model="editableSpecs.spectrum" />
                 </div>
+                <template v-for="(item, idx) in moduleCustomSpecs.productSetup" :key="'ps-' + idx">
+                  <div class="spec-field-row">
+                    <input type="text" class="field-label-input borderless" v-model="item.name" placeholder="规格名" />
+                    <input type="text" class="field-input borderless" v-model="item.value" placeholder="规格值" />
+                    <el-button size="small" type="danger" text @click="removeCustomSpec('productSetup', idx)"><el-icon><Delete /></el-icon></el-button>
+                  </div>
+                </template>
               </td></tr>
             </table>
             <table class="spec-duo-table">
-              <tr><th>Light Engine</th></tr>
+              <tr><th>Light Engine <el-button size="small" type="primary" text @click="addCustomSpec('lightEngine')"><el-icon><Plus /></el-icon></el-button></th></tr>
               <tr><td class="spec-fields">
                 <div class="spec-field-row">
                   <span class="field-label">LED Type</span>
@@ -275,10 +282,17 @@
                   <span class="field-label">LED Density</span>
                   <input type="text" class="field-input borderless" v-model="editableSpecs.ledDensity" />
                 </div>
+                <template v-for="(item, idx) in moduleCustomSpecs.lightEngine" :key="'le-' + idx">
+                  <div class="spec-field-row">
+                    <input type="text" class="field-label-input borderless" v-model="item.name" placeholder="规格名" />
+                    <input type="text" class="field-input borderless" v-model="item.value" placeholder="规格值" />
+                    <el-button size="small" type="danger" text @click="removeCustomSpec('lightEngine', idx)"><el-icon><Delete /></el-icon></el-button>
+                  </div>
+                </template>
               </td></tr>
             </table>
             <table class="spec-duo-table" v-if="hasControlSystem">
-              <tr><th>Control System</th></tr>
+              <tr><th>Control System <el-button size="small" type="primary" text @click="addCustomSpec('controlSystem')"><el-icon><Plus /></el-icon></el-button></th></tr>
               <tr><td class="spec-fields">
                 <div class="spec-field-row">
                   <span class="field-label">Protocol</span>
@@ -288,6 +302,13 @@
                   <span class="field-label">Dimming</span>
                   <input type="text" class="field-input borderless" v-model="editableSpecs.controlDimming" placeholder="0-100%" />
                 </div>
+                <template v-for="(item, idx) in moduleCustomSpecs.controlSystem" :key="'cs-' + idx">
+                  <div class="spec-field-row">
+                    <input type="text" class="field-label-input borderless" v-model="item.name" placeholder="规格名" />
+                    <input type="text" class="field-input borderless" v-model="item.value" placeholder="规格值" />
+                    <el-button size="small" type="danger" text @click="removeCustomSpec('controlSystem', idx)"><el-icon><Delete /></el-icon></el-button>
+                  </div>
+                </template>
               </td></tr>
             </table>
           </div>
@@ -295,7 +316,7 @@
           <!-- 第五行：Electrical | Photometric | Features | Remark -->
           <div class="spec-row-quad">
             <table class="spec-quad-table">
-              <tr><th>Electrical</th></tr>
+              <tr><th>Electrical <el-button size="small" type="primary" text @click="addCustomSpec('electrical')"><el-icon><Plus /></el-icon></el-button></th></tr>
               <tr><td class="spec-fields">
                 <div class="spec-field-row">
                   <span class="field-label">Voltage</span>
@@ -313,10 +334,17 @@
                   <span class="field-label">Beam Angle</span>
                   <input type="text" class="field-input borderless" v-model="editableSpecs.beamAngle" />
                 </div>
+                <template v-for="(item, idx) in moduleCustomSpecs.electrical" :key="'el-' + idx">
+                  <div class="spec-field-row">
+                    <input type="text" class="field-label-input borderless" v-model="item.name" placeholder="规格名" />
+                    <input type="text" class="field-input borderless" v-model="item.value" placeholder="规格值" />
+                    <el-button size="small" type="danger" text @click="removeCustomSpec('electrical', idx)"><el-icon><Delete /></el-icon></el-button>
+                  </div>
+                </template>
               </td></tr>
             </table>
             <table class="spec-quad-table">
-              <tr><th>Photometric</th></tr>
+              <tr><th>Photometric <el-button size="small" type="primary" text @click="addCustomSpec('photometric')"><el-icon><Plus /></el-icon></el-button></th></tr>
               <tr><td class="spec-fields">
                 <div class="spec-field-row">
                   <span class="field-label">CCT</span>
@@ -330,19 +358,40 @@
                   <span class="field-label">Efficacy</span>
                   <input type="text" class="field-input borderless" v-model="editableSpecs.efficacy" />
                 </div>
+                <template v-for="(item, idx) in moduleCustomSpecs.photometric" :key="'ph-' + idx">
+                  <div class="spec-field-row">
+                    <input type="text" class="field-label-input borderless" v-model="item.name" placeholder="规格名" />
+                    <input type="text" class="field-input borderless" v-model="item.value" placeholder="规格值" />
+                    <el-button size="small" type="danger" text @click="removeCustomSpec('photometric', idx)"><el-icon><Delete /></el-icon></el-button>
+                  </div>
+                </template>
               </td></tr>
             </table>
             <table class="spec-quad-table">
-              <tr><th>Features</th></tr>
+              <tr><th>Features <el-button size="small" type="primary" text @click="addCustomSpec('features')"><el-icon><Plus /></el-icon></el-button></th></tr>
               <tr><td>
                 <input type="text" class="spec-cell-input borderless" v-model="editableSpecs.feature5" placeholder="Feature 5" />
                 <input type="text" class="spec-cell-input borderless" v-model="editableSpecs.feature6" placeholder="Feature 6" />
+                <template v-for="(item, idx) in moduleCustomSpecs.features" :key="'ft-' + idx">
+                  <div class="spec-field-row">
+                    <input type="text" class="field-label-input borderless" v-model="item.name" placeholder="规格名" />
+                    <input type="text" class="field-input borderless" v-model="item.value" placeholder="规格值" />
+                    <el-button size="small" type="danger" text @click="removeCustomSpec('features', idx)"><el-icon><Delete /></el-icon></el-button>
+                  </div>
+                </template>
               </td></tr>
             </table>
             <table class="spec-quad-table">
-              <tr><th>Remark</th></tr>
+              <tr><th>Remark <el-button size="small" type="primary" text @click="addCustomSpec('remark')"><el-icon><Plus /></el-icon></el-button></th></tr>
               <tr><td>
                 <textarea class="spec-remark-input borderless" v-model="editableSpecs.remark" placeholder="备注信息..." rows="4"></textarea>
+                <template v-for="(item, idx) in moduleCustomSpecs.remark" :key="'rm-' + idx">
+                  <div class="spec-field-row">
+                    <input type="text" class="field-label-input borderless" v-model="item.name" placeholder="规格名" />
+                    <input type="text" class="field-input borderless" v-model="item.value" placeholder="规格值" />
+                    <el-button size="small" type="danger" text @click="removeCustomSpec('remark', idx)"><el-icon><Delete /></el-icon></el-button>
+                  </div>
+                </template>
               </td></tr>
             </table>
           </div>
@@ -561,7 +610,33 @@ interface PhotometricRow {
   efficacy: string
 }
 
+// 自定义规格项
+interface CustomSpecItem {
+  name: string
+  value: string
+}
+
+// 模块自定义规格数据
+interface ModuleCustomSpecs {
+  productSetup: CustomSpecItem[]
+  lightEngine: CustomSpecItem[]
+  controlSystem: CustomSpecItem[]
+  electrical: CustomSpecItem[]
+  photometric: CustomSpecItem[]
+  features: CustomSpecItem[]
+  remark: CustomSpecItem[]
+}
+
 const photometricRows = ref<PhotometricRow[]>([])
+const moduleCustomSpecs = ref<ModuleCustomSpecs>({
+  productSetup: [],
+  lightEngine: [],
+  controlSystem: [],
+  electrical: [],
+  photometric: [],
+  features: [],
+  remark: []
+})
 
 // Control System模块控制
 const hasControlSystem = ref(false)
@@ -569,6 +644,16 @@ const hasControlSystem = ref(false)
 const toggleControlSystem = () => {
   // 根据hasControlSystem的值自动添加/移除Control System模块
   // 实际显示由v-if="hasControlSystem"控制
+}
+
+// 添加自定义规格项
+const addCustomSpec = (module: keyof ModuleCustomSpecs) => {
+  moduleCustomSpecs.value[module].push({ name: '', value: '' })
+}
+
+// 删除自定义规格项
+const removeCustomSpec = (module: keyof ModuleCustomSpecs, index: number) => {
+  moduleCustomSpecs.value[module].splice(index, 1)
 }
 
 // 添加Photometric行
@@ -908,6 +993,29 @@ const showSpecDialog = (product: Product) => {
   // 初始化 Control System 模块 - 从保存的数据加载
   hasControlSystem.value = savedSettings?.hasControlSystem || false
   
+  // 加载模块自定义规格
+  if (savedSettings?.moduleCustomSpecs) {
+    moduleCustomSpecs.value = {
+      productSetup: savedSettings.moduleCustomSpecs.productSetup || [],
+      lightEngine: savedSettings.moduleCustomSpecs.lightEngine || [],
+      controlSystem: savedSettings.moduleCustomSpecs.controlSystem || [],
+      electrical: savedSettings.moduleCustomSpecs.electrical || [],
+      photometric: savedSettings.moduleCustomSpecs.photometric || [],
+      features: savedSettings.moduleCustomSpecs.features || [],
+      remark: savedSettings.moduleCustomSpecs.remark || []
+    }
+  } else {
+    moduleCustomSpecs.value = {
+      productSetup: [],
+      lightEngine: [],
+      controlSystem: [],
+      electrical: [],
+      photometric: [],
+      features: [],
+      remark: []
+    }
+  }
+  
   specDialogVisible.value = true
 }
 
@@ -946,7 +1054,8 @@ const saveSpecSettings = () => {
       footer: customSettings.value?.footer,
       editableSpecs: editableSpecs.value,
       photometricRows: photometricRows.value,
-      hasControlSystem: hasControlSystem.value
+      hasControlSystem: hasControlSystem.value,
+      moduleCustomSpecs: moduleCustomSpecs.value
     })
     ElMessage.success('保存成功')
   }
@@ -966,7 +1075,8 @@ const downloadSpec = async () => {
       footer: customSettings.value?.footer,
       editableSpecs: editableSpecs.value,
       photometricRows: photometricRows.value,
-      hasControlSystem: hasControlSystem.value
+      hasControlSystem: hasControlSystem.value,
+      moduleCustomSpecs: moduleCustomSpecs.value
     })
   } else if (currentProduct.value) {
     productStore.saveSpecSettingsForProduct(currentProduct.value.id, {
@@ -977,7 +1087,8 @@ const downloadSpec = async () => {
       footer: customSettings.value?.footer,
       editableSpecs: editableSpecs.value,
       photometricRows: photometricRows.value,
-      hasControlSystem: hasControlSystem.value
+      hasControlSystem: hasControlSystem.value,
+      moduleCustomSpecs: moduleCustomSpecs.value
     })
   }
   
@@ -1694,6 +1805,14 @@ defineExpose({
   font-size: 8px;
 }
 
+.field-label-input {
+  min-width: 60px;
+  max-width: 80px;
+  font-weight: bold;
+  font-size: 8px;
+  margin-right: 5px;
+}
+
 .field-input {
   flex: 1;
   min-width: 0;
@@ -2059,6 +2178,7 @@ defineExpose({
   width: 125px;
   min-width: 125px;
   flex-shrink: 0;
+  margin-left: 100px;
 }
 
 /* 认证区域样式 - 第一行3个，第二行2个 */

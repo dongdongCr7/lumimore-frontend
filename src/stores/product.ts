@@ -27,6 +27,15 @@ export interface CustomSpecSettings {
     efficacy: string
   }>
   hasControlSystem?: boolean
+  moduleCustomSpecs?: {
+    productSetup?: Array<{ name: string; value: string }>
+    lightEngine?: Array<{ name: string; value: string }>
+    controlSystem?: Array<{ name: string; value: string }>
+    electrical?: Array<{ name: string; value: string }>
+    photometric?: Array<{ name: string; value: string }>
+    features?: Array<{ name: string; value: string }>
+    remark?: Array<{ name: string; value: string }>
+  }
 }
 
 // ============ 默认数据 ============
