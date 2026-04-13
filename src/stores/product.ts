@@ -26,7 +26,7 @@ export interface CustomSpecSettings {
     lumen: string
     efficacy: string
   }>
-  selectedTopModules?: string[]
+  hasControlSystem?: boolean
 }
 
 // ============ 默认数据 ============

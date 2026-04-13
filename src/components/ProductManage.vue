@@ -175,8 +175,9 @@
           <input type="file" ref="logoInputRef" @change="handleLogoFileChange" accept="image/*" style="display:none" />
         </div>
         
-        <!-- 产品图片 + 产品信息 + 认证图标 -->
-        <div class="spec-row1">
+        <!-- 第二行：产品图片 | 标题+型号 | 认证（第一行3个，第二行2个） -->
+        <div class="spec-row2">
+          <!-- 左侧：产品图片 -->
           <div class="spec-product-img" @click="triggerProductImageUpload">
             <img v-if="customSettings?.productImage" :src="customSettings.productImage" class="product-img-uploaded" />
             <div v-else class="product-img-placeholder">
@@ -187,83 +188,113 @@
           </div>
           <input type="file" ref="productImageInputRef" @change="handleProductImageFileChange" accept="image/*" style="display:none" />
           
+          <!-- 中间：标题 + 型号 -->
           <div class="spec-info">
             <input type="text" class="spec-title-input borderless" v-model="editableSpecs.title" placeholder="产品名称" />
             <input type="text" class="spec-model-input borderless" v-model="editableSpecs.model" placeholder="Model: LS-XXXX" />
           </div>
           
-          <div class="spec-cert-row">
-            <div v-for="i in 5" :key="i" class="cert-box" @click="triggerCertUpload(i-1)">
-              <img v-if="customSettings?.certifications?.[i-1]?.image" :src="customSettings.certifications[i-1].image" class="cert-img" />
-              <span v-else class="cert-placeholder">Cert {{ i }}</span>
+          <!-- 右侧：认证（第一行3个，第二行2个） -->
+          <div class="spec-cert-section">
+            <div class="cert-row-3">
+              <div v-for="i in 3" :key="i" class="cert-box" @click="triggerCertUpload(i-1)">
+                <img v-if="customSettings?.certifications?.[i-1]?.image" :src="customSettings.certifications[i-1].image" class="cert-img" />
+                <span v-else class="cert-placeholder">Cert {{ i }}</span>
+              </div>
+            </div>
+            <div class="cert-row-2">
+              <div v-for="i in 2" :key="i+3" class="cert-box" @click="triggerCertUpload(i+2)">
+                <img v-if="customSettings?.certifications?.[i+2]?.image" :src="customSettings.certifications[i+2].image" class="cert-img" />
+                <span v-else class="cert-placeholder">Cert {{ i+3 }}</span>
+              </div>
             </div>
           </div>
           <input type="file" ref="certInputRef" @change="handleCertFileChange" accept="image/*" style="display:none" />
         </div>
         
-        <!-- 模块选择区域 -->
+        <!-- 第三行：Features | Dimension -->
+        <div class="spec-row3">
+          <table class="spec-mini-table">
+            <tr><th>Features</th></tr>
+            <tr><td>
+              <input type="text" class="spec-cell-input borderless" v-model="editableSpecs.feature1" placeholder="Super High CRI Ra98" />
+              <input type="text" class="spec-cell-input borderless" v-model="editableSpecs.feature2" placeholder="Ra9>98, Rg12>98" />
+              <input type="text" class="spec-cell-input borderless" v-model="editableSpecs.feature3" placeholder="120LED/M | 15W/m" />
+              <input type="text" class="spec-cell-input borderless" v-model="editableSpecs.feature4" placeholder="2835" />
+            </td></tr>
+          </table>
+          <table class="spec-mini-table">
+            <tr><th>Dimension</th></tr>
+            <tr><td class="dimension-cell" @click="triggerDimensionUpload">
+              <img v-if="customSettings?.dimensionImage" :src="customSettings.dimensionImage" class="dimension-img" />
+              <div v-else class="dimension-placeholder">
+                <el-icon><Plus /></el-icon>
+                <span>上传尺寸图</span>
+              </div>
+            </td></tr>
+          </table>
+        </div>
+        <input type="file" ref="dimensionInputRef" @change="handleDimensionFileChange" accept="image/*" style="display:none" />
+        
+        <!-- 模块选择区域 - 第四行（可添加Control System） -->
         <div class="spec-modules-section">
           <div class="modules-selector">
             <span class="selector-label">选择模块：</span>
-            <el-checkbox-group v-model="selectedTopModules" :max="3">
-              <el-checkbox v-for="mod in availableModules.slice(0, 3)" :key="mod.id" :value="mod.id">
-                {{ mod.name }}
-              </el-checkbox>
-            </el-checkbox-group>
+            <el-checkbox v-model="hasControlSystem" @change="toggleControlSystem">
+              Control System
+            </el-checkbox>
           </div>
           
-          <!-- 上排模块（可选） -->
-          <div class="spec-row-duo" v-if="selectedTopModules.length > 0">
-            <template v-for="moduleId in selectedTopModules" :key="moduleId">
-              <table class="spec-duo-table" v-if="moduleId === 'product_setup'">
-                <tr><th>Product Setup</th></tr>
-                <tr><td class="spec-fields">
-                  <div class="spec-field-row">
-                    <span class="field-label">Category</span>
-                    <input type="text" class="field-input borderless" v-model="editableSpecs.category" />
-                  </div>
-                  <div class="spec-field-row">
-                    <span class="field-label">Level</span>
-                    <input type="text" class="field-input borderless" v-model="editableSpecs.level" />
-                  </div>
-                  <div class="spec-field-row">
-                    <span class="field-label">Spectrum</span>
-                    <input type="text" class="field-input borderless" v-model="editableSpecs.spectrum" />
-                  </div>
-                </td></tr>
-              </table>
-              <table class="spec-duo-table" v-else-if="moduleId === 'light_engine'">
-                <tr><th>Light Engine</th></tr>
-                <tr><td class="spec-fields">
-                  <div class="spec-field-row">
-                    <span class="field-label">LED Type</span>
-                    <input type="text" class="field-input borderless" v-model="editableSpecs.ledType" />
-                  </div>
-                  <div class="spec-field-row">
-                    <span class="field-label">LED Density</span>
-                    <input type="text" class="field-input borderless" v-model="editableSpecs.ledDensity" />
-                  </div>
-                </td></tr>
-              </table>
-              <table class="spec-duo-table" v-else-if="moduleId === 'control_system'">
-                <tr><th>Control System</th></tr>
-                <tr><td class="spec-fields">
-                  <div class="spec-field-row">
-                    <span class="field-label">Protocol</span>
-                    <input type="text" class="field-input borderless" v-model="editableSpecs.controlProtocol" placeholder="DMX512 / DALI / 0-10V" />
-                  </div>
-                  <div class="spec-field-row">
-                    <span class="field-label">Dimming</span>
-                    <input type="text" class="field-input borderless" v-model="editableSpecs.controlDimming" placeholder="0-100%" />
-                  </div>
-                </td></tr>
-              </table>
-            </template>
-          </div>
-          
-          <!-- 下排固定模块（Electrical + Photometric） -->
+          <!-- 第四行：Product Setup | Light Engine | (可选)Control System -->
           <div class="spec-row-duo">
             <table class="spec-duo-table">
+              <tr><th>Product Setup</th></tr>
+              <tr><td class="spec-fields">
+                <div class="spec-field-row">
+                  <span class="field-label">Category</span>
+                  <input type="text" class="field-input borderless" v-model="editableSpecs.category" />
+                </div>
+                <div class="spec-field-row">
+                  <span class="field-label">Level</span>
+                  <input type="text" class="field-input borderless" v-model="editableSpecs.level" />
+                </div>
+                <div class="spec-field-row">
+                  <span class="field-label">Spectrum</span>
+                  <input type="text" class="field-input borderless" v-model="editableSpecs.spectrum" />
+                </div>
+              </td></tr>
+            </table>
+            <table class="spec-duo-table">
+              <tr><th>Light Engine</th></tr>
+              <tr><td class="spec-fields">
+                <div class="spec-field-row">
+                  <span class="field-label">LED Type</span>
+                  <input type="text" class="field-input borderless" v-model="editableSpecs.ledType" />
+                </div>
+                <div class="spec-field-row">
+                  <span class="field-label">LED Density</span>
+                  <input type="text" class="field-input borderless" v-model="editableSpecs.ledDensity" />
+                </div>
+              </td></tr>
+            </table>
+            <table class="spec-duo-table" v-if="hasControlSystem">
+              <tr><th>Control System</th></tr>
+              <tr><td class="spec-fields">
+                <div class="spec-field-row">
+                  <span class="field-label">Protocol</span>
+                  <input type="text" class="field-input borderless" v-model="editableSpecs.controlProtocol" placeholder="DMX512 / DALI / 0-10V" />
+                </div>
+                <div class="spec-field-row">
+                  <span class="field-label">Dimming</span>
+                  <input type="text" class="field-input borderless" v-model="editableSpecs.controlDimming" placeholder="0-100%" />
+                </div>
+              </td></tr>
+            </table>
+          </div>
+          
+          <!-- 第五行：Electrical | Photometric | Features | Remark -->
+          <div class="spec-row-quad">
+            <table class="spec-quad-table">
               <tr><th>Electrical</th></tr>
               <tr><td class="spec-fields">
                 <div class="spec-field-row">
@@ -284,7 +315,7 @@
                 </div>
               </td></tr>
             </table>
-            <table class="spec-duo-table">
+            <table class="spec-quad-table">
               <tr><th>Photometric</th></tr>
               <tr><td class="spec-fields">
                 <div class="spec-field-row">
@@ -301,34 +332,14 @@
                 </div>
               </td></tr>
             </table>
-          </div>
-          
-          <!-- Features + Dimension -->
-          <div class="spec-row-duo">
-            <table class="spec-duo-table">
+            <table class="spec-quad-table">
               <tr><th>Features</th></tr>
               <tr><td>
-                <input type="text" class="spec-cell-input borderless" v-model="editableSpecs.feature1" placeholder="Super High CRI Ra98" />
-                <input type="text" class="spec-cell-input borderless" v-model="editableSpecs.feature2" placeholder="Ra9>98, Rg12>98" />
-                <input type="text" class="spec-cell-input borderless" v-model="editableSpecs.feature3" placeholder="120LED/M | 15W/m" />
-                <input type="text" class="spec-cell-input borderless" v-model="editableSpecs.feature4" placeholder="2835" />
+                <input type="text" class="spec-cell-input borderless" v-model="editableSpecs.feature5" placeholder="Feature 5" />
+                <input type="text" class="spec-cell-input borderless" v-model="editableSpecs.feature6" placeholder="Feature 6" />
               </td></tr>
             </table>
-            <table class="spec-duo-table">
-              <tr><th>Dimension</th></tr>
-              <tr><td class="dimension-cell" @click="triggerDimensionUpload">
-                <img v-if="customSettings?.dimensionImage" :src="customSettings.dimensionImage" class="dimension-img" />
-                <div v-else class="dimension-placeholder">
-                  <el-icon><Plus /></el-icon>
-                  <span>上传尺寸图</span>
-                </div>
-              </td></tr>
-            </table>
-          </div>
-          
-          <!-- Remark -->
-          <div class="spec-row-duo">
-            <table class="spec-duo-table" style="flex: 1;">
+            <table class="spec-quad-table">
               <tr><th>Remark</th></tr>
               <tr><td>
                 <textarea class="spec-remark-input borderless" v-model="editableSpecs.remark" placeholder="备注信息..." rows="4"></textarea>
@@ -336,48 +347,46 @@
             </table>
           </div>
         </div>
-        <input type="file" ref="dimensionInputRef" @change="handleDimensionFileChange" accept="image/*" style="display:none" />
         
-        <!-- 第5行：Photometric大表格 - 每行独立，支持增删改 -->
-        <div class="spec-row5">
+        <!-- 第六行：Photometric大表格（按功率分组，功率行合并） -->
+        <div class="spec-row-photometric">
           <div class="photometric-title-row">
-            <div class="photometric-title">Photometric</div>
-            <el-button size="small" type="primary" text @click="addPhotometricGroup">
+            <div class="photometric-title">Photometric Data</div>
+            <el-button size="small" type="primary" text @click="addPhotometricRow">
               <el-icon><Plus /></el-icon> 添加一行
             </el-button>
           </div>
           <table class="photometric-big-table">
             <thead>
               <tr>
-                <th style="width:30%">Model</th>
-                <th style="width:10%">Power</th>
-                <th style="width:12%">CCT</th>
-                <th style="width:12%">CRI</th>
-                <th style="width:18%">Lumen</th>
-                <th style="width:18%">Efficacy</th>
+                <th style="width:25%">Model</th>
+                <th style="width:15%">Power</th>
+                <th style="width:15%">CCT</th>
+                <th style="width:15%">CRI</th>
+                <th style="width:15%">Lumen</th>
+                <th style="width:15%">Efficacy</th>
               </tr>
             </thead>
             <tbody>
               <template v-for="(row, rowIndex) in photometricRows" :key="rowIndex">
                 <tr class="photometric-data-row">
                   <td><input type="text" class="table-input borderless center" v-model="row.model" placeholder="Model" /></td>
-                  <td class="power-cell"><input type="text" class="table-input borderless center" v-model="row.power" placeholder="Power" /></td>
-                  <td><input type="text" class="table-input borderless center small" v-model="row.cct" placeholder="CCT" /></td>
-                  <td><input type="text" class="table-input borderless center small" v-model="row.cri" placeholder="CRI" /></td>
+                  <td><input type="text" class="table-input borderless center" v-model="row.power" placeholder="Power" /></td>
+                  <td><input type="text" class="table-input borderless center" v-model="row.cct" placeholder="CCT" /></td>
+                  <td><input type="text" class="table-input borderless center" v-model="row.cri" placeholder="CRI" /></td>
                   <td><input type="text" class="table-input borderless center" v-model="row.lumen" placeholder="Lumen" /></td>
                   <td><input type="text" class="table-input borderless center" v-model="row.efficacy" placeholder="Efficacy" /></td>
-                </tr>
-                <tr class="photometric-actions-row">
-                  <td colspan="6" style="text-align: right; padding: 2px 8px; border: none;">
-                    <el-button size="small" type="danger" text @click="removePhotometricRow(rowIndex)" v-if="photometricRows.length > 1">
-                      <el-icon><Delete /></el-icon> 删除
-                    </el-button>
-                  </td>
                 </tr>
               </template>
             </tbody>
           </table>
+          <div class="photometric-actions-row" v-if="photometricRows.length > 1">
+            <el-button size="small" type="danger" text @click="removePhotometricRow(photometricRows.length - 1)">
+              <el-icon><Delete /></el-icon> 删除最后一行
+            </el-button>
+          </div>
         </div>
+        
         </div>
       </div>
       
@@ -554,50 +563,16 @@ interface PhotometricRow {
 
 const photometricRows = ref<PhotometricRow[]>([])
 
-// 预定义模块名称
-const availableModules = [
-  { id: 'product_setup', name: 'Product Setup', defaultItems: [
-    { label: 'Category', valueKey: 'category' },
-    { label: 'Level', valueKey: 'level' },
-    { label: 'Spectrum', valueKey: 'spectrum' }
-  ]},
-  { id: 'light_engine', name: 'Light Engine', defaultItems: [
-    { label: 'LED Type', valueKey: 'ledType' },
-    { label: 'LED Density', valueKey: 'ledDensity' }
-  ]},
-  { id: 'control_system', name: 'Control System', defaultItems: [
-    { label: 'Protocol', valueKey: '' },
-    { label: 'Dimming', valueKey: '' }
-  ]},
-  { id: 'electrical', name: 'Electrical', defaultItems: [
-    { label: 'Voltage', valueKey: 'voltage' },
-    { label: 'Power', valueKey: 'power' },
-    { label: 'IP Rating', valueKey: 'ipRating' },
-    { label: 'Beam Angle', valueKey: 'beamAngle' }
-  ]},
-  { id: 'photometric', name: 'Photometric', defaultItems: [
-    { label: 'CCT', valueKey: 'cct' },
-    { label: 'Lumen', valueKey: 'lumen' },
-    { label: 'Efficacy', valueKey: 'efficacy' },
-    { label: 'LED Brand', valueKey: 'ledBrand' },
-    { label: 'Lifetime', valueKey: 'lifetime' }
-  ]},
-  { id: 'features', name: 'Features', defaultItems: [
-    { label: 'Feature 1', valueKey: 'feature1' },
-    { label: 'Feature 2', valueKey: 'feature2' },
-    { label: 'Feature 3', valueKey: 'feature3' },
-    { label: 'Feature 4', valueKey: 'feature4' }
-  ]},
-  { id: 'remark', name: 'Remark', defaultItems: [
-    { label: 'Remark', valueKey: 'remark' }
-  ]}
-]
+// Control System模块控制
+const hasControlSystem = ref(false)
 
-// 上排可选模块（默认添加 Product Setup 和 Light Engine，不添加 Control System）
-const selectedTopModules = ref<string[]>(['product_setup', 'light_engine'])
+const toggleControlSystem = () => {
+  // 根据hasControlSystem的值自动添加/移除Control System模块
+  // 实际显示由v-if="hasControlSystem"控制
+}
 
 // 添加Photometric行
-const addPhotometricGroup = () => {
+const addPhotometricRow = () => {
   photometricRows.value.push({
     model: '',
     power: '',
@@ -826,8 +801,8 @@ const showAddProductSpecDialog = () => {
     }
   ]
   
-  // 上排默认选择 Product Setup + Light Engine
-  selectedTopModules.value = ['product_setup', 'light_engine']
+  // 默认不添加 Control System 模块
+  hasControlSystem.value = false
   
   specDialogVisible.value = true
 }
@@ -930,12 +905,8 @@ const showSpecDialog = (product: Product) => {
     ]
   }
   
-  // 初始化上排模块选择 - 从保存的数据加载
-  if (savedSettings?.selectedTopModules && savedSettings.selectedTopModules.length > 0) {
-    selectedTopModules.value = savedSettings.selectedTopModules
-  } else {
-    selectedTopModules.value = ['product_setup', 'light_engine']
-  }
+  // 初始化 Control System 模块 - 从保存的数据加载
+  hasControlSystem.value = savedSettings?.hasControlSystem || false
   
   specDialogVisible.value = true
 }
@@ -975,7 +946,7 @@ const saveSpecSettings = () => {
       footer: customSettings.value?.footer,
       editableSpecs: editableSpecs.value,
       photometricRows: photometricRows.value,
-      selectedTopModules: selectedTopModules.value
+      hasControlSystem: hasControlSystem.value
     })
     ElMessage.success('保存成功')
   }
@@ -995,7 +966,7 @@ const downloadSpec = async () => {
       footer: customSettings.value?.footer,
       editableSpecs: editableSpecs.value,
       photometricRows: photometricRows.value,
-      selectedTopModules: selectedTopModules.value
+      hasControlSystem: hasControlSystem.value
     })
   } else if (currentProduct.value) {
     productStore.saveSpecSettingsForProduct(currentProduct.value.id, {
@@ -1006,7 +977,7 @@ const downloadSpec = async () => {
       footer: customSettings.value?.footer,
       editableSpecs: editableSpecs.value,
       photometricRows: photometricRows.value,
-      selectedTopModules: selectedTopModules.value
+      hasControlSystem: hasControlSystem.value
     })
   }
   
@@ -2074,5 +2045,152 @@ defineExpose({
 
 .center {
   text-align: center !important;
+}
+
+/* 第二行：产品图片 | 标题+型号 | 认证 */
+.spec-row2 {
+  display: flex;
+  align-items: flex-start;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  gap: 10px;
+}
+
+/* 认证区域样式 - 第一行3个，第二行2个 */
+.spec-cert-section {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.cert-row-3 {
+  display: flex;
+  gap: 5px;
+}
+
+.cert-row-2 {
+  display: flex;
+  gap: 5px;
+}
+
+.spec-cert-section .cert-box {
+  width: 35px;
+  height: 25px;
+  border: 1px solid #999;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  color: #999;
+}
+
+.spec-cert-section .cert-box:hover {
+  border-color: #ff6b00;
+}
+
+.spec-cert-section .cert-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.spec-cert-section .cert-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-size: 8px;
+  color: #ccc;
+  background: #f9f9f9;
+}
+
+/* 第三行：Features | Dimension */
+.spec-row3 {
+  display: flex;
+  border-bottom: 1px solid #ddd;
+}
+
+.spec-row3 .spec-mini-table {
+  flex: 1;
+  border-collapse: collapse;
+  font-size: 9px;
+  border-right: 1px solid #ddd;
+}
+
+.spec-row3 .spec-mini-table:last-child {
+  border-right: none;
+}
+
+.spec-row3 .spec-mini-table th {
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  padding: 5px 8px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.spec-row3 .spec-mini-table td {
+  border: 1px solid #ddd;
+  border-top: none;
+  padding: 5px 8px;
+  background: #fff;
+  vertical-align: top;
+}
+
+/* 第五行：四列模块 */
+.spec-row-quad {
+  display: flex;
+  border-bottom: 1px solid #ddd;
+}
+
+.spec-quad-table {
+  flex: 1;
+  border-collapse: collapse;
+  font-size: 9px;
+  border-right: 1px solid #ddd;
+}
+
+.spec-quad-table:last-child {
+  border-right: none;
+}
+
+.spec-quad-table th {
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  border-top: none;
+  padding: 5px 8px;
+  font-weight: bold;
+  text-align: center;
+  height: 24px;
+}
+
+.spec-quad-table td {
+  border: 1px solid #ddd;
+  border-top: none;
+  padding: 5px 8px;
+  background: #fff;
+  vertical-align: top;
+}
+
+/* 第六行：Photometric大表格 */
+.spec-row-photometric {
+  padding: 0;
+}
+
+.photometric-actions-row {
+  text-align: right;
+  padding: 5px 10px;
+  background: #f5f5f5;
+  border: 1px solid #333;
+  border-top: none;
+}
+
+/* 移除spec-row1和spec-row4的旧样式（已不再使用） */
+.spec-row1, .spec-row4, .spec-row5 {
+  /* 已废弃 */
 }
 </style>
