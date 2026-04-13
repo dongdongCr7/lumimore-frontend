@@ -988,39 +988,60 @@ const downloadSpec = async () => {
     // 克隆规格书内容
     const clone = specDocumentRef.value.cloneNode(true) as HTMLElement
     
-    // 移除编辑相关的按钮和操作行（下载时不需要显示）
-    // 移除 "添加功率" 按钮
-    const addPowerBtn = clone.querySelector('.photometric-title-row .el-button')
-    if (addPowerBtn) addPowerBtn.remove()
+    // 将Photometric表格中的input替换为span（先处理，避免索引错位）
+    const photometricInputs = clone.querySelectorAll('.photometric-big-table input') as NodeListOf<HTMLInputElement>
+    const originalPhotometricInputs = specDocumentRef.value.querySelectorAll('.photometric-big-table input') as NodeListOf<HTMLInputElement>
     
-    // 移除所有 "删除此功率" 按钮行
-    const deleteRows = clone.querySelectorAll('.power-group-actions')
-    deleteRows.forEach(row => row.remove())
-    
-    // 移除模块选择区域的复选框
-    const modulesSelector = clone.querySelector('.modules-selector')
-    if (modulesSelector) modulesSelector.remove()
-    
-    // 将所有input替换为显示值的span
-    const originalInputs = specDocumentRef.value.querySelectorAll('input')
-    const clonedInputs = clone.querySelectorAll('input')
-    
-    originalInputs.forEach((input, i) => {
-      const clonedInput = clonedInputs[i]
-      if (clonedInput) {
+    photometricInputs.forEach((clonedInput, i) => {
+      const originalInput = originalPhotometricInputs[i]
+      if (originalInput) {
         const span = document.createElement('span')
-        span.textContent = input.value || input.placeholder || ''
+        span.textContent = originalInput.value || originalInput.placeholder || ''
         span.style.cssText = `
           display: inline-block;
-          min-width: ${input.offsetWidth || 50}px;
-          padding: ${input.style.padding || '2px 4px'};
-          font-size: ${input.style.fontSize || '12px'};
-          color: ${input.style.color || '#333'};
+          width: 100%;
+          text-align: center;
+          padding: 2px 4px;
+          font-size: 8px;
+          color: #333;
+          background: transparent;
+          box-sizing: border-box;
+        `
+        clonedInput.parentNode?.replaceChild(span, clonedInput)
+      }
+    })
+    
+    // 将其他input替换为span（非Photometric表格的）
+    const otherClonedInputs = clone.querySelectorAll('input:not(.photometric-big-table input)') as NodeListOf<HTMLInputElement>
+    const otherOriginalInputs = specDocumentRef.value.querySelectorAll('input:not(.photometric-big-table input)') as NodeListOf<HTMLInputElement>
+    
+    otherClonedInputs.forEach((clonedInput, i) => {
+      const originalInput = otherOriginalInputs[i]
+      if (originalInput) {
+        const span = document.createElement('span')
+        span.textContent = originalInput.value || originalInput.placeholder || ''
+        span.style.cssText = `
+          display: inline-block;
+          min-width: ${originalInput.offsetWidth || 50}px;
+          padding: ${originalInput.style.padding || '2px 4px'};
+          font-size: ${originalInput.style.fontSize || '12px'};
+          color: ${originalInput.style.color || '#333'};
           background: transparent;
         `
         clonedInput.parentNode?.replaceChild(span, clonedInput)
       }
     })
+    
+    // 移除编辑相关的按钮和操作行（下载时不需要显示）
+    const addPowerBtn = clone.querySelector('.photometric-title-row .el-button')
+    if (addPowerBtn) addPowerBtn.remove()
+    
+    const deleteRows = clone.querySelectorAll('.photometric-actions-row')
+    deleteRows.forEach(row => row.remove())
+    
+    // 移除模块选择区域的复选框
+    const modulesSelector = clone.querySelector('.modules-selector')
+    if (modulesSelector) modulesSelector.remove()
     
     // 重新排列证书为一行3个+一行2个（下载时保持原样，由CSS控制布局）
     // 由于HTML结构已经是一行3个+一行2个，不需要重新排列
