@@ -854,12 +854,12 @@ const showAddProductSpecDialog = () => {
 }
 
 // 规格书 - 编辑已有产品
-const showSpecDialog = (product: Product) => {
+const showSpecDialog = async (product: Product) => {
   currentProduct.value = product
   isNewProduct.value = false
   
   // 从store加载保存的设置，如果没有则使用默认值
-  const savedSettings = productStore.getSpecSettings(product.id)
+  const savedSettings = await productStore.getSpecSettings(product.id)
   if (savedSettings) {
     customSettings.value = {
       logoUrl: savedSettings.logoUrl || '/logo.jpg',
