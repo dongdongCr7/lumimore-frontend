@@ -382,16 +382,9 @@
               </td></tr>
             </table>
             <table class="spec-quad-table">
-              <tr><th>Remark <el-button size="small" type="primary" text @click="addCustomSpec('remark')"><el-icon><Plus /></el-icon></el-button></th></tr>
+              <tr><th>Remark</th></tr>
               <tr><td>
                 <textarea class="spec-remark-input borderless" v-model="editableSpecs.remark" placeholder="备注信息..." rows="4"></textarea>
-                <template v-for="(item, idx) in moduleCustomSpecs.remark" :key="'rm-' + idx">
-                  <div class="spec-field-row">
-                    <input type="text" class="field-label-input borderless" v-model="item.name" placeholder="规格名" />
-                    <input type="text" class="field-input borderless" v-model="item.value" placeholder="规格值" />
-                    <el-button size="small" type="danger" text @click="removeCustomSpec('remark', idx)"><el-icon><Delete /></el-icon></el-button>
-                  </div>
-                </template>
               </td></tr>
             </table>
           </div>
@@ -624,7 +617,6 @@ interface ModuleCustomSpecs {
   electrical: CustomSpecItem[]
   photometric: CustomSpecItem[]
   features: CustomSpecItem[]
-  remark: CustomSpecItem[]
 }
 
 const photometricRows = ref<PhotometricRow[]>([])
@@ -634,8 +626,7 @@ const moduleCustomSpecs = ref<ModuleCustomSpecs>({
   controlSystem: [],
   electrical: [],
   photometric: [],
-  features: [],
-  remark: []
+  features: []
 })
 
 // Control System模块控制
@@ -1001,8 +992,7 @@ const showSpecDialog = (product: Product) => {
       controlSystem: savedSettings.moduleCustomSpecs.controlSystem || [],
       electrical: savedSettings.moduleCustomSpecs.electrical || [],
       photometric: savedSettings.moduleCustomSpecs.photometric || [],
-      features: savedSettings.moduleCustomSpecs.features || [],
-      remark: savedSettings.moduleCustomSpecs.remark || []
+      features: savedSettings.moduleCustomSpecs.features || []
     }
   } else {
     moduleCustomSpecs.value = {
@@ -1011,8 +1001,7 @@ const showSpecDialog = (product: Product) => {
       controlSystem: [],
       electrical: [],
       photometric: [],
-      features: [],
-      remark: []
+      features: []
     }
   }
   

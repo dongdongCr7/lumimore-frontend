@@ -34,7 +34,6 @@ export interface CustomSpecSettings {
     electrical?: Array<{ name: string; value: string }>
     photometric?: Array<{ name: string; value: string }>
     features?: Array<{ name: string; value: string }>
-    remark?: Array<{ name: string; value: string }>
   }
 }
 
