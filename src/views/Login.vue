@@ -1,7 +1,9 @@
 <template>
   <div class="login-container">
     <div class="login-box">
-      <h1 class="title">产品管理系统</h1>
+      <div class="logo-container">
+        <img src="/logo.jpg" alt="LUMIMORE" class="logo" />
+      </div>
       <el-form ref="formRef" :model="form" :rules="rules" class="login-form">
         <el-form-item prop="username">
           <el-input 
@@ -33,12 +35,6 @@
           </el-button>
         </el-form-item>
       </el-form>
-      <div class="demo-account">
-        <p>测试账号：</p>
-        <el-tag>admin / 123456 (权限3)</el-tag>
-        <el-tag type="success">manager / 123456 (权限2)</el-tag>
-        <el-tag type="info">user / 123456 (权限1)</el-tag>
-      </div>
     </div>
   </div>
 </template>
@@ -122,6 +118,16 @@ const handleLogin = async () => {
   color: #333;
   font-size: 24px;
   font-weight: bold;
+}
+
+.logo-container {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.logo {
+  max-width: 200px;
+  height: auto;
 }
 
 .login-form {

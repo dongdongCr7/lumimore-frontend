@@ -82,7 +82,15 @@ app.get('/api/series', async (_, res) => {
     .order('id');
   
   if (error) return res.status(500).json({ error: error.message });
-  res.json(data);
+  // 转换 category_id 为 categoryId
+  const result = data.map(item => ({
+    id: item.id,
+    categoryId: item.category_id,
+    name: item.name,
+    description: item.description,
+    keywords: item.keywords || []
+  }));
+  res.json(result);
 });
 
 // 创建系列
@@ -95,7 +103,13 @@ app.post('/api/series', async (req, res) => {
     .single();
   
   if (error) return res.status(500).json({ error: error.message });
-  res.json(data);
+  res.json({
+    id: data.id,
+    categoryId: data.category_id,
+    name: data.name,
+    description: data.description,
+    keywords: data.keywords || []
+  });
 });
 
 // 更新系列
@@ -110,7 +124,13 @@ app.put('/api/series/:id', async (req, res) => {
     .single();
   
   if (error) return res.status(500).json({ error: error.message });
-  res.json(data);
+  res.json({
+    id: data.id,
+    categoryId: data.category_id,
+    name: data.name,
+    description: data.description,
+    keywords: data.keywords || []
+  });
 });
 
 // 删除系列
@@ -135,7 +155,16 @@ app.get('/api/products', async (_, res) => {
     .order('id');
   
   if (error) return res.status(500).json({ error: error.message });
-  res.json(data);
+  // 转换 series_id 为 seriesId, category_id 为 categoryId
+  const result = data.map(item => ({
+    id: item.id,
+    seriesId: item.series_id,
+    categoryId: item.category_id,
+    name: item.name,
+    specs: item.specs || {},
+    image: item.image
+  }));
+  res.json(result);
 });
 
 // 获取单个产品
@@ -148,7 +177,14 @@ app.get('/api/products/:id', async (req, res) => {
     .single();
   
   if (error) return res.status(500).json({ error: error.message });
-  res.json(data);
+  res.json({
+    id: data.id,
+    seriesId: data.series_id,
+    categoryId: data.category_id,
+    name: data.name,
+    specs: data.specs || {},
+    image: data.image
+  });
 });
 
 // 创建产品
@@ -167,7 +203,14 @@ app.post('/api/products', async (req, res) => {
     .single();
   
   if (error) return res.status(500).json({ error: error.message });
-  res.json(data);
+  res.json({
+    id: data.id,
+    seriesId: data.series_id,
+    categoryId: data.category_id,
+    name: data.name,
+    specs: data.specs || {},
+    image: data.image
+  });
 });
 
 // 更新产品
@@ -188,7 +231,14 @@ app.put('/api/products/:id', async (req, res) => {
     .single();
   
   if (error) return res.status(500).json({ error: error.message });
-  res.json(data);
+  res.json({
+    id: data.id,
+    seriesId: data.series_id,
+    categoryId: data.category_id,
+    name: data.name,
+    specs: data.specs || {},
+    image: data.image
+  });
 });
 
 // 删除产品

@@ -3,7 +3,7 @@
     <!-- 分类Tab选择 -->
     <div class="step-section">
       <div class="section-header">
-        <span class="step-title">第一步：选择分类</span>
+        <span class="step-title">选择分类</span>
         <el-button type="primary" size="small" @click="showAddCategoryDialog" v-if="userStore.canManageProducts()">
           <el-icon><Plus /></el-icon> 添加分类
         </el-button>
@@ -35,7 +35,7 @@
     <!-- 系列选择（选中分类后显示） -->
     <div class="step-section" v-if="selectedCategoryId">
       <div class="section-header">
-        <span class="step-title">第二步：选择系列 - {{ getCategoryName(selectedCategoryId) }}</span>
+        <span class="step-title">选择系列 - {{ getCategoryName(selectedCategoryId) }}</span>
         <el-button type="primary" size="small" @click="showAddSeriesDialog" v-if="userStore.canManageProducts()">
           <el-icon><Plus /></el-icon> 添加系列
         </el-button>
@@ -73,7 +73,7 @@
     <!-- 产品列表（选中系列后显示） -->
     <div class="step-section" v-if="selectedSeriesId">
       <div class="section-header">
-        <span class="step-title">第三步：产品列表 - {{ getSeriesName(selectedSeriesId) }}</span>
+        <span class="step-title">产品列表 - {{ getSeriesName(selectedSeriesId) }}</span>
         <div class="header-actions">
           <el-input 
             v-model="searchKeyword" 
@@ -454,7 +454,7 @@ const seriesForm = reactive({
   keywords: [] as string[]
 })
 
-const suggestedKeywords = ['LED', '筒灯', '射灯', '灯带', '面板灯', '智能', 'RGB', 'COB']
+const suggestedKeywords = []
 
 // 规格书对话框
 const specDialogVisible = ref(false)
