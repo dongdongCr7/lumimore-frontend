@@ -454,7 +454,7 @@ const seriesForm = reactive({
   keywords: [] as string[]
 })
 
-const suggestedKeywords = []
+const suggestedKeywords: string[] = []
 
 // 规格书对话框
 const specDialogVisible = ref(false)
